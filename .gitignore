@@ -1,0 +1,96 @@
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+.vercel
+.netlify
+.wrangler
+
+# Node dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Package manager lock files (keep only one)
+# package-lock.json  # Uncomment if using yarn or pnpm
+# yarn.lock          # Uncomment if using npm or pnpm
+# pnpm-lock.yaml     # Uncomment if using npm or yarn
+
+# Logs
+logs
+*.log
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+.nyc_output
+
+# Testing
+.vitest
+test-results/
+playwright-report/
+playwright/.cache/
+coverage/
+junit.xml
+
+# Misc
+.DS_Store
+.fleet
+.idea
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# Temporary folders
+tmp/
+temp/
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Local env files
+.env
+.env.*
+!.env.example
+.envrc
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Storybook
+storybook-static
+.storybook/public
+
+# Sentry
+.sentryclirc
+
+# Cloudflare
+wrangler.toml
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Build tools
+.turbo
+.rush/
