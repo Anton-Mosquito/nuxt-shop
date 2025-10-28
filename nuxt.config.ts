@@ -8,6 +8,15 @@ export default defineNuxtConfig({
       path: '~/widgets',
     }
   ],
+  runtimeConfig: {
+    // The private keys which are only available server-side
+    token: '',
+    api_url: '',
+    // Keys within public are also exposed client-side
+    public: {
+      api_base: '',
+    },
+  },
 
   modules: [
     '@nuxt/eslint',
