@@ -1,0 +1,58 @@
+### .prettierignore for a Nuxt 4 project
+# Ignore node modules and package manager caches
+node_modules
+bower_components
+
+# Build outputs (Nuxt, Vite, Next, etc.)
+/.nuxt
+/.output
+/dist
+/build
+/out
+
+# Vite / tooling caches
+/.vite
+/.cache
+/.parcel-cache
+
+# Common CI / platform directories
+/.vercel
+/.netlify
+
+# Coverage and test artifacts
+/coverage
+coverage/
+*.lcov
+
+# Generated / minified assets
+*.min.js
+*.bundle.js
+*.map
+
+# Lockfiles (optional to ignore formatting of generated lockfiles)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Logs and env files
+*.log
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# Snapshots and test config
+*.snap
+jest.config.*
+vitest.config.*
+
+# Storybook / docs build outputs
+storybook-static
+
+# Misc
+*.orig
+

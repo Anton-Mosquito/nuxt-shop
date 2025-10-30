@@ -17,6 +17,7 @@ export default defineNuxtConfig({
       api_base: "",
     },
   },
+  sourcemap: true,
 
   modules: [
     "@nuxt/eslint",
