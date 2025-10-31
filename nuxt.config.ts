@@ -26,7 +26,6 @@ export default defineNuxtConfig({
       api_base: "",
     },
   },
-
   icon: {
     customCollections: [
       {
