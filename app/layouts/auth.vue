@@ -1,5 +1,6 @@
 <template>
   <div>
-    <h1>Favorites</h1>
+    <div>Auth layout</div>
+    <slot />
   </div>
 </template>

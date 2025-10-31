@@ -2,12 +2,17 @@
 function openAbout() {
   navigateTo("/about");
 }
+
+function setLayout() {
+  setPageLayout("auth");
+}
 </script>
 
 <template>
   <div>
     <h1>Welcome Router</h1>
     <NuxtLink to="/">Go to Home</NuxtLink>
-    <button @click="openAbout">navigate</button>
+    <button @click="(openAbout, setLayout)">navigate</button>
+    <InputField variant="black" placeholder="Enter your email" />
   </div>
 </template>
