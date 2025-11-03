@@ -3,9 +3,9 @@ function openAbout() {
   navigateTo("/about");
 }
 
-function setLayout() {
-  setPageLayout("auth");
-}
+// function setLayout() {
+//   setPageLayout("auth");
+// }
 </script>
 
 <template>
@@ -13,7 +13,6 @@ function setLayout() {
     <h1>Welcome Router</h1>
     <Icon name="icon:bar-outline" size="24" />
     <NuxtLink to="/">Go to Home</NuxtLink>
-    <button @click="(openAbout, setLayout)">navigate</button>
-    <InputField variant="black" placeholder="Enter your email" />
+    <button @click="openAbout">navigate</button>
   </div>
 </template>

@@ -47,6 +47,12 @@ const iconLinks = [
   flex-direction: column;
   gap: 50px;
 
+  hr {
+    border: none;
+    border-block-end: 1px solid var(--color-gray);
+    height: 1px;
+  }
+
   & .footer__top {
     display: flex;
     padding: 16px 0;
