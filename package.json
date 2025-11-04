@@ -5,9 +5,15 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "debug": "nuxt dev --inspect",
+    "debug:win": "set \"NODE_OPTIONS=--inspect\" && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier . --check",
+    "lintfix": "eslint . --fix && prettier --write --list-different ."
   },
   "dependencies": {
     "@nuxt/eslint": "^1.9.0",
@@ -18,7 +24,10 @@
     "@nuxt/test-utils": "^3.20.1",
     "@unhead/vue": "^2.0.19",
     "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "nuxt": "^4.2.0",
+    "prettier": "^3.6.2",
     "vue": "^3.5.22",
     "vue-router": "^4.6.3"
   }

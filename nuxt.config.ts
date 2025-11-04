@@ -41,4 +41,5 @@ export default defineNuxtConfig({
   //   "/catalog/**": { swr: 3600 },
   //   //"/auth/**": { isr: true },
   // },
+  sourcemap: true,
 });
