@@ -46,6 +46,7 @@ const iconLinks = [
   display: flex;
   flex-direction: column;
   gap: 50px;
+  padding: 0 16px;
 
   hr {
     border: none;

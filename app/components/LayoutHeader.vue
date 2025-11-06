@@ -48,6 +48,7 @@ const additionalLinks = [
   display: flex;
   justify-content: space-between;
   margin-top: 48px;
+  padding: 0 16px;
   border-block-end: 1px solid var(--color-gray);
 
   & .header__content {
