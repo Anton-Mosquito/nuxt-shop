@@ -4,7 +4,24 @@ import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
 import type { IGetProductsResponse } from "~/interfaces/product.interface";
 
 const config = useRuntimeConfig();
-const select = ref("");
+const route = useRoute();
+const router = useRouter();
+const category_id = ref(route.query.category_id?.toString() ?? "");
+
+watch(category_id, () => {
+  router.replace({
+    query: {
+      ...route.query,
+      category_id: category_id.value || undefined,
+    },
+  });
+});
+
+const query = computed(() => ({
+  limit: route.query.limit ?? 20,
+  offset: route.query.offset ?? 0,
+  category_id: route.query.category_id || undefined,
+}));
 
 const { data } = await useFetch<IGetCategoriesResponse>(
   `${config.public.api_url}/categories`
@@ -28,10 +45,8 @@ const categoriesSelect = computed(
 const { data: productsData } = await useFetch<IGetProductsResponse>(
   `${config.public.api_url}/products`,
   {
-    query: {
-      limit: 20,
-      offset: 0,
-    },
+    key: "get-products",
+    query,
   }
 );
 
@@ -69,7 +84,7 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
     <h1 class="left">Catalog goods</h1>
     <div class="catalog">
       <div class="catalog__filter">
-        <SelectField v-model="select" :options="categoriesSelect" />
+        <SelectField v-model="category_id" :options="categoriesSelect" />
       </div>
       <div class="catalog__grid">
         <CatalogCard
@@ -98,7 +113,7 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
   & .catalog__grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px 12px;
   }
 }
