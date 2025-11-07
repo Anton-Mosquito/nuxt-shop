@@ -7,12 +7,14 @@ const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
 const category_id = ref(route.query.category_id?.toString() ?? "");
+const search = ref(route.query.search?.toString() ?? "");
 
-watch(category_id, () => {
+watchEffect(() => {
   router.replace({
     query: {
       ...route.query,
-      category_id: category_id.value || undefined,
+      category_id: category_id.value,
+      search: search.value,
     },
   });
 });
@@ -21,6 +23,7 @@ const query = computed(() => ({
   limit: route.query.limit ?? 20,
   offset: route.query.offset ?? 0,
   category_id: route.query.category_id || undefined,
+  search: route.query.search || undefined,
 }));
 
 const { data } = await useFetch<IGetCategoriesResponse>(
@@ -84,6 +87,10 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
     <h1 class="left">Catalog goods</h1>
     <div class="catalog">
       <div class="catalog__filter">
+        <div class="catalog__search">
+          <inputField v-model="search" variant="gray" placeholder="Search..." />
+          <Icon name="icon:bar-outline" size="24" />
+        </div>
         <SelectField v-model="category_id" :options="categoriesSelect" />
       </div>
       <div class="catalog__grid">
@@ -106,15 +113,29 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
   display: flex;
   gap: 36px;
 
-  & catalog__filter {
+  & .catalog__filter {
     width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    & .catalog__search {
+      position: relative;
+
+      & span[class*="icon:bar-outline"] {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+      }
+    }
   }
 
   & .catalog__grid {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px 12px;
+    gap: 64px 12px;
   }
 }
 </style>

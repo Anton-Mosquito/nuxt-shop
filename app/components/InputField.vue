@@ -11,9 +11,12 @@ const data = defineModel<string>();
 
 <style module>
 .input {
+  width: 100%;
   padding: 12px 0;
   border: none;
   background: none;
+  font-size: 16px;
+  font-weight: 400;
   color: var(--color-black);
 
   ::placeholder {
