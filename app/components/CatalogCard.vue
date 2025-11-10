@@ -14,7 +14,7 @@ const image = computed(
       <span v-if="product.discount > 0" class="card__discount"
         >- {{ product.discount }}%</span
       >
-      <Icon name="icon:bar-outline" size="12" />
+      <Icon name="icon:bar-outline" size="20" />
     </div>
     <div class="card__footer">
       <div class="card__name">
