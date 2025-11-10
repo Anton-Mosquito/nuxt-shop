@@ -9,7 +9,11 @@ const router = useRouter();
 const category_id = ref(route.query.category_id?.toString() ?? "");
 const search = ref(route.query.search?.toString() ?? "");
 
-watchEffect(() => {
+watch([category_id, search], () => {
+  changeRoute(category_id, search);
+});
+
+const changeRoute = useDebounceFn((category_id, search) => {
   router.replace({
     query: {
       ...route.query,
@@ -17,7 +21,7 @@ watchEffect(() => {
       search: search.value,
     },
   });
-});
+}, 300);
 
 const query = computed(() => ({
   limit: route.query.limit ?? 20,
@@ -88,7 +92,7 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
     <div class="catalog">
       <div class="catalog__filter">
         <div class="catalog__search">
-          <inputField v-model="search" variant="gray" placeholder="Search..." />
+          <InputField v-model="search" variant="gray" placeholder="Search..." />
           <Icon name="icon:bar-outline" size="24" />
         </div>
         <SelectField v-model="category_id" :options="categoriesSelect" />
