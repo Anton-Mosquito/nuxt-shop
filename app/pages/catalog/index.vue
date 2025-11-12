@@ -3,7 +3,7 @@ import SelectField from "~/components/SelectField.vue";
 import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
 import type { IGetProductsResponse } from "~/interfaces/product.interface";
 
-const config = useRuntimeConfig();
+const API_URL = useAPI(); // useRuntimeConfig().public.api_url;
 const route = useRoute();
 const router = useRouter();
 const category_id = ref(route.query.category_id?.toString() ?? "");
@@ -31,7 +31,7 @@ const query = computed(() => ({
 }));
 
 const { data } = await useFetch<IGetCategoriesResponse>(
-  `${config.public.api_url}/categories`
+  `${API_URL}/categories`
 );
 
 const selectDefault = {
@@ -50,7 +50,7 @@ const categoriesSelect = computed(
 );
 
 const { data: productsData } = await useFetch<IGetProductsResponse>(
-  `${config.public.api_url}/products`,
+  `${API_URL}/products`,
   {
     key: "get-products",
     query,

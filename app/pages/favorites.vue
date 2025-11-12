@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { IProduct } from "~/interfaces/product.interface";
 
-const config = useRuntimeConfig();
+const API_URL = useAPI();
 const favoriteStore = useFavoriteStore();
 const products = ref<IProduct[]>([]);
 // await callOnce("fetchFavorites", () => favoriteStore.fetchFavorites(), {
@@ -10,7 +10,7 @@ const products = ref<IProduct[]>([]);
 watchEffect(async () => {
   const data = await Promise.all(
     favoriteStore.favoriteIds.map((id) =>
-      $fetch<{ product: IProduct }>(`${config.public.api_url}/products/${id}`)
+      $fetch<{ product: IProduct }>(`${API_URL}/products/${id}`)
     )
   );
 
