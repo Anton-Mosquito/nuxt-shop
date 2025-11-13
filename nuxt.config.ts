@@ -48,6 +48,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Anton Komarnytskyi Portfolio",
+      titleTemplate: "%s | Nuxt Shop",
       htmlAttrs: { lang: "en" },
       meta: [
         { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -78,9 +79,21 @@ export default defineNuxtConfig({
           sizes: "192x192",
           href: "/icons/favicon-192x192.png",
         },
-        { rel: "apple-touch-icon", sizes: "48x48", href: "/icons/favicon-48x48.png" },
-        { rel: "apple-touch-icon", sizes: "72x72", href: "/icons/favicon-72x72.png" },
-        { rel: "apple-touch-icon", sizes: "96x96", href: "/icons/favicon-96x96.png" },
+        {
+          rel: "apple-touch-icon",
+          sizes: "48x48",
+          href: "/icons/favicon-48x48.png",
+        },
+        {
+          rel: "apple-touch-icon",
+          sizes: "72x72",
+          href: "/icons/favicon-72x72.png",
+        },
+        {
+          rel: "apple-touch-icon",
+          sizes: "96x96",
+          href: "/icons/favicon-96x96.png",
+        },
         {
           rel: "apple-touch-icon",
           sizes: "256x256",
