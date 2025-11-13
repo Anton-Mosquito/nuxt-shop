@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
+    "@nuxtjs/sitemap",
   ],
   //css: ["~/assets/styles/main.css"],
   components: [
@@ -120,10 +121,18 @@ export default defineNuxtConfig({
     //pageTransition: { name: "page", mode: "out-in" },
     layoutTransition: { name: "layout", mode: "out-in" },
   },
+  sitemap: {
+    sources: ["~/server/api/sitemap/url.ts"],
+    defaults: {
+      lastmod: new Date().toISOString(),
+      priority: 0.5,
+      changefreq: "weekly",
+    },
+  },
   // routeRules: {
   //   "/about": { prerender: true },
   //   "/": { swr: true },
-  //   "/catalog/**": { swr: 3600 },
+  //   "/catalog/**": { swr: 3600, sitemap: [ changefreq: "weekly", priority: 0.5 ] },
   //   //"/auth/**": { isr: true },
   // },
 });
