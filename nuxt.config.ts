@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/sitemap",
+    "@nuxtjs/robots",
   ],
   //css: ["~/assets/styles/main.css"],
   components: [
@@ -129,10 +130,16 @@ export default defineNuxtConfig({
       changefreq: "weekly",
     },
   },
+  robots: {
+    //userAgent: "*",
+    allow: "/",
+    disallow: ["/admin", "/auth", "/account"],
+    sitemap: "/sitemap.xml",
+  },
   // routeRules: {
   //   "/about": { prerender: true },
   //   "/": { swr: true },
-  //   "/catalog/**": { swr: 3600, sitemap: [ changefreq: "weekly", priority: 0.5 ] },
+  //   "/catalog/**": { swr: 3600, sitemap: [ changefreq: "weekly", priority: 0.5 ], robots: false },
   //   //"/auth/**": { isr: true },
   // },
 });
