@@ -146,8 +146,13 @@ export default defineNuxtConfig({
     experimental: {
       database: true,
     },
-    storage: {
-      db: { driver: "redis" },
+    database: {
+      default: {
+        connector: "sqlite",
+        options: {
+          name: "db",
+        },
+      },
     },
     devStorage: {
       db: { driver: "fs-lite", base: "./db" },
