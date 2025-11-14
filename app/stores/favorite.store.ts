@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 export const useFavoriteStore = defineStore(
   "favorite",
   () => {
+    const authStore = useAuthStore();
     const favoriteIds = ref<number[]>([]);
 
     function addToFavorite(id: number) {
@@ -20,11 +21,35 @@ export const useFavoriteStore = defineStore(
         removeFromFavorite(id);
       } else {
         addToFavorite(id);
+        if (!authStore.email) return;
+        save();
       }
     }
 
     function isFavorite(id: number) {
       return favoriteIds.value.includes(id);
+    }
+
+    async function save() {
+      const data = await $fetch<{ success: boolean }>("/api/favorites", {
+        method: "POST",
+        body: {
+          email: authStore.email,
+          ids: favoriteIds.value,
+        },
+      });
+      console.log("🚀 ~ save ~ data:", data);
+    }
+
+    async function restore(email: string) {
+      const data = await $fetch<number[]>("/api/favorites", {
+        method: "GET",
+        query: {
+          email,
+        },
+      });
+      console.log("🚀 ~ restore ~ data:", data);
+      favoriteIds.value = data || [];
     }
 
     // async function fetchFavorites() {
@@ -44,6 +69,7 @@ export const useFavoriteStore = defineStore(
       removeFromFavorite,
       toggleFavorite,
       isFavorite,
+      restore,
       //fetchFavorites,
     };
   },
