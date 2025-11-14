@@ -4,9 +4,14 @@ export const useAuthStore = defineStore(
   "auth",
   () => {
     const token = ref<string | undefined>();
+    const email = ref<string | undefined>();
 
     function setToken(newToken: string) {
       token.value = newToken;
+    }
+
+    function setEmail(newEmail: string) {
+      email.value = newEmail;
     }
 
     function clearToken() {
@@ -15,7 +20,9 @@ export const useAuthStore = defineStore(
 
     return {
       token,
+      email,
       setToken,
+      setEmail,
       clearToken,
     };
   },

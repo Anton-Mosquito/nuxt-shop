@@ -142,4 +142,15 @@ export default defineNuxtConfig({
   //   "/catalog/**": { swr: 3600, sitemap: [ changefreq: "weekly", priority: 0.5 ], robots: false },
   //   //"/auth/**": { isr: true },
   // },
+  nitro: {
+    experimental: {
+      database: true,
+    },
+    storage: {
+      db: { driver: "redis" },
+    },
+    devStorage: {
+      db: { driver: "fs-lite", base: "./db" },
+    },
+  },
 });

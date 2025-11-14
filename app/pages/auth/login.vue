@@ -4,10 +4,12 @@ import type { ILoginResponse } from "~/interfaces/auth.interface";
 definePageMeta({
   layout: "auth",
 });
+
 const API_URL = useAPI();
 const email = ref<string | undefined>();
 const password = ref<string | undefined>();
 const authStore = useAuthStore();
+const favoriteStore = useFavoriteStore();
 
 async function login() {
   const data = await $fetch<ILoginResponse>(`${API_URL}/auth/login`, {
@@ -18,6 +20,9 @@ async function login() {
     },
   });
   authStore.setToken(data.token);
+  authStore.setEmail(data.user.email);
+  await favoriteStore.restore(data.user.email);
+
   await navigateTo("/account");
   // try {
   //   const auth = useAuth();
