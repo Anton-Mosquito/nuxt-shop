@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
+    "@nuxtjs/tailwindcss",
   ],
   //css: ["~/assets/styles/main.css"],
   components: [
