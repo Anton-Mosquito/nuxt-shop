@@ -35,6 +35,8 @@ export default defineNuxtConfig({
     },
   },
   icon: {
+    mode: "css",
+    cssLayer: "base",
     customCollections: [
       {
         prefix: "icon",

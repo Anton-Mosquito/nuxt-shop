@@ -5,36 +5,34 @@ const listLinks = [
 ];
 
 const additionalLinks = [
-  { path: "/search", icon: "bar-outline" },
-  { path: "/cart", icon: "bar-outline" },
-  { path: "/favorites", icon: "bar-outline" },
-  { path: "/account", icon: "bar-outline" },
+  { path: "/search", icon: "ic:baseline-search" },
+  { path: "/cart", icon: "ic:outline-shopping-cart" },
+  { path: "/favorites", icon: "ic:baseline-favorite-border" },
+  { path: "/account", icon: "ic:outline-account-circle" },
 ];
 </script>
 
 <template>
   <div class="header">
-    <NuxtLink to="/">
-      <Icon name="icon:bar-outline" size="30" />
-    </NuxtLink>
+    <NuxtLink to="/"><Icon name="icon:shop-outline" size="40" /></NuxtLink>
     <div class="header__content">
       <div class="header__menu">
         <NuxtLink
-          v-for="(link, index) in listLinks"
+          v-for="({ path, name }, index) in listLinks"
           :key="index"
-          :to="link.path"
+          :to="path"
         >
-          {{ link.name }}
+          {{ name }}
         </NuxtLink>
       </div>
       <div class="header__hr"></div>
       <div class="header__icons">
         <NuxtLink
-          v-for="(link, index) in additionalLinks"
+          v-for="({ path, icon }, index) in additionalLinks"
           :key="index"
-          :to="link.path"
+          :to="path"
         >
-          <Icon :name="`icon:${link.icon}`" size="21" />
+          <Icon :name="icon" size="21" />
         </NuxtLink>
       </div>
     </div>
@@ -43,59 +41,51 @@ const additionalLinks = [
 
 <style scoped>
 .header {
-  margin: 0 auto;
   max-width: 1248px;
+  margin: 0 auto;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
-  margin-top: 48px;
-  padding: 0 16px;
-  border-block-end: 1px solid var(--color-gray);
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+}
 
-  & .header__content {
-    display: flex;
-    gap: 60px;
-    align-items: center;
+.header__content {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
 
-    & .header__hr {
-      align-self: flex-start;
-      border-inline-start: 1px solid var(--color-dark-gray);
-      height: 17px;
-      margin-block-start: 4px;
-    }
+.header__hr {
+  border-left: 1px solid #ccc;
+  height: 20px;
+}
 
-    & .header__menu {
-      display: flex;
-      gap: 60px;
-      align-items: center;
-      padding-block-end: 48px;
-    }
+.header__menu {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
 
-    & .header__icons {
-      padding-block-end: 48px;
-      display: flex;
-      gap: 40px;
-      align-items: center;
-    }
+.header__icons {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
 
-    & .header__menu,
-    & .header__icons {
-      a {
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 27px;
-        color: var(--color-dark-gray);
-        text-decoration: none;
+.header__icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        :hover {
-          color: var(--color-black);
-        }
+.header a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
 
-        &.router-link-active {
-          border-block-end: 1px solid var(--color-black);
-        }
-      }
-    }
-  }
+.header a:hover {
+  color: #000;
 }
 </style>
