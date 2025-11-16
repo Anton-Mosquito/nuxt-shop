@@ -1,24 +1,16 @@
 <script setup lang="ts">
-const listLinks = [
-  { name: "Shop", path: "/catalog" },
-  { name: "About Us", path: "/about" },
-];
-
-const additionalLinks = [
-  { path: "/search", icon: "ic:baseline-search" },
-  { path: "/cart", icon: "ic:outline-shopping-cart" },
-  { path: "/favorites", icon: "ic:baseline-favorite-border" },
-  { path: "/account", icon: "ic:outline-account-circle" },
-];
+import { NAV_LINKS, HEADER_ICON_LINKS } from "~/constants/navigation";
 </script>
 
 <template>
   <div class="header">
-    <NuxtLink to="/"><Icon name="icon:shop-outline" size="40" /></NuxtLink>
+    <NuxtLink to="/"
+      ><Icon name="icon:shop-outline" size="40" class="icon-accent"
+    /></NuxtLink>
     <div class="header__content">
       <div class="header__menu">
         <NuxtLink
-          v-for="({ path, name }, index) in listLinks"
+          v-for="({ path, name }, index) in NAV_LINKS"
           :key="index"
           :to="path"
         >
@@ -28,9 +20,10 @@ const additionalLinks = [
       <div class="header__hr"></div>
       <div class="header__icons">
         <NuxtLink
-          v-for="({ path, icon }, index) in additionalLinks"
+          v-for="({ path, icon, label }, index) in HEADER_ICON_LINKS"
           :key="index"
           :to="path"
+          :title="label"
         >
           <Icon :name="icon" size="21" />
         </NuxtLink>
@@ -87,5 +80,13 @@ const additionalLinks = [
 
 .header a:hover {
   color: #000;
+}
+
+.icon-accent {
+  color: var(--color-accent);
+
+  &:hover {
+    color: var(--color-black-hover);
+  }
 }
 </style>

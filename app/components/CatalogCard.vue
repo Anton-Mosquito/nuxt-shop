@@ -45,7 +45,7 @@ const isHovered = ref(false);
     aspect-ratio: 1 / 1;
     border-radius: 8px;
     width: 100%;
-    min-width: 320px;
+    max-width: 100%;
     padding: 16px;
     background-size: cover;
     background-repeat: no-repeat;

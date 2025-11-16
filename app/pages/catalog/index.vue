@@ -18,7 +18,7 @@ useSeoMeta({
 //   ],
 // });
 
-const API_URL = useAPI(); // useRuntimeConfig().public.api_url;
+const API_URL = useAPI();
 const route = useRoute();
 const router = useRouter();
 const category_id = ref(route.query.category_id?.toString() ?? "");
@@ -54,14 +54,13 @@ const selectDefault = {
   label: "Select a category",
 };
 
-const categoriesSelect = computed(
-  () =>
-    data.value?.categories
-      .map(({ id, name }) => ({
-        value: `${id}`,
-        label: name,
-      }))
-      .concat([selectDefault]) ?? [selectDefault]
+const categoriesSelect = computed(() =>
+  [selectDefault].concat(
+    data.value?.categories.map(({ id, name }) => ({
+      value: `${id}`,
+      label: name,
+    })) ?? []
+  )
 );
 
 const { data: productsData } = await useFetch<IGetProductsResponse>(
@@ -102,21 +101,25 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
 </script>
 
 <template>
-  <div>
-    <h1 class="left">Catalog goods</h1>
-    <div class="catalog">
-      <div class="catalog__filter">
-        <div class="catalog__search">
-          <InputField v-model="search" variant="gray" placeholder="Search..." />
-          <Icon name="icon:bar-outline" size="24" />
+  <div class="catalog-page">
+    <h1 class="catalog-page__title">Каталог товарів</h1>
+    <div class="catalog-page__layout">
+      <div class="catalog-page__filter">
+        <div class="catalog-page__search">
+          <UiInput
+            v-model="search"
+            variant="default"
+            placeholder="Search..."
+            icon="mdi:magnify"
+          />
         </div>
         <SelectField v-model="category_id" :options="categoriesSelect" />
       </div>
-      <div class="catalog__grid">
-        <CatalogCard
-          v-for="product in productsData?.products"
-          :key="product.id"
-          v-bind="product"
+      <div class="catalog-page__content">
+        <ProductGrid
+          v-if="productsData?.products"
+          :products="productsData.products"
+          :columns="3"
         />
       </div>
     </div>
@@ -124,37 +127,40 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
 </template>
 
 <style scoped>
-.left {
+.catalog-page__title {
+  font-size: 32px;
+  font-weight: 400;
+  margin-bottom: 48px;
   text-align: left;
 }
 
-.catalog {
+.catalog-page__layout {
   display: flex;
   gap: 36px;
+}
 
-  & .catalog__filter {
-    width: 260px;
-    display: flex;
+.catalog-page__filter {
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.catalog-page__search {
+  position: relative;
+}
+
+.catalog-page__content {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .catalog-page__layout {
     flex-direction: column;
-    gap: 24px;
-
-    & .catalog__search {
-      position: relative;
-
-      & span[class*="icon:bar-outline"] {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-      }
-    }
   }
 
-  & .catalog__grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 64px 12px;
+  .catalog-page__filter {
+    width: 100%;
   }
 }
 </style>

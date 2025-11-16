@@ -18,7 +18,18 @@ export default defineNuxtConfig({
   ],
   //css: ["~/assets/styles/main.css"],
   components: [
-    "~/components",
+    {
+      path: "~/components",
+      pathPrefix: false,
+    },
+    {
+      path: "~/components/ui",
+      prefix: "Ui",
+    },
+    {
+      path: "~/components/layout",
+      prefix: "Layout",
+    },
     {
       path: "~/widgets",
     },
