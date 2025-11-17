@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SelectField from "~/components/SelectField.vue";
 import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
 import type { IGetProductsResponse } from "~/interfaces/product.interface";
 
@@ -23,26 +22,51 @@ const route = useRoute();
 const router = useRouter();
 const category_id = ref(route.query.category_id?.toString() ?? "");
 const search = ref(route.query.search?.toString() ?? "");
+const priceFrom = ref(Number(route.query.price_from) || 0);
+const priceTo = ref(Number(route.query.price_to) || 1200);
+const hasDiscount = ref<boolean>(false);
+const limit = 6;
+const currentPage = ref(Number(route.query.offset) || 0);
 
-watch([category_id, search], () => {
-  changeRoute(category_id, search);
-});
+watch(
+  [category_id, search, priceFrom, priceTo, hasDiscount, currentPage],
+  () => {
+    changeRoute(
+      category_id,
+      search,
+      priceFrom,
+      priceTo,
+      hasDiscount,
+      currentPage
+    );
+  }
+);
 
-const changeRoute = useDebounceFn((category_id, search) => {
-  router.replace({
-    query: {
-      ...route.query,
-      category_id: category_id.value,
-      search: search.value,
-    },
-  });
-}, 300);
+const changeRoute = useDebounceFn(
+  (category_id, search, priceFrom, priceTo, hasDiscount, currentPage) => {
+    router.replace({
+      query: {
+        ...route.query,
+        category_id: category_id.value,
+        search: search.value,
+        price_from: priceFrom.value,
+        price_to: priceTo.value,
+        has_discount: hasDiscount.value,
+        offset: currentPage.value,
+      },
+    });
+  },
+  300
+);
 
 const query = computed(() => ({
-  limit: route.query.limit ?? 20,
-  offset: route.query.offset ?? 0,
+  limit,
+  offset: currentPage.value,
   category_id: route.query.category_id || undefined,
   search: route.query.search || undefined,
+  price_from: route.query.price_from || undefined,
+  price_to: route.query.price_to || undefined,
+  has_discount: route.query.has_discount || undefined,
 }));
 
 const { data } = await useFetch<IGetCategoriesResponse>(
@@ -70,6 +94,15 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
     query,
   }
 );
+
+const totalPages = computed(() => {
+  const total = productsData.value?.total || 0;
+  return Math.ceil(total / limit);
+});
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
 
 // const { data, error, refresh } = await useAsyncData(
 //   "categories",
@@ -102,7 +135,7 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
 
 <template>
   <div class="catalog-page">
-    <h1 class="catalog-page__title">Каталог товарів</h1>
+    <h1 class="catalog-page__title">Product catalog</h1>
     <div class="catalog-page__layout">
       <div class="catalog-page__filter">
         <div class="catalog-page__search">
@@ -114,12 +147,30 @@ const { data: productsData } = await useFetch<IGetProductsResponse>(
           />
         </div>
         <SelectField v-model="category_id" :options="categoriesSelect" />
+        <UiRangeSlider
+          v-model:min-value="priceFrom"
+          v-model:max-value="priceTo"
+          :min="0"
+          :max="1200"
+          :step="10"
+          locale="en-US"
+          currency="USD"
+          spacing="medium"
+          bold
+        />
+        <UiDiscountToggle v-model="hasDiscount" />
       </div>
       <div class="catalog-page__content">
         <ProductGrid
           v-if="productsData?.products"
           :products="productsData.products"
           :columns="3"
+        />
+        <UiPagination
+          v-if="totalPages > 1"
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          @page-change="handlePageChange"
         />
       </div>
     </div>

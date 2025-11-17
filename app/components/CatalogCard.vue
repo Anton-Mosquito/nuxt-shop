@@ -2,32 +2,27 @@
 import type { IProduct } from "~/interfaces/product.interface";
 
 const config = useRuntimeConfig();
-const product = defineProps<IProduct>();
-const image = computed(
-  () => `url(${config.public.image_url}${product.images[0]})`
-);
+const { id, discount, images, name, price } = defineProps<IProduct>();
+const image = computed(() => `url(${config.public.image_url}${images[0]})`);
 const isHovered = ref(false);
 </script>
 
 <template>
   <NuxtLink
     class="card"
-    :to="`/catalog/${product.id}`"
+    :to="`/catalog/${id}`"
     @mouseover="isHovered = true"
     @mouseleave="isHovered = false"
   >
     <div class="card__image">
-      <span v-if="product.discount > 0" class="card__discount"
-        >- {{ product.discount }}%</span
-      >
-      <span v-else></span>
-      <AddFavorite :id="product.id" :is-shown="isHovered" />
+      <span v-if="discount > 0" class="card__discount">- {{ discount }}%</span>
+      <AddFavorite :id="id" :is-shown="isHovered" />
     </div>
     <div class="card__footer">
       <div class="card__name">
-        {{ product.name }}
+        {{ name }}
       </div>
-      <div class="card__price">{{ product.price }} $</div>
+      <div class="card__price">{{ price }} $</div>
     </div>
   </NuxtLink>
 </template>
@@ -42,6 +37,7 @@ const isHovered = ref(false);
   text-decoration: none;
 
   & .card__image {
+    position: relative;
     aspect-ratio: 1 / 1;
     border-radius: 8px;
     width: 100%;
@@ -57,13 +53,15 @@ const isHovered = ref(false);
 
   & .card__discount {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 2px 8px;
+    top: 12px;
+    left: 12px;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 12px;
     background: var(--color-accent);
     color: var(--color-white-light);
+    z-index: 20;
+    transition: opacity 0.12s ease, transform 0.12s ease;
   }
 
   & .card__footer {

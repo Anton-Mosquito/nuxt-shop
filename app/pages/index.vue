@@ -7,30 +7,25 @@ useSeoMeta({
   ogDescription: "Welcome to Nuxt Shop - your destination for quality jewelry.",
 });
 
-const productStore = useProductStore();
 const API_URL = useAPI();
-
 const { data } = await useFetch<IGetProductsResponse>(`${API_URL}/products`, {
-  query: { limit: 6 },
+  query: { limit: 6, offset: 0 },
 });
 
-if (data.value?.products) {
-  productStore.setProducts(data.value.products);
-}
-
-const hasProducts = computed(() => productStore.products.length);
+const products = computed(() => data.value?.products ?? []);
+const hasProducts = computed(() => products.value.length > 0);
 </script>
 
 <template>
   <div class="home">
-    <ProductSlider v-if="hasProducts" />
+    <ProductSlider v-if="hasProducts" :products="products" />
 
     <section class="home__section">
       <div class="home__header">
         <h2 class="home__title">Recent Arrivals</h2>
         <NuxtLink to="/catalog" class="home__link">All products</NuxtLink>
       </div>
-      <ProductGrid v-if="hasProducts" :columns="3" />
+      <ProductGrid v-if="hasProducts" :products="products" :columns="3" />
     </section>
   </div>
 </template>

@@ -23,7 +23,7 @@ export const useFavoriteStore = defineStore(
         addToFavorite(id);
 
         if (!authStore.email) return;
-        
+
         save();
       }
     }

@@ -1,3 +1,5 @@
+import type { IProduct } from "~/interfaces/product.interface";
+
 // Button component props
 export interface ButtonProps {
   variant?: "primary" | "secondary" | "outline" | "accent";
@@ -44,6 +46,8 @@ export interface NotificationProps {
   variant?: "success" | "error" | "info";
   icon?: string;
 }
+
+export type SlideItem = Pick<IProduct, "id" | "name" | "price" | "images">;
 
 // Common UI types
 export type ButtonVariant = "primary" | "secondary" | "outline" | "accent";

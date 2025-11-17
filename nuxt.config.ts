@@ -30,9 +30,6 @@ export default defineNuxtConfig({
       path: "~/components/layout",
       prefix: "Layout",
     },
-    {
-      path: "~/widgets",
-    },
   ],
   runtimeConfig: {
     // The private keys which are only available server-side
