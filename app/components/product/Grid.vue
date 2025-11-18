@@ -1,15 +1,18 @@
 <script setup lang="ts">
+import type { IProduct } from "~/interfaces/product.interface";
+
 interface Props {
+  products: IProduct[];
   columns?: number;
 }
-const productStore = useProductStore();
-const { columns = 3 } = defineProps<Props>();
+
+const { columns = 3, products } = defineProps<Props>();
 </script>
 
 <template>
   <div class="product-grid">
     <CatalogCard
-      v-for="product in productStore.products"
+      v-for="product in products"
       :key="product.id"
       v-bind="product"
     />

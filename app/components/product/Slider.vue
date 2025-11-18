@@ -1,8 +1,25 @@
 <script setup lang="ts">
-const productStore = useProductStore();
+import type { IProduct } from "~/interfaces/product.interface";
+import type { SlideItem } from "~/types";
+
+interface Props {
+  products: IProduct[];
+}
+
+const { products } = defineProps<Props>();
 const config = useRuntimeConfig();
 const currentSlide = ref(0);
 const sliderRef = ref<HTMLDivElement | null>(null);
+
+// Getters
+const slides = computed<SlideItem[]>(() =>
+  products.slice(0, 3).map(({ id, name, price, images }) => ({
+    id,
+    name,
+    price,
+    images,
+  }))
+);
 
 const scrollToSlide = (index: number) => {
   const slider = sliderRef.value;
@@ -17,7 +34,7 @@ const scrollToSlide = (index: number) => {
   <div class="slider">
     <div ref="sliderRef" class="slider__container">
       <div
-        v-for="{ id, name, price, images } in productStore.featuredSlides"
+        v-for="{ id, name, price, images } in slides"
         :key="id"
         class="slider__slide"
         :style="{
@@ -34,7 +51,7 @@ const scrollToSlide = (index: number) => {
 
     <div class="slider__dots">
       <button
-        v-for="({ id }, index) in productStore.featuredSlides"
+        v-for="({ id }, index) in slides"
         :key="`dot-${id}`"
         :class="{ 'slider__dot--active': currentSlide === index }"
         :aria-label="`Go to slide ${index + 1}`"
