@@ -1,28 +1,12 @@
 <script setup lang="ts">
-interface Review {
-  id: number;
-  author: string;
-  date: string;
-  rating: number;
-  text: string;
+import type { IReview } from "~/interfaces/review.interface";
+
+interface Props {
+  reviews: IReview[];
 }
 
-const reviews = ref<Review[]>([
-  {
-    id: 1,
-    author: "Василий",
-    date: "8 мая 2024",
-    rating: 3,
-    text: "Я очень доволен, как мне сели эти серьги, и мне нравится, желе держать новый телефон, который был прислан.",
-  },
-  {
-    id: 2,
-    author: "Николай",
-    date: "8 мая 2024",
-    rating: 3,
-    text: "Ви поставлять в больше, что при доставку данных серёги помешаю в среди популярних, а во изкупил! В остальном серьзи, отлитчим и ваш підприємств!",
-  },
-]);
+const { reviews } = defineProps<Props>();
+console.log("🚀 ~ reviews:", reviews);
 
 const newReview = ref({
   name: "",
@@ -43,76 +27,53 @@ const submitReview = () => {
     saveData: false,
   };
 };
-
-const setRating = (rating: number) => {
-  newReview.value.rating = rating;
-};
 </script>
 
 <template>
   <div class="product-reviews">
-    <h3 class="reviews-title">Отзывы ({{ reviews.length }})</h3>
+    <h3 class="reviews-title">Feedback ({{ reviews.length }})</h3>
 
     <div class="reviews-list">
       <div v-for="review in reviews" :key="review.id" class="review-item">
         <div class="review-header">
-          <div class="review-author">{{ review.author }}</div>
-          <div class="review-date">{{ review.date }}</div>
+          <div class="review-author">{{ review.name }}</div>
+          <div class="review-date">{{ review.created_at }}</div>
         </div>
-        <div class="review-rating">
-          <span
-            v-for="i in 5"
-            :key="i"
-            class="star"
-            :class="{ filled: i <= review.rating }"
-            >★</span
-          >
-        </div>
+        <UiStarRating :rating="review.rating" size="20px" />
         <p class="review-text">{{ review.text }}</p>
       </div>
     </div>
 
     <div class="review-form">
-      <h3 class="form-title">Добавить отзыв</h3>
+      <h3 class="form-title">Add Review</h3>
       <p class="form-description">
-        Ваш email не будет опубликован. Обязательные поля помечены *
+        Your email will not be published. Required fields are marked *
       </p>
 
       <form @submit.prevent="submitReview">
         <div class="form-group">
-          <label>Рейтинг*</label>
-          <div class="rating-input">
-            <button
-              v-for="i in 5"
-              :key="i"
-              type="button"
-              class="star-btn"
-              :class="{ active: i <= newReview.rating }"
-              @click="setRating(i)"
-            >
-              ★
-            </button>
-          </div>
+          <label>Rating*</label>
+          <UiStarRating v-model="newReview.rating" interactive size="32px" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Ваше имя*</label>
+            <label>Your name*</label>
             <input
               v-model="newReview.name"
               type="text"
               required
-              placeholder="Введите ваше имя"
+              placeholder="Enter your name"
             />
           </div>
 
           <div class="form-group">
-            <label>Ваш email*</label>
+            <label>Your email*</label>
             <input
               v-model="newReview.email"
               type="email"
               required
-              placeholder="Введите ваш email"
+              placeholder="Enter your email"
             />
           </div>
         </div>
@@ -180,25 +141,11 @@ const setRating = (rating: number) => {
   color: var(--color-dark-gray);
 }
 
-.review-rating {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-
-.star {
-  font-size: 16px;
-  color: var(--color-gray);
-}
-
-.star.filled {
-  color: var(--color-black);
-}
-
 .review-text {
   font-size: 14px;
   line-height: 1.6;
   color: var(--color-dark-gray);
+  margin-top: 12px;
 }
 
 .review-form {
@@ -242,26 +189,6 @@ const setRating = (rating: number) => {
 .form-group input:focus,
 .form-group textarea:focus {
   border-color: var(--color-accent);
-}
-
-.rating-input {
-  display: flex;
-  gap: 8px;
-}
-
-.star-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: var(--color-gray);
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.star-btn:hover,
-.star-btn.active {
-  color: var(--color-black);
 }
 
 .form-row {

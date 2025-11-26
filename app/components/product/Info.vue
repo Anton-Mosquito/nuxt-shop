@@ -6,9 +6,10 @@ import { SHARE_BUTTONS } from "~/constants";
 interface Props {
   product: IProduct;
   reviews: IReview[];
+  reviewCount?: number;
 }
 
-const { product, reviews } = defineProps<Props>();
+const { product, reviews, reviewCount = 0 } = defineProps<Props>();
 const quantity = ref(1);
 
 const addToCart = () => {
@@ -19,15 +20,11 @@ const shareProduct = (platform: string) => {
   console.log("Share on:", platform);
 };
 
-const reviewCount = computed(() => reviews.length);
-
-const reviewWord = computed(() => {
-  const count = reviewCount.value;
-  return count === 1 ? "review" : "reviews";
-});
+const reviewWord = computed(() => (reviewCount === 1 ? "review" : "reviews"));
 
 const averageRating = computed(() => {
   if (reviews.length === 0) return 0;
+
   const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
   return sum / reviews.length;
 });

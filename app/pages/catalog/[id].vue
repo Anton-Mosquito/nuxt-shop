@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { IProduct } from "~/interfaces/product.interface";
 import type { IReview } from "~/interfaces/review.interface";
+import type { ITab } from "~/types/tabs";
 
 interface Props {
   product: IProduct;
@@ -12,7 +13,27 @@ const API_URL = useAPI();
 const id = ref(route.params.id);
 
 const { data } = await useFetch<Props>(`${API_URL}/products/${id.value}`);
-console.log("🚀 ~ data:", data.value);
+const activeTab = ref("description");
+const reviewCount = computed(() => data.value?.reviews?.length || 0);
+const productTabs = computed<ITab[]>(() => [
+  {
+    id: "description",
+    label: "Description",
+    icon: "mdi:text-box-outline",
+  },
+  {
+    id: "reviews",
+    label: "Reviews",
+    icon: "mdi:star-outline",
+    badge: reviewCount.value,
+  },
+  {
+    id: "specifications",
+    label: "Specifications",
+    icon: "mdi:format-list-bulleted",
+    disabled: true,
+  },
+]);
 
 useSeoMeta({
   title: data.value
@@ -25,6 +46,13 @@ useSeoMeta({
     ? data.value.product.short_description
     : "Browse our extensive catalog of products at Nuxt Shop.",
 });
+
+const productDescription = computed(
+  () =>
+    data.value?.product.long_description ||
+    data.value?.product.short_description ||
+    "No description available."
+);
 
 const productImages = computed(() => {
   if (!data.value?.product.images || data.value.product.images.length === 0) {
@@ -47,28 +75,30 @@ const productImages = computed(() => {
         :alt="data.product.name"
         solid
       />
-      <ProductInfo :product="data.product" :reviews="data.reviews" />
+      <ProductInfo
+        :product="data.product"
+        :reviews="data.reviews"
+        :review-count="reviewCount"
+      />
     </div>
 
-    <ProductTabs>
+    <UiTabs v-model="activeTab" :tabs="productTabs">
       <template #description>
         <div class="description-content">
           <p>
-            {{
-              data.product.long_description || data.product.short_description
-            }}
-          </p>
-          <p>
-            Отлично подходит к любому гардеробу. Частое золото высокого качества
-            прослужит долго и не потемнеет. Отлично подойдет в качестве подарка
-            близкому человеку.
+            {{ productDescription }}
           </p>
         </div>
       </template>
       <template #reviews>
-        <ProductReviews />
+        <ProductReviews :reviews="data.reviews" />
       </template>
-    </ProductTabs>
+      <template #specifications>
+        <div class="specifications-content">
+          <p>Specifications will be added later...</p>
+        </div>
+      </template>
+    </UiTabs>
   </div>
 
   <div v-else class="loading">
