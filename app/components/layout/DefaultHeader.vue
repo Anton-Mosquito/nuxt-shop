@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NAV_LINKS, HEADER_ICON_LINKS } from "~/constants/navigation";
+import { NAV_LINKS, HEADER_ICON_LINKS } from "~/constants";
 </script>
 
 <template>

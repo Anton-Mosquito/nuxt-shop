@@ -10,12 +10,6 @@ export interface IconLink {
   label?: string;
 }
 
-export interface SocialLink {
-  name: string;
-  url: string;
-  icon: string;
-}
-
 // Navigation links
 export const NAV_LINKS: readonly NavLink[] = [
   { name: "Shop", path: "/catalog" },
@@ -45,15 +39,5 @@ export const FOOTER_INFO_LINKS: readonly NavLink[] = [
   { name: "Delivery", path: "/delivery" },
   { name: "Returns", path: "/returns" },
 ] as const;
-
-// Social links
-export const SOCIAL_LINKS: readonly SocialLink[] = [
-  { name: "LinkedIn", url: "https://linkedin.com", icon: "mdi:linkedin" },
-  { name: "Instagram", url: "https://instagram.com", icon: "mdi:instagram" },
-  { name: "Facebook", url: "https://facebook.com", icon: "mdi:facebook" },
-  { name: "Twitter", url: "https://twitter.com", icon: "mdi:twitter" },
-] as const;
-
 export type NavLinkType = (typeof NAV_LINKS)[number];
 export type IconLinkType = (typeof HEADER_ICON_LINKS)[number];
-export type SocialLinkType = (typeof SOCIAL_LINKS)[number];

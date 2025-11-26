@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { IProduct } from "~/interfaces/product.interface";
 import type { IReview } from "~/interfaces/review.interface";
+import { SHARE_BUTTONS } from "~/constants";
 
 interface Props {
   product: IProduct;
@@ -9,11 +10,6 @@ interface Props {
 
 const { product, reviews } = defineProps<Props>();
 const quantity = ref(1);
-const isFavorite = ref(false);
-
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
-};
 
 const addToCart = () => {
   console.log("Add to cart:", product.id, quantity.value);
@@ -52,35 +48,29 @@ const averageRating = computed(() => {
     <div class="product-actions">
       <UiQuantityInput v-model="quantity" :min="1" :max="99" />
 
-      <UiButton class="add-to-cart" @click="addToCart"> Add to Cart </UiButton>
+      <UiButton class="add-to-cart" variant="outline" @click="addToCart"
+        >Add to Cart</UiButton
+      >
     </div>
 
     <div class="product-icons">
+      <AddFavorite :id="product.id" variant="inline" is-shown />
+      <div class="product-icons__separator"></div>
       <button
+        v-for="{ platform, icon, label } in SHARE_BUTTONS"
+        :key="platform"
         class="icon-btn"
-        :class="{ active: isFavorite }"
-        @click="toggleFavorite"
+        :aria-label="`Share on ${label}`"
+        @click="shareProduct(platform)"
       >
-        <Icon name="icon:heart-outline" size="20" />
-      </button>
-      <button class="icon-btn" @click="shareProduct('email')">
-        <Icon name="mdi:email-outline" size="20" />
-      </button>
-      <button class="icon-btn" @click="shareProduct('facebook')">
-        <Icon name="mdi:facebook" size="20" />
-      </button>
-      <button class="icon-btn" @click="shareProduct('instagram')">
-        <Icon name="mdi:instagram" size="20" />
-      </button>
-      <button class="icon-btn" @click="shareProduct('twitter')">
-        <Icon name="mdi:twitter" size="20" />
+        <Icon :name="icon" size="20" />
       </button>
     </div>
 
     <div class="product-meta">
       <div class="meta-item">
         <span class="meta-label">SKU: </span>
-        <span class="meta-value">{{ product.id }}</span>
+        <span class="meta-value">{{ product.sku }}</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Category:</span>
@@ -159,20 +149,42 @@ const averageRating = computed(() => {
 }
 
 .add-to-cart {
+  /* Make the primary action visually consistent:
+     - take remaining horizontal space in the actions row
+     - fixed height to match design mock
+     - center content and remove extra vertical padding from the button internals
+     - slightly larger radius for modern look */
   flex: 1;
   height: 48px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 700;
+  /* ensure the button's own padding doesn't add extra height */
+  line-height: 1;
 }
 
 .product-icons {
+  position: relative;
   display: flex;
   gap: 16px;
   margin-top: 8px;
+  align-items: center;
+}
+
+.product-icons__separator {
+  width: 1px;
+  height: 24px;
+  background: var(--color-gray);
+  margin: 0 4px;
 }
 
 .icon-btn {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--color-gray);
+  border: none;
   background: transparent;
   cursor: pointer;
   display: flex;

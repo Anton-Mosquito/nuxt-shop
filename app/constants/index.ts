@@ -42,3 +42,7 @@ export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 12,
   PAGE_SIZE_OPTIONS: [12, 24, 48],
 } as const;
+
+// Re-export grouped constant modules for convenience
+export * from "./navigation";
+export * from "./social";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FOOTER_NAV_LINKS, SOCIAL_LINKS } from "~/constants/navigation";
+import { FOOTER_NAV_LINKS, SOCIAL_LINKS } from "~/constants";
 
 const email = ref("");
 const showSuccess = ref(false);

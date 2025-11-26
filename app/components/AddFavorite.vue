@@ -1,19 +1,24 @@
 <script setup lang="ts">
-const { id, isShown = false } = defineProps<{
+interface Props {
   id: number;
   isShown?: boolean;
-}>();
+  variant?: "card" | "inline";
+}
+
+const { id, isShown = false, variant = "card" } = defineProps<Props>();
 const favoriteStore = useFavoriteStore();
 </script>
-
 <template>
   <button
     v-show="isShown || favoriteStore.isFavorite(id)"
-    class="favorite-button"
+    :class="['favorite-button', `favorite-button--${variant}`]"
     :aria-pressed="favoriteStore.isFavorite(id)"
     @click.stop.prevent="() => favoriteStore.toggleFavorite(id)"
   >
-    <Icon name="icon:heart-outline" size="18" />
+    <Icon
+      :name="favoriteStore.isFavorite(id) ? 'mdi:heart' : 'mdi:heart-outline'"
+      :size="variant === 'card' ? 18 : 20"
+    />
   </button>
 </template>
 
@@ -23,22 +28,40 @@ const favoriteStore = useFavoriteStore();
   border: none;
   cursor: pointer;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.favorite-button--card {
   position: absolute;
   top: 8px;
   right: 8px;
   z-index: 30;
   width: 36px;
   height: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   background: var(--color-white-light, #fff);
-  border-radius: 50%;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.favorite-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+.favorite-button--inline {
+  position: static;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--color-dark-gray);
+}
+
+.favorite-button--card:hover,
+.favorite-button--inline:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.favorite-button--card[aria-pressed="true"],
+.favorite-button--inline[aria-pressed="true"] {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 </style>
