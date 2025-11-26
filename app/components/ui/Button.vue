@@ -6,6 +6,7 @@ const {
   size = "md",
   disabled = false,
   block = false,
+  type = "button",
 } = defineProps<ButtonProps>();
 </script>
 
@@ -18,6 +19,7 @@ const {
       { 'ui-button--disabled': disabled, 'ui-button--block': block },
     ]"
     :disabled="disabled"
+    :type="type"
   >
     <slot />
   </button>
@@ -30,9 +32,11 @@ const {
   justify-content: center;
   font-weight: 600;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: var(--font);
+  font-size: 16px;
 }
 
 .ui-button--disabled {
@@ -53,23 +57,29 @@ const {
 
 .ui-button--lg {
   padding: 16px 32px;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
 }
 
 /* Variants */
 .ui-button--primary {
-  background: #000;
-  color: #fff;
-  box-shadow: none;
+  background: var(--color-black);
+  color: var(--color-white-light);
+  border: 1px solid var(--color-black);
 }
 
 .ui-button--primary:hover:not(.ui-button--disabled) {
-  background: #333;
+  background: color-mix(
+    in srgb,
+    var(--color-black) 90%,
+    var(--color-white-light) 10%
+  );
 }
 
 .ui-button--secondary {
   background: #f5f5f5;
   color: #000;
+  border: 1px solid #e5e5e5;
 }
 
 .ui-button--secondary:hover:not(.ui-button--disabled) {
@@ -78,12 +88,27 @@ const {
 
 .ui-button--outline {
   background: transparent;
-  color: var(--color-white-light);
-  border: 1px solid var(--color-white-light);
+  color: var(--color-black);
+  border: 1px solid var(--color-black);
 }
 
 .ui-button--outline:hover:not(.ui-button--disabled) {
   background: #fafafa;
+}
+
+/* Ghost variant (from ActionButton) */
+.ui-button--ghost {
+  background: transparent;
+  color: var(--color-black);
+  border: 1px solid var(--color-black);
+}
+
+.ui-button--ghost:hover:not(.ui-button--disabled) {
+  background: color-mix(
+    in srgb,
+    var(--color-white-light) 90%,
+    var(--color-black) 10%
+  );
 }
 
 /* Accent / compact variant (small black with colored bottom accent) */
@@ -94,6 +119,7 @@ const {
   border-radius: 6px;
   box-shadow: 0 6px 0 rgba(9, 102, 255, 0.95);
   transform: translateY(-2px);
+  border: none;
 }
 
 .ui-button--accent:hover:not(.ui-button--disabled) {

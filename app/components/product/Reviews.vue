@@ -134,7 +134,7 @@ const setRating = (rating: number) => {
           </label>
         </div>
 
-        <ActionButton type="submit">Отправить</ActionButton>
+        <UiButton type="submit">Отправить</UiButton>
       </form>
     </div>
   </div>

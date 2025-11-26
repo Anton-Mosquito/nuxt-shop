@@ -2,10 +2,11 @@ import type { IProduct } from "~/interfaces/product.interface";
 
 // Button component props
 export interface ButtonProps {
-  variant?: "primary" | "secondary" | "outline" | "accent";
+  variant?: "primary" | "secondary" | "outline" | "accent" | "ghost";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
   block?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 // Input field props
@@ -50,7 +51,12 @@ export interface NotificationProps {
 export type SlideItem = Pick<IProduct, "id" | "name" | "price" | "images">;
 
 // Common UI types
-export type ButtonVariant = "primary" | "secondary" | "outline" | "accent";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "accent"
+  | "ghost";
 export type ButtonSize = "sm" | "md" | "lg";
 export type InputType =
   | "text"

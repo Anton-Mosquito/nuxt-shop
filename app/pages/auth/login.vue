@@ -52,9 +52,9 @@ async function login() {
         />
       </div>
       <div class="login-form__actions">
-        <ActionButton @click.stop.prevent="login">
+        <UiButton @click.stop.prevent="login">
           <span>Login</span>
-        </ActionButton>
+        </UiButton>
         <NuxtLink to="/auth/restore">Forget Password?</NuxtLink>
       </div>
     </form>

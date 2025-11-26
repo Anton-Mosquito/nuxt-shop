@@ -12,7 +12,7 @@ const API_URL = useAPI();
 const id = ref(route.params.id);
 
 const { data } = await useFetch<Props>(`${API_URL}/products/${id.value}`);
-console.log("🚀 ~ data:", data.value?.reviews);
+console.log("🚀 ~ data:", data.value);
 
 useSeoMeta({
   title: data.value

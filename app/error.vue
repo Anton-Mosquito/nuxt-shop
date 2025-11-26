@@ -15,7 +15,7 @@ function goHome() {
       Page not found
     </div>
     <div v-else class="error__message">{{ error.statusMessage }}</div>
-    <ActionButton color="ghost" @click="goHome">Go Back</ActionButton>
+    <UiButton variant="ghost" @click="goHome">Go Back</UiButton>
   </div>
 </template>
 

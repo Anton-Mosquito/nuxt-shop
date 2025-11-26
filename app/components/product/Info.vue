@@ -52,9 +52,7 @@ const averageRating = computed(() => {
     <div class="product-actions">
       <UiQuantityInput v-model="quantity" :min="1" :max="99" />
 
-      <ActionButton class="add-to-cart" @click="addToCart">
-        Add to Cart
-      </ActionButton>
+      <UiButton class="add-to-cart" @click="addToCart"> Add to Cart </UiButton>
     </div>
 
     <div class="product-icons">
@@ -86,7 +84,7 @@ const averageRating = computed(() => {
       </div>
       <div class="meta-item">
         <span class="meta-label">Category:</span>
-        <span class="meta-value">{{ product.category }}</span>
+        <span class="meta-value">{{ product.category.name }}</span>
       </div>
     </div>
   </div>
