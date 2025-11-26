@@ -11,16 +11,6 @@ const { product, reviews } = defineProps<Props>();
 const quantity = ref(1);
 const isFavorite = ref(false);
 
-const decreaseQuantity = () => {
-  if (quantity.value > 1) {
-    quantity.value--;
-  }
-};
-
-const increaseQuantity = () => {
-  quantity.value++;
-};
-
 const toggleFavorite = () => {
   isFavorite.value = !isFavorite.value;
 };
@@ -32,10 +22,18 @@ const addToCart = () => {
 const shareProduct = (platform: string) => {
   console.log("Share on:", platform);
 };
+
 const reviewCount = computed(() => reviews.length);
+
 const reviewWord = computed(() => {
   const count = reviewCount.value;
   return count === 1 ? "review" : "reviews";
+});
+
+const averageRating = computed(() => {
+  if (reviews.length === 0) return 0;
+  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  return sum / reviews.length;
 });
 </script>
 
@@ -45,34 +43,17 @@ const reviewWord = computed(() => {
     <div class="product-price">$ {{ product.price }}</div>
 
     <div class="product-rating">
-      <div class="stars">
-        <span v-for="i in 5" :key="i" class="star">★</span>
-      </div>
+      <UiStarRating :rating="averageRating" />
       <span class="review-count">{{ reviewCount }} {{ reviewWord }}</span>
     </div>
 
     <p class="product-description">{{ product.short_description }}</p>
 
-    <div class="product-meta">
-      <div class="meta-item">
-        <span class="meta-label">SKU:</span>
-        <span class="meta-value">{{ product.id }}</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Категорія:</span>
-        <span class="meta-value">Серьги</span>
-      </div>
-    </div>
-
     <div class="product-actions">
-      <div class="quantity-selector">
-        <button class="quantity-btn" @click="decreaseQuantity">-</button>
-        <input v-model.number="quantity" type="number" min="1" readonly />
-        <button class="quantity-btn" @click="increaseQuantity">+</button>
-      </div>
+      <UiQuantityInput v-model="quantity" :min="1" :max="99" />
 
       <ActionButton class="add-to-cart" @click="addToCart">
-        Додати в корзину
+        Add to Cart
       </ActionButton>
     </div>
 
@@ -96,6 +77,17 @@ const reviewWord = computed(() => {
       <button class="icon-btn" @click="shareProduct('twitter')">
         <Icon name="mdi:twitter" size="20" />
       </button>
+    </div>
+
+    <div class="product-meta">
+      <div class="meta-item">
+        <span class="meta-label">SKU: </span>
+        <span class="meta-value">{{ product.id }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Category:</span>
+        <span class="meta-value">{{ product.category }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -124,16 +116,6 @@ const reviewWord = computed(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.stars {
-  display: flex;
-  gap: 4px;
-  color: var(--color-black);
-}
-
-.star {
-  font-size: 16px;
 }
 
 .review-count {
@@ -176,37 +158,6 @@ const reviewWord = computed(() => {
   gap: 16px;
   align-items: center;
   margin-top: 8px;
-}
-
-.quantity-selector {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--color-gray);
-  width: 120px;
-  height: 48px;
-}
-
-.quantity-btn {
-  width: 40px;
-  height: 100%;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 20px;
-  color: var(--color-dark-gray);
-  transition: color 0.2s;
-}
-
-.quantity-btn:hover {
-  color: var(--color-black);
-}
-
-.quantity-selector input {
-  flex: 1;
-  border: none;
-  text-align: center;
-  font-size: 14px;
-  outline: none;
 }
 
 .add-to-cart {
