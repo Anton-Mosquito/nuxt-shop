@@ -8,18 +8,24 @@ interface Props {
   resize?: "none" | "both" | "horizontal" | "vertical";
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  rows: 4,
-  resize: "vertical",
-});
+const {
+  rows = 4,
+  resize = "vertical",
+  placeholder = "",
+  disabled = false,
+  required = false,
+  maxlength = undefined,
+} = defineProps<Props>();
 
 const modelValue = defineModel<string>({ default: "" });
 
-// Use VueUse to track character count
-const characterCount = computed(() => modelValue.value.length);
-const hasMaxLength = computed(() => props.maxlength !== undefined);
+const debouncedValue = debouncedRef(modelValue, 300);
+const characterCount = computed(() => debouncedValue.value.length);
+const hasMaxLength = computed(() => maxlength !== undefined);
 const remainingChars = computed(() =>
-  hasMaxLength.value ? props.maxlength! - characterCount.value : 0
+  hasMaxLength.value && maxlength !== undefined
+    ? maxlength - characterCount.value
+    : 0
 );
 </script>
 
@@ -36,7 +42,7 @@ const remainingChars = computed(() =>
       class="form-textarea"
     />
     <div v-if="hasMaxLength" class="form-textarea__counter">
-      {{ remainingChars }} символів залишилось
+      {{ remainingChars }} characters remaining
     </div>
   </div>
 </template>

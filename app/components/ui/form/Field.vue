@@ -6,7 +6,12 @@ interface Props {
   hint?: string;
 }
 
-defineProps<Props>();
+const {
+  label = "",
+  error = "",
+  required = false,
+  hint = "",
+} = defineProps<Props>();
 
 const fieldId = useId();
 </script>
