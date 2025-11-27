@@ -21,7 +21,9 @@ export const useFavoriteStore = defineStore(
         removeFromFavorite(id);
       } else {
         addToFavorite(id);
+
         if (!authStore.email) return;
+
         save();
       }
     }
