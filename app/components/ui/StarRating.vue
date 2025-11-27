@@ -13,19 +13,15 @@ const {
   interactive = false,
 } = defineProps<Props>();
 
-// V-model support for interactive mode
 const modelValue = defineModel<number>({ default: 0 });
 
-// Use modelValue in interactive mode, rating prop in display mode
 const currentRating = computed(() => (interactive ? modelValue.value : rating));
-
 const filledStars = computed(() => Math.floor(currentRating.value));
 const hasHalfStar = computed(() => currentRating.value % 1 >= 0.5);
 const emptyStars = computed(
   () => maxStars - filledStars.value - (hasHalfStar.value ? 1 : 0)
 );
 
-// Interactive mode state
 const hoverRating = ref(0);
 
 const handleStarClick = (star: number) => {

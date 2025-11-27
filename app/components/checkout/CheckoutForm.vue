@@ -161,56 +161,56 @@ const handleSubmit = async () => {
   <div class="checkout-form">
     <h2 class="checkout-form__title">Оформлення замовлення</h2>
 
-    <UiFormForm :loading="isSubmitting" @submit="handleSubmit">
+    <UiForm :loading="isSubmitting" @submit="handleSubmit">
       <!-- Personal Information -->
       <section class="checkout-form__section">
         <h3 class="checkout-form__section-title">Особисті дані</h3>
 
         <div class="checkout-form__row">
-          <UiFormFormField label="Ім'я" required :error="errors.firstName">
-            <UiFormFormInput
+          <UiFormField label="Ім'я" required :error="errors.firstName">
+            <UiFormInput
               v-model="formData.firstName"
               placeholder="Іван"
               autocomplete="given-name"
               @blur="touchField('firstName')"
             />
-          </UiFormFormField>
+          </UiFormField>
 
-          <UiFormFormField label="Прізвище" required :error="errors.lastName">
-            <UiFormFormInput
+          <UiFormField label="Прізвище" required :error="errors.lastName">
+            <UiFormInput
               v-model="formData.lastName"
               placeholder="Іваненко"
               autocomplete="family-name"
               @blur="touchField('lastName')"
             />
-          </UiFormFormField>
+          </UiFormField>
         </div>
 
         <div class="checkout-form__row">
-          <UiFormFormField label="Email" required :error="errors.email">
-            <UiFormFormInput
+          <UiFormField label="Email" required :error="errors.email">
+            <UiFormInput
               v-model="formData.email"
               type="email"
               placeholder="example@mail.com"
               autocomplete="email"
               @blur="touchField('email')"
             />
-          </UiFormFormField>
+          </UiFormField>
 
-          <UiFormFormField
+          <UiFormField
             label="Телефон"
             required
             :error="errors.phone"
             hint="Формат: 0501234567"
           >
-            <UiFormFormInput
+            <UiFormInput
               v-model="formData.phone"
               type="tel"
               placeholder="0501234567"
               autocomplete="tel"
               @blur="touchField('phone')"
             />
-          </UiFormFormField>
+          </UiFormField>
         </div>
       </section>
 
@@ -218,37 +218,37 @@ const handleSubmit = async () => {
       <section class="checkout-form__section">
         <h3 class="checkout-form__section-title">Адреса доставки</h3>
 
-        <UiFormFormField label="Місто" required :error="errors.city">
-          <UiFormFormInput
+        <UiFormField label="Місто" required :error="errors.city">
+          <UiFormInput
             v-model="formData.city"
             placeholder="Київ"
             autocomplete="address-level2"
             @blur="touchField('city')"
           />
-        </UiFormFormField>
+        </UiFormField>
 
-        <UiFormFormField label="Адреса" required :error="errors.address">
-          <UiFormFormInput
+        <UiFormField label="Адреса" required :error="errors.address">
+          <UiFormInput
             v-model="formData.address"
             placeholder="вул. Хрещатик, буд. 1, кв. 5"
             autocomplete="street-address"
             @blur="touchField('address')"
           />
-        </UiFormFormField>
+        </UiFormField>
 
-        <UiFormFormField
+        <UiFormField
           label="Поштовий індекс"
           required
           :error="errors.zipCode"
           hint="5 цифр"
         >
-          <UiFormFormInput
+          <UiFormInput
             v-model="formData.zipCode"
             placeholder="01001"
             autocomplete="postal-code"
             @blur="touchField('zipCode')"
           />
-        </UiFormFormField>
+        </UiFormField>
       </section>
 
       <!-- Delivery Method -->
@@ -303,14 +303,14 @@ const handleSubmit = async () => {
 
       <!-- Additional Info -->
       <section class="checkout-form__section">
-        <UiFormFormField label="Коментар до замовлення" hint="Необов'язково">
-          <UiFormFormTextarea
+        <UiFormField label="Коментар до замовлення" hint="Необов'язково">
+          <UiFormTextarea
             v-model="formData.comment"
             :rows="3"
             :maxlength="500"
             placeholder="Додаткова інформація для кур'єра..."
           />
-        </UiFormFormField>
+        </UiFormField>
 
         <UiCheckbox
           v-model="formData.subscribe"
@@ -333,7 +333,7 @@ const handleSubmit = async () => {
           <NuxtLink to="/privacy">політикою конфіденційності</NuxtLink>
         </p>
       </div>
-    </UiFormForm>
+    </UiForm>
   </div>
 </template>
 

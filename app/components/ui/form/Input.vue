@@ -7,9 +7,13 @@ interface Props {
   autocomplete?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  type: "text",
-});
+const {
+  type = "text",
+  placeholder = "",
+  disabled = false,
+  required = false,
+  autocomplete = "off",
+} = defineProps<Props>();
 
 const modelValue = defineModel<string | number>({ default: "" });
 </script>

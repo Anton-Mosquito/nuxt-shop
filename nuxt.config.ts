@@ -17,24 +17,7 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
   ],
   //css: ["~/assets/styles/main.css"],
-  components: [
-    {
-      path: "~/components",
-      pathPrefix: false,
-    },
-    {
-      path: "~/components/ui",
-      prefix: "Ui",
-    },
-    {
-      path: "~/components/layout",
-      prefix: "Layout",
-    },
-    {
-      path: "~/components/product",
-      prefix: "Product",
-    },
-  ],
+  components: [{ path: "~/components", pathPrefix: true }],
   runtimeConfig: {
     // The private keys which are only available server-side
     token: "",

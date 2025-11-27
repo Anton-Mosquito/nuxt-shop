@@ -15,7 +15,9 @@ const fieldId = useId();
   <div class="form-field" :class="{ 'form-field--error': error }">
     <label v-if="label" :for="fieldId" class="form-field__label">
       {{ label }}
-      <span v-if="required" class="form-field__required">*</span>
+      <span v-if="required" class="form-field__required">
+        <Icon name="mdi:asterisk" size="12" aria-hidden="true" />
+      </span>
     </label>
 
     <div class="form-field__input">

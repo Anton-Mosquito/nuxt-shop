@@ -3,16 +3,12 @@ interface Props {
   loading?: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-});
+const { loading = false } = defineProps<Props>();
 
-const emit = defineEmits<{
-  submit: [];
-}>();
+const emit = defineEmits<{ submit: [] }>();
 
 const handleSubmit = () => {
-  if (props.loading) return;
+  if (loading) return;
   emit("submit");
 };
 </script>
