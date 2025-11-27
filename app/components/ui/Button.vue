@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ButtonProps } from "~/types/components";
+import type { ButtonProps } from "~/types/components/ui/button";
 
 const {
   variant = "primary",

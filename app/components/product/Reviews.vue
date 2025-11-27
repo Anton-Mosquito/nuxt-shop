@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { IReview } from "~/interfaces/review.interface";
+import type { Review } from "~/types/entities";
 
 interface Props {
-  reviews: IReview[];
+  reviews: Review[];
 }
 
 interface ReviewFormData {
@@ -30,7 +30,7 @@ const handleReviewSubmit = (data: ReviewFormData) => {
       <div v-for="review in reviews" :key="review.id" class="review-item">
         <div class="review-header">
           <div class="review-author">{{ review.name }}</div>
-          <div class="review-date">{{ review.created_at }}</div>
+          <div class="review-date">{{ review.createdAt }}</div>
         </div>
         <UiStarRating :rating="review.rating" size="20px" />
         <p class="review-text">{{ review.text }}</p>

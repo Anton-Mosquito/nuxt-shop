@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InputProps } from "~/types/components";
+import type { InputProps } from "~/types/components/ui/input";
 
 const {
   type = "text",

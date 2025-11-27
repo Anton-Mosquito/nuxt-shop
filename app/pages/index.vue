@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IGetProductsResponse } from "~/interfaces/product.interface";
+import type { GetProductsResponse } from "~/types/api";
 
 useSeoMeta({
   title: "Home - Nuxt Shop",
@@ -8,7 +8,7 @@ useSeoMeta({
 });
 
 const API_URL = useAPI();
-const { data } = await useFetch<IGetProductsResponse>(`${API_URL}/products`, {
+const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
   query: { limit: 6, offset: 0 },
 });
 

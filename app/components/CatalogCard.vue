@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
+import type { Product } from "~/types/entities";
 
 const config = useRuntimeConfig();
-const { id, discount, images, name, price } = defineProps<IProduct>();
+const { id, discount, images, name, price } = defineProps<Product>();
 const image = computed(() => `url(${config.public.image_url}${images[0]})`);
 const isHovered = ref(false);
 </script>

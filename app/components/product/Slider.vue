@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
-import type { SlideItem } from "~/types";
+import type { Product } from "~/types/entities";
 
 interface Props {
-  products: IProduct[];
+  products: Product[];
 }
 
 const { products } = defineProps<Props>();
 const config = useRuntimeConfig();
 const currentSlide = ref(0);
 const sliderRef = ref<HTMLDivElement | null>(null);
+
+// Slide item type - subset of Product fields
+type SlideItem = Pick<Product, "id" | "name" | "price" | "images">;
 
 // Getters
 const slides = computed<SlideItem[]>(() =>
@@ -44,7 +46,7 @@ const scrollToSlide = (index: number) => {
         <div class="slider__content">
           <h2 class="slider__title">{{ name }}</h2>
           <p class="slider__price">$ {{ price }}</p>
-          <UiButton variant="outline" size="md"> Go to </UiButton>
+          <UiButton variant="outline" size="medium"> Go to </UiButton>
         </div>
       </div>
     </div>

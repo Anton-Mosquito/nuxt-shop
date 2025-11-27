@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
+import type { Product } from "~/types/entities";
 
 interface Props {
-  products: IProduct[];
+  products: Product[];
   columns?: number;
 }
 

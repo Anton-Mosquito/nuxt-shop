@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ITab, TabId } from "~/types";
+import type { Tab, TabId } from "~/types/components/ui/tabs";
 
 interface Props {
-  tabs: ITab[];
+  tabs: Tab[];
   modelValue?: TabId;
   defaultTab?: TabId;
 }

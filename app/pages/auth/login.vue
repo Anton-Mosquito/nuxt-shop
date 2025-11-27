@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ILoginResponse } from "~/interfaces/auth.interface";
+import type { LoginResponse } from "~/types/api";
 
 definePageMeta({
   layout: "auth",
@@ -12,7 +12,7 @@ const authStore = useAuthStore();
 const favoriteStore = useFavoriteStore();
 
 async function login() {
-  const data = await $fetch<ILoginResponse>(`${API_URL}/auth/login`, {
+  const data = await $fetch<LoginResponse>(`${API_URL}/auth/login`, {
     method: "POST",
     body: {
       email: email.value,

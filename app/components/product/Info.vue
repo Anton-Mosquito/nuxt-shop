@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
-import type { IReview } from "~/interfaces/review.interface";
+import type { Product, Review } from "~/types/entities";
 import { SHARE_BUTTONS } from "~/constants";
 
 interface Props {
-  product: IProduct;
-  reviews: IReview[];
+  product: Product;
+  reviews: Review[];
   reviewCount?: number;
 }
 
@@ -40,7 +39,7 @@ const averageRating = computed(() => {
       <span class="review-count">{{ reviewCount }} {{ reviewWord }}</span>
     </div>
 
-    <p class="product-description">{{ product.short_description }}</p>
+    <p class="product-description">{{ product.shortDescription }}</p>
 
     <div class="product-actions">
       <UiQuantityInput v-model="quantity" :min="1" :max="99" />

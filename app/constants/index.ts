@@ -1,8 +1,17 @@
-// App constants
+/**
+ * Application name
+ */
 export const APP_NAME = "Nuxt Shop";
+
+/**
+ * Default locale for i18n
+ */
 export const DEFAULT_LOCALE = "uk";
 
-// Routes
+/**
+ * Application routes
+ * Centralized route definitions for type-safe navigation
+ */
 export const ROUTES = {
   HOME: "/",
   CATALOG: "/catalog",
@@ -17,27 +26,40 @@ export const ROUTES = {
   },
 } as const;
 
-// API endpoints
+/**
+ * API endpoint paths
+ * Used for consistent API URL construction
+ */
 export const API_ENDPOINTS = {
   PRODUCTS: "/api/products",
   FAVORITES: "/api/favorites",
   AUTH: "/api/auth",
 } as const;
 
-// Validation
+/**
+ * Form validation rules and patterns
+ * Used in form validation logic
+ */
 export const VALIDATION = {
   MIN_PASSWORD_LENGTH: 8,
   MAX_NAME_LENGTH: 50,
   EMAIL_PATTERN: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 } as const;
 
-// UI constants
+/**
+ * Responsive breakpoints (in pixels)
+ * Should match Tailwind CSS breakpoints
+ */
 export const BREAKPOINTS = {
   MOBILE: 768,
   TABLET: 1024,
   DESKTOP: 1280,
 } as const;
 
+/**
+ * Pagination configuration
+ * Default settings for paginated lists
+ */
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 12,
   PAGE_SIZE_OPTIONS: [12, 24, 48],

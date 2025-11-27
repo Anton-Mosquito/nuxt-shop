@@ -1,17 +1,27 @@
-// UI variants
+/**
+ * Button variant constants
+ * Should match ButtonProps variant type from ~/types/components/ui/button
+ */
 export const BUTTON_VARIANTS = {
   PRIMARY: "primary",
   SECONDARY: "secondary",
   OUTLINE: "outline",
 } as const;
 
+/**
+ * Button size constants
+ * Should match ButtonProps size type from ~/types/components/ui/button
+ */
 export const BUTTON_SIZES = {
   SM: "sm",
   MD: "md",
   LG: "lg",
 } as const;
 
-// Colors
+/**
+ * Application color palette
+ * Used for theming and consistent color usage
+ */
 export const COLORS = {
   PRIMARY: "#000000",
   SECONDARY: "#666666",
@@ -22,7 +32,10 @@ export const COLORS = {
   INFO: "#3b82f6",
 } as const;
 
-// Icons
+/**
+ * Icon size constants (in pixels)
+ * Used with @nuxt/icon component
+ */
 export const ICON_SIZES = {
   SM: "16",
   MD: "21",

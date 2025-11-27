@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
-import type { IGetProductsResponse } from "~/interfaces/product.interface";
+import type { GetCategoriesResponse, GetProductsResponse } from "~/types/api";
 
 useSeoMeta({
   title: "Catalog - Nuxt Shop",
@@ -69,9 +68,7 @@ const query = computed(() => ({
   has_discount: route.query.has_discount || undefined,
 }));
 
-const { data } = await useFetch<IGetCategoriesResponse>(
-  `${API_URL}/categories`
-);
+const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
 
 const selectDefault = {
   value: "",
@@ -80,14 +77,14 @@ const selectDefault = {
 
 const categoriesSelect = computed(() =>
   [selectDefault].concat(
-    data.value?.categories.map(({ id, name }) => ({
-      value: `${id}`,
-      label: name,
+    data.value?.categories.map((category) => ({
+      value: `${category.id}`,
+      label: category.name,
     })) ?? []
   )
 );
 
-const { data: productsData } = await useFetch<IGetProductsResponse>(
+const { data: productsData } = await useFetch<GetProductsResponse>(
   `${API_URL}/products`,
   {
     key: "get-products",

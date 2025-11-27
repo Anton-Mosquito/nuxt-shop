@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NotificationProps } from "~/types/components";
+import type { NotificationProps } from "~/types/components/ui/notification";
 
 defineProps<NotificationProps>();
 </script>

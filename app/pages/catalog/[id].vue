@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
-import type { IReview } from "~/interfaces/review.interface";
-import type { ITab } from "~/types/tabs";
+import type { Product, Review } from "~/types/entities";
+import type { Tab } from "~/types/components/ui/tabs";
 
 interface Props {
-  product: IProduct;
-  reviews: IReview[];
+  product: Product;
+  reviews: Review[];
 }
 
 const route = useRoute();
@@ -15,7 +14,7 @@ const id = ref(route.params.id);
 const { data } = await useFetch<Props>(`${API_URL}/products/${id.value}`);
 const activeTab = ref("description");
 const reviewCount = computed(() => data.value?.reviews?.length || 0);
-const productTabs = computed<ITab[]>(() => [
+const productTabs = computed<Tab[]>(() => [
   {
     id: "description",
     label: "Description",
@@ -40,17 +39,17 @@ useSeoMeta({
     ? `${data.value.product.name} - Nuxt Shop`
     : "Product - Nuxt Shop",
   description: data.value
-    ? data.value.product.short_description
+    ? data.value.product.shortDescription
     : "Browse our extensive catalog of products at Nuxt Shop.",
   ogDescription: data.value
-    ? data.value.product.short_description
+    ? data.value.product.shortDescription
     : "Browse our extensive catalog of products at Nuxt Shop.",
 });
 
 const productDescription = computed(
   () =>
-    data.value?.product.long_description ||
-    data.value?.product.short_description ||
+    data.value?.product.longDescription ||
+    data.value?.product.shortDescription ||
     "No description available."
 );
 
@@ -66,7 +65,7 @@ const productImages = computed(() => {
   <div v-if="data?.product" class="product-page">
     <Head>
       <Title>{{ data.product.name }} - Nuxt Shop</Title>
-      <Meta name="description" :content="data.product.short_description" />
+      <Meta name="description" :content="data.product.shortDescription" />
     </Head>
 
     <div class="product-container">

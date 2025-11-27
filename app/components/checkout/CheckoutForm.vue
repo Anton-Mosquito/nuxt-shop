@@ -322,7 +322,7 @@ const handleSubmit = async () => {
         <UiButton
           type="submit"
           :disabled="isSubmitting || !isValid"
-          size="lg"
+          size="large"
           block
         >
           {{ isSubmitting ? "Обробка..." : "Оформити замовлення" }}
