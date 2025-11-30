@@ -30,8 +30,8 @@ function retry() {
         <div class="flex items-center gap-3">
           <button
             v-if="shouldRetry"
-            @click="retry"
             class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            @click="retry"
           >
             Спробувати ще раз ({{ retryCount }}/{{ maxRetries || 3 }})
           </button>

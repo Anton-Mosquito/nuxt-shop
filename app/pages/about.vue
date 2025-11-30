@@ -41,5 +41,40 @@ const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
     <RetryableComponent :max-retries="5">
       <RiskyComponent :data="data?.categories ?? []" />
     </RetryableComponent>
+
+    <HeroSection
+      title="Ласкаво просимо"
+      subtitle="Створюємо неймовірні речі"
+      image="/images/hero-desktop.jpg"
+      mobile-image="/images/hero-mobile.jpg"
+    />
+
+    <UserProfile />
+
+    <ResponsiveHero
+      mobile-image="/images/hero-mobile-portrait.jpg"
+      tablet-image="/images/hero-tablet-landscape.jpg"
+      desktop-image="/images/hero-desktop-wide.jpg"
+      title="Створюємо майбутнє разом"
+      description="Інноваційні рішення для вашого бізнесу з використанням новітніх технологій"
+    />
+
+    <div class="container mx-auto p-6">
+      <h1 class="text-4xl font-bold mb-8">Наші роботи</h1>
+
+      <div class="space-y-12">
+        <BeforeAfterSlider
+          before-image="/images/projects/before1.jpg"
+          after-image="/images/projects/after1.jpg"
+          label="Редизайн інтерфейсу"
+        />
+
+        <BeforeAfterSlider
+          before-image="/images/projects/before2.jpg"
+          after-image="/images/projects/after2.jpg"
+          label="Оптимізація продуктивності"
+        />
+      </div>
+    </div>
   </div>
 </template>
