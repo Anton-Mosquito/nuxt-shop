@@ -7,6 +7,10 @@ useSeoMeta({
   ogDescription: "Welcome to Nuxt Shop - your destination for quality jewelry.",
 });
 
+// definePageMeta({
+//   layout: "default",
+// });
+
 const API_URL = useAPI();
 const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
   query: { limit: 6, offset: 0 },

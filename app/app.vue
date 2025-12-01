@@ -7,7 +7,7 @@ import "~/assets/styles/main.css";
 
 <template>
   <div>
-    <NuxtLayout name="default">
+    <NuxtLayout>
       <main class="main">
         <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
       </main>

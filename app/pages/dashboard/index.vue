@@ -1,5 +1,11 @@
 <!-- pages/dashboard.vue -->
 <script setup lang="ts">
+definePageMeta({
+  layout: "dashboard",
+  title: "Головна панель",
+  //middleware: "auth", // захист сторінки
+});
+
 const widgets = [
   { id: 1, component: "WidgetA", props: { data: [] } },
   { id: 2, component: "WidgetB", props: { data: null } }, // може впасти
@@ -30,19 +36,11 @@ function handleWidgetError(widgetId: number, error: Error) {
             <div
               class="p-6 border-2 border-dashed border-gray-300 rounded text-center"
             >
-              <svg
+              <Icon
+                name="heroicons-outline:exclamation-circle"
                 class="w-12 h-12 mx-auto text-gray-400 mb-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+                aria-hidden="true"
+              />
               <p class="text-gray-600 text-sm mb-2">Віджет недоступний</p>
               <details class="text-xs text-gray-500">
                 <summary class="cursor-pointer">Деталі помилки</summary>
