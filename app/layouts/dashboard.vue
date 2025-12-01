@@ -41,6 +41,12 @@ const route = useRoute();
       </header>
 
       <slot />
+
+      <!-- Debug panel тільки в development -->
+      <DevOnly>
+        <PerformanceMonitor />
+        <DebugPanel />
+      </DevOnly>
     </div>
   </div>
 </template>
