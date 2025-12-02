@@ -2,6 +2,10 @@
   "name": "nuxt-shop",
   "type": "module",
   "private": true,
+  "author": {
+    "name": "Anton Komarnytskyi",
+    "email": "anton0886@gmail.com"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
