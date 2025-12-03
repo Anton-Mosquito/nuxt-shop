@@ -153,4 +153,7 @@ export default defineNuxtConfig({
       db: { driver: "fs-lite", base: "./db" },
     },
   },
+  experimental: {
+    componentIslands: true,
+  },
 });

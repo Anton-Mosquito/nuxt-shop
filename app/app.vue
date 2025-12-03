@@ -30,6 +30,11 @@ const handleError = (error: any) => {
   }
 };
 
+// Global error handler
+function handleGlobalError(error: any) {
+  console.error("Global error:", error);
+}
+
 const toastContainer = ref();
 
 // Global toast helper
@@ -56,6 +61,8 @@ provide("$toast", toast);
 
 <template>
   <div>
+    <SkipToContent />
+    <NuxtRouteAnnouncer />
     <NuxtLoadingIndicator
       color="linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899)"
       :height="4"
@@ -120,6 +127,17 @@ provide("$toast", toast);
             </DevOnly>
           </div>
         </div>
+      </template>
+    </NuxtErrorBoundary>
+
+    <!-- Global error boundary -->
+    <NuxtErrorBoundary @error="handleGlobalError">
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+
+      <template #error="{ error }">
+        <GlobalErrorPage :error="error" />
       </template>
     </NuxtErrorBoundary>
     <ToastContainer ref="toastContainer" />

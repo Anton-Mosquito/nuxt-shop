@@ -8,6 +8,11 @@ definePageMeta({
   //middleware: "auth", // захист сторінки
 });
 
+const { data: stats } = await useFetch("/api/stats");
+
+const chartData = computed(() => stats.value?.map((s) => s.value) || []);
+const chartLabels = computed(() => stats.value?.map((s) => s.label) || []);
+
 const API_URL = useAPI();
 const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
 
@@ -136,5 +141,36 @@ function handleWidgetError(widgetId: number, error: Error) {
         />
       </div>
     </div>
+
+    <!-- Легкий контент гідратується одразу -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Статистика</h2>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span>Користувачі:</span>
+          <span class="font-bold">1,234</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Замовлення:</span>
+          <span class="font-bold">567</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Тяжкий компонент з відкладеною гідратацією -->
+    <!-- Гідратується тільки коли стане видимим -->
+    <ClientOnly>
+      <NuxtIsland
+        name="HeavyChart"
+        :props="{
+          data: chartData,
+          labels: chartLabels,
+        }"
+      />
+
+      <template #fallback>
+        <div class="w-full h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+      </template>
+    </ClientOnly>
   </div>
 </template>
