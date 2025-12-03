@@ -4,10 +4,30 @@ useSeoMeta({
   description: "View and manage your shopping cart at Nuxt Shop.",
   ogDescription: "View and manage your shopping cart at Nuxt Shop.",
 });
+
+const route = useRoute();
+const loader = inject("pageLoader");
+
+async function deleteProduct() {
+  loader.showLoader("Видалення продукту...");
+
+  try {
+    await $fetch(`/api/products/${route.params.id}`, {
+      method: "DELETE",
+    });
+
+    await navigateTo("/products");
+  } catch (error) {
+    console.error(error);
+  } finally {
+    loader.hideLoader();
+  }
+}
 </script>
 
 <template>
   <div>
     <h1>Catalog</h1>
+    <button @click="deleteProduct">Видалити продукт</button>
   </div>
 </template>
