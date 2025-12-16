@@ -15,7 +15,7 @@ useSeoMeta({
 //     },
 //   ],
 // });
-
+const nuxtApp = useNuxtApp();
 const API_URL = useAPI();
 const route = useRoute();
 const router = useRouter();
@@ -68,7 +68,44 @@ const query = computed(() => ({
   has_discount: route.query.has_discount || undefined,
 }));
 
-const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
+const { data } = await useFetch<GetCategoriesResponse>(
+  `${API_URL}/categories`,
+  {
+    transform(input) {
+      return {
+        ...input,
+        fetchedAt: new Date().toISOString(),
+      };
+    },
+    getCachedData(key) {
+      const cached = nuxtApp.isHydrating
+        ? nuxtApp.payload.data[key]
+        : nuxtApp.static.data[key];
+
+      if (!cached) return undefined;
+
+      const fetchedAtRaw = cached.fetchedAt;
+      if (!fetchedAtRaw) return undefined;
+
+      const fetchedAt = new Date(fetchedAtRaw);
+      const CACHE_TTL = 60_000_000;
+      if (isNaN(fetchedAt.getTime())) return undefined;
+      if (fetchedAt.getTime() + CACHE_TTL < Date.now()) return undefined;
+
+      try {
+        return typeof structuredClone === "function"
+          ? structuredClone(cached)
+          : JSON.parse(JSON.stringify(cached));
+      } catch (e) {
+        console.warn(
+          "getCachedData cache clone failed, falling back to JSON clone:",
+          e
+        );
+        return JSON.parse(JSON.stringify(cached));
+      }
+    },
+  }
+);
 
 const selectDefault = {
   value: "",

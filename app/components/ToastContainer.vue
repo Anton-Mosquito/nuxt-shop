@@ -1,40 +1,5 @@
-<!-- components/ToastContainer.vue -->
 <script setup lang="ts">
-interface Toast {
-  id: string;
-  type: "success" | "error" | "warning" | "info";
-  message: string;
-  duration?: number;
-}
-
-const toasts = ref<Toast[]>([]);
-
-function addToast(toast: Omit<Toast, "id">) {
-  const id = Math.random().toString(36).substr(2, 9);
-  const newToast = { ...toast, id };
-
-  toasts.value.push(newToast);
-
-  // Auto remove after duration
-  setTimeout(() => {
-    removeToast(id);
-  }, toast.duration || 3000);
-
-  return id;
-}
-
-function removeToast(id: string) {
-  const index = toasts.value.findIndex((t) => t.id === id);
-  if (index > -1) {
-    toasts.value.splice(index, 1);
-  }
-}
-
-// Експортуємо для використання globally
-defineExpose({ addToast });
-
-// Provide для використання в дочірніх компонентах
-provide("toast", { addToast });
+const { toasts, removeToast } = useToast();
 
 const typeConfig = {
   success: {

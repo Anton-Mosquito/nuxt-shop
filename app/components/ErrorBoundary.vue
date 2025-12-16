@@ -1,27 +1,40 @@
-<!-- components/ErrorBoundary.vue -->
 <script setup lang="ts">
-const props = defineProps<{
+import type { NuxtError } from "#app";
+
+interface Props {
   title?: string;
   message?: string;
   showDetails?: boolean;
   retryable?: boolean;
-}>();
+}
+
+const {
+  title = "Error Occurred",
+  message = "Failed to load content. Please try again.",
+  showDetails = false,
+  retryable = true,
+} = defineProps<Props>();
 
 const emit = defineEmits<{
-  retry: [];
+  error: [Error | NuxtError];
 }>();
 
-const errorDetails = ref<any>(null);
+const handleError = (error: Error | NuxtError) => {
+  emit("error", error);
+};
 </script>
 
 <template>
-  <NuxtErrorBoundary @error="errorDetails = $event">
+  <NuxtErrorBoundary @error="handleError">
     <slot />
 
     <template #error="{ error, clearError }">
-      <div class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-red-500">
+      <div
+        role="alert"
+        aria-live="assertive"
+        class="bg-white rounded-lg shadow-lg p-6 border-l-4 border-red-500"
+      >
         <div class="flex items-start gap-4">
-          <!-- Icon -->
           <div class="flex-shrink-0">
             <div
               class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center"
@@ -34,41 +47,39 @@ const errorDetails = ref<any>(null);
             </div>
           </div>
 
-          <!-- Content -->
           <div class="flex-1">
             <h3 class="text-lg font-bold text-gray-900 mb-1">
-              {{ title || "Виникла помилка" }}
+              {{ title }}
             </h3>
             <p class="text-gray-600 text-sm mb-4">
-              {{ message || error.message || "Не вдалося завантажити контент" }}
+              {{ message || error.message }}
             </p>
 
-            <!-- Error details (collapsible) -->
-            <details v-if="showDetails" class="mb-4">
-              <summary
-                class="text-sm text-gray-500 cursor-pointer hover:text-gray-700"
-              >
-                Технічні деталі
-              </summary>
-              <pre class="mt-2 p-3 bg-gray-100 rounded text-xs overflow-auto">{{
-                error
-              }}</pre>
-            </details>
+            <DevOnly>
+              <details v-if="showDetails" class="mb-4">
+                <summary
+                  class="text-sm text-gray-500 cursor-pointer hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
+                  tabindex="0"
+                >
+                  Technical Details
+                </summary>
+                <pre
+                  class="mt-2 p-3 bg-gray-100 rounded text-xs overflow-auto max-h-60"
+                  >{{ formatError(error) }}</pre
+                >
+              </details>
+            </DevOnly>
 
-            <!-- Actions -->
-            <div class="flex gap-3">
+            <div class="flex gap-3 flex-wrap">
               <button
-                v-if="retryable !== false"
-                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-                @click="
-                  clearError();
-                  emit('retry');
-                "
+                v-if="retryable"
+                class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                @click="clearError"
               >
-                Спробувати ще раз
+                Try Again
               </button>
 
-              <slot name="actions" :clear-error="clearError" />
+              <slot name="actions" :clear-error="clearError" :error="error" />
             </div>
           </div>
         </div>
