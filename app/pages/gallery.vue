@@ -8,11 +8,10 @@ interface Image {
   height: number;
   category: "nature" | "urban" | "people";
 }
-
 const images: Image[] = [
   {
     id: 1,
-    src: "/images/nature1.jpg",
+    src: "http://localhost:3000/images/jewelry/lira1.jpg",
     alt: "Гори",
     width: 1920,
     height: 1080,
@@ -20,7 +19,7 @@ const images: Image[] = [
   },
   {
     id: 2,
-    src: "/images/urban1.jpg",
+    src: "http://localhost:3000/images/jewelry/lira2.jpg",
     alt: "Місто",
     width: 1920,
     height: 1080,
@@ -28,7 +27,7 @@ const images: Image[] = [
   },
   {
     id: 3,
-    src: "/images/people1.jpg",
+    src: "http://localhost:3000/images/jewelry/lira3.jpg",
     alt: "Люди",
     width: 1920,
     height: 1080,
@@ -72,11 +71,10 @@ function closeLightbox() {
         "
         @click="selectedCategory = cat as any"
       >
-        {{ cat === "all" ? "Всі" : cat }}
+        {{ cat === "all" ? "All" : cat }}
       </button>
     </div>
 
-    <!-- Gallery Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
         v-for="image in filteredImages"
@@ -84,12 +82,12 @@ function closeLightbox() {
         class="group relative overflow-hidden rounded-lg cursor-pointer"
         @click="openLightbox(image)"
       >
-        <!-- ✅ Оптимізоване зображення -->
         <NuxtImg
           :src="image.src"
           :alt="image.alt"
           :width="image.width"
           :height="image.height"
+          provider="ipx"
           sizes="sm:100vw md:50vw lg:33vw"
           format="webp"
           quality="80"
@@ -98,7 +96,6 @@ function closeLightbox() {
           placeholder
         />
 
-        <!-- Overlay -->
         <div
           class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center"
         >
@@ -131,6 +128,7 @@ function closeLightbox() {
           :alt="selectedImage.alt"
           :width="selectedImage.width"
           :height="selectedImage.height"
+          provider="ipx"
           format="webp"
           quality="90"
           class="max-w-full max-h-full object-contain"

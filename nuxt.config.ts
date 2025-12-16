@@ -16,6 +16,11 @@ export default defineNuxtConfig({
     "@nuxtjs/robots",
     "@nuxtjs/tailwindcss",
   ],
+  image: {
+    format: ["avif", "webp"],
+    quality: 80,
+    domains: ["localhost:3000"],
+  },
   //css: ["~/assets/styles/main.css"],
   components: [{ path: "~/components", pathPrefix: true }],
   runtimeConfig: {
