@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from "~/types/entities";
+import type { Product } from "~/types";
 
 const config = useRuntimeConfig();
 const { id, discount, images, name, price } = defineProps<Product>();

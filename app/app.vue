@@ -21,7 +21,6 @@ import "~/assets/styles/main.css";
 
 //const name = ref<LayoutKey>("auth");
 
-//ʼ Глобальний обробник помилок для ErrorBoundary
 const { handleGlobalError } = useGlobalErrorHandler();
 
 const handleAppError = (error: Error) => {
@@ -34,7 +33,6 @@ const handleAppError = (error: Error) => {
 
 <template>
   <div>
-    <SkipToContent />
     <NuxtRouteAnnouncer />
     <NuxtLoadingIndicator
       color="linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899)"

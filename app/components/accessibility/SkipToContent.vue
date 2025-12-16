@@ -1,9 +1,8 @@
-<!-- components/SkipToContent.vue -->
 <script setup lang="ts">
 const skipLinks = [
-  { href: "#main-content", label: "Перейти до основного контенту" },
-  { href: "#navigation", label: "Перейти до навігації" },
-  { href: "#footer", label: "Перейти до футеру" },
+  { href: "#main-content", label: "Go to main content" },
+  { href: "#navigation", label: "Go to navigation" },
+  { href: "#footer", label: "Go to footer" },
 ];
 </script>
 

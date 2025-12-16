@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from "~/types/entities";
+import type { Product } from "~/types";
 
 interface Props {
   products: Product[];
@@ -27,7 +27,6 @@ const { columns = 3, products } = defineProps<Props>();
   max-width: 100%;
 }
 
-/* Prevent cards from stretching when fewer items than columns */
 .product-grid > * {
   max-width: 100%;
   width: 100%;
