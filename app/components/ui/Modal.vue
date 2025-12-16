@@ -3,7 +3,7 @@ const props = defineProps<{
   modelValue: boolean;
   title?: string;
   size?: "sm" | "md" | "lg" | "xl";
-  persistent?: boolean; // не закривається при кліку поза модалкою
+  persistent?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -25,21 +25,15 @@ function close() {
   }
 }
 
-// Блокуємо скрол body коли модалка відкрита
 watch(
   () => props.modelValue,
   (isOpen) => {
     if (import.meta.client) {
-      if (isOpen) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
-      }
+      document.body.style.overflow = isOpen ? "hidden" : "";
     }
   }
 );
 
-// Закриття на Escape
 onMounted(() => {
   const handleEscape = (e: KeyboardEvent) => {
     if (e.key === "Escape" && props.modelValue) {
@@ -70,10 +64,8 @@ onMounted(() => {
         class="fixed inset-0 z-50 overflow-y-auto"
         @click.self="close"
       >
-        <!-- Backdrop -->
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
 
-        <!-- Modal container -->
         <div class="flex min-h-full items-center justify-center p-4">
           <Transition
             enter-active-class="transition-all duration-300"
@@ -89,7 +81,6 @@ onMounted(() => {
               :class="sizeClasses[size || 'md']"
               @click.stop
             >
-              <!-- Header -->
               <div
                 v-if="title || $slots.header"
                 class="flex items-center justify-between p-6 border-b"
@@ -113,12 +104,10 @@ onMounted(() => {
                 </button>
               </div>
 
-              <!-- Body -->
               <div class="p-6">
                 <slot />
               </div>
 
-              <!-- Footer -->
               <div
                 v-if="$slots.footer"
                 class="flex items-center justify-end gap-3 p-6 border-t bg-gray-50"
