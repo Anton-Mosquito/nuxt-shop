@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     "@nuxt/scripts",
     "@nuxt/test-utils",
     "@nuxt/icon",
+    "@vueuse/nuxt",
   ],
   //css: ["~/assets/styles/main.css"],
   components: [
@@ -24,6 +25,8 @@ export default defineNuxtConfig({
     // Keys within public are also exposed client-side
     public: {
       api_base: "",
+      api_url: "",
+      image_url: "",
     },
   },
   icon: {
