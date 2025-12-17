@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Product, Review } from "~/types/entities";
-import type { Tab } from "~/types/components/ui/tabs";
+import type { Product, Review, Tab } from "~/types";
 
 interface Props {
   product: Product;
@@ -39,17 +38,17 @@ useSeoMeta({
     ? `${data.value.product.name} - Nuxt Shop`
     : "Product - Nuxt Shop",
   description: data.value
-    ? data.value.product.shortDescription
+    ? data.value.product.short_description
     : "Browse our extensive catalog of products at Nuxt Shop.",
   ogDescription: data.value
-    ? data.value.product.shortDescription
+    ? data.value.product.short_description
     : "Browse our extensive catalog of products at Nuxt Shop.",
 });
 
 const productDescription = computed(
   () =>
-    data.value?.product.longDescription ||
-    data.value?.product.shortDescription ||
+    data.value?.product.long_description ||
+    data.value?.product.short_description ||
     "No description available."
 );
 
@@ -65,7 +64,7 @@ const productImages = computed(() => {
   <div v-if="data?.product" class="product-page">
     <Head>
       <Title>{{ data.product.name }} - Nuxt Shop</Title>
-      <Meta name="description" :content="data.product.shortDescription" />
+      <Meta name="description" :content="data.product.short_description" />
     </Head>
 
     <div class="product-container">
