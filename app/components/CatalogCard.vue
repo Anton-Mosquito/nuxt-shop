@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { Product } from "~/types";
 
-const config = useRuntimeConfig();
 const { id, discount, images, name, price } = defineProps<Product>();
-const image = computed(() => `url(${config.public.image_url}${images[0]})`);
 const isHovered = ref(false);
 </script>
 
@@ -15,6 +13,18 @@ const isHovered = ref(false);
     @mouseleave="isHovered = false"
   >
     <div class="card__image">
+      <NuxtImg
+        :src="useImageUrl(images?.[0])"
+        :alt="name"
+        provider="ipx"
+        format="webp"
+        quality="80"
+        width="600"
+        height="600"
+        sizes="sm:100vw md:50vw lg:33vw"
+        loading="lazy"
+        class="card__image-bg"
+      />
       <span v-if="discount > 0" class="card__discount">- {{ discount }}%</span>
       <AddFavorite :id="id" :is-shown="isHovered" />
     </div>
@@ -42,13 +52,20 @@ const isHovered = ref(false);
     border-radius: 8px;
     width: 100%;
     max-width: 100%;
-    padding: 16px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: v-bind(image);
+    overflow: hidden;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    padding: 16px;
+  }
+
+  & .card__image-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
   }
 
   & .card__discount {

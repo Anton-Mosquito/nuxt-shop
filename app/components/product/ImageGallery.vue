@@ -9,10 +9,8 @@ const props = defineProps<Props>();
 const images = props.images;
 const alt = props.alt;
 const solid = props.solid ?? false;
-const config = useRuntimeConfig();
 const selectedImage = ref(0);
 
-// pointer / touch swipe support
 const pointerStartX = ref<number | null>(null);
 const swipeThreshold = 40; // px
 
@@ -29,9 +27,9 @@ const onPointerDown = (e: PointerEvent) => {
 const onPointerUp = (e: PointerEvent) => {
   if (pointerStartX.value === null) return;
   const start = pointerStartX.value;
-  // ensure number
   const end = typeof e.clientX === "number" ? e.clientX : start;
   const delta = end - start;
+
   if (delta > swipeThreshold) {
     selectImage(selectedImage.value - 1);
   } else if (delta < -swipeThreshold) {
@@ -44,15 +42,14 @@ const onPointerCancel = () => {
   pointerStartX.value = null;
 };
 
-// Touch fallback (some browsers)
 const touchStartX = ref<number | null>(null);
 const onTouchStart = (e: TouchEvent) => {
-  const t = e.touches && e.touches[0];
+  const t = e.touches?.[0];
   touchStartX.value = t ? t.clientX : null;
 };
 const onTouchEnd = (e: TouchEvent) => {
   if (touchStartX.value === null) return;
-  const changed = e.changedTouches && e.changedTouches[0];
+  const changed = e.changedTouches?.[0];
   if (!changed) {
     touchStartX.value = null;
     return;
@@ -74,9 +71,15 @@ const onTouchEnd = (e: TouchEvent) => {
         :class="{ active: selectedImage === index }"
         @click="selectImage(index)"
       >
-        <img
-          :src="`${config.public.image_url}${image}`"
+        <NuxtImg
+          :src="useImageUrl(image)"
           :alt="`${alt} ${index + 1}`"
+          provider="ipx"
+          format="webp"
+          quality="80"
+          width="160"
+          height="160"
+          loading="lazy"
         />
       </button>
     </div>
@@ -89,18 +92,24 @@ const onTouchEnd = (e: TouchEvent) => {
         @touchstart.passive="onTouchStart"
         @touchend.passive="onTouchEnd"
       >
-        <img
-          :src="`${config.public.image_url}${images[selectedImage]}`"
+        <NuxtImg
+          :src="useImageUrl(images[selectedImage])"
           :alt="alt"
+          provider="ipx"
+          format="webp"
+          quality="90"
+          width="1000"
+          height="1000"
+          sizes="sm:100vw md:80vw lg:60vw"
+          class="main-image__img"
         />
       </div>
 
-      <!-- Linear indicator -->
       <div class="indicator" :class="{ solid: solid }">
         <button
           v-for="(_, index) in images"
           :key="index"
-          :aria-label="`Перейти до зображення ${index + 1}`"
+          :aria-label="`Go to image ${index + 1}`"
           class="indicator-segment"
           :class="{ active: selectedImage === index }"
           @click="selectImage(index)"
@@ -147,7 +156,8 @@ const onTouchEnd = (e: TouchEvent) => {
   border-color: var(--color-accent);
 }
 
-.thumbnail img {
+.thumbnail img,
+.thumbnail :deep(img) {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -162,13 +172,13 @@ const onTouchEnd = (e: TouchEvent) => {
   min-height: 400px;
 }
 
-.main-image img {
+.main-image__img,
+.main-image :deep(img) {
   max-width: 100%;
   max-height: 500px;
   object-fit: contain;
 }
 
-/* Linear indicator */
 .indicator {
   display: flex;
   justify-content: center;

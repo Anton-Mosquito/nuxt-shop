@@ -8,7 +8,6 @@ interface Props {
 type SlideItem = Pick<Product, "id" | "name" | "price" | "images">;
 
 const { products } = defineProps<Props>();
-const config = useRuntimeConfig();
 const currentSlide = ref(0);
 const sliderRef = ref<HTMLDivElement | null>(null);
 
@@ -41,10 +40,17 @@ const goToProduct = (id: number) => {
         v-for="{ id, name, price, images } in slides"
         :key="id"
         class="slider__slide"
-        :style="{
-          backgroundImage: `url(${config.public.image_url}${images?.[0]})`,
-        }"
       >
+        <NuxtImg
+          :src="useImageUrl(images?.[0], '/placeholder-1600x500.png')"
+          provider="ipx"
+          format="webp"
+          quality="80"
+          width="1600"
+          height="500"
+          class="slider__bg"
+          loading="lazy"
+        />
         <div class="slider__content">
           <h2 class="slider__title">{{ name }}</h2>
           <p class="slider__price">$ {{ price }}</p>
@@ -94,6 +100,8 @@ const goToProduct = (id: number) => {
   scroll-snap-align: start;
   scroll-snap-stop: always;
   min-height: 500px;
+  position: relative;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -104,10 +112,21 @@ const goToProduct = (id: number) => {
   border-radius: 8px;
 }
 
+.slider__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
 .slider__content {
   max-width: 500px;
   color: #fff;
   text-align: left;
+  position: relative;
+  z-index: 2;
 }
 
 .slider__title {
