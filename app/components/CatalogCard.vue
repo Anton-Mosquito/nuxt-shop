@@ -9,6 +9,7 @@ const isHovered = ref(false);
   <NuxtLink
     class="card"
     :to="`/catalog/${id}`"
+    prefetch-on="interaction"
     @mouseover="isHovered = true"
     @mouseleave="isHovered = false"
   >

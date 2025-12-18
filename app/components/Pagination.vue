@@ -1,6 +1,5 @@
-<!-- components/Pagination.vue -->
 <script setup lang="ts">
-const props = defineProps<{
+const { currentPage, totalPages, baseUrl } = defineProps<{
   currentPage: number;
   totalPages: number;
   baseUrl: string; // '/products' або '/blog'
@@ -17,11 +16,11 @@ const visiblePages = computed(() => {
   const pages: (number | string)[] = [];
   const delta = 2; // скільки сторінок показувати з кожного боку
 
-  for (let i = 1; i <= props.totalPages; i++) {
+  for (let i = 1; i <= totalPages; i++) {
     if (
       i === 1 ||
-      i === props.totalPages ||
-      (i >= props.currentPage - delta && i <= props.currentPage + delta)
+      i === totalPages ||
+      (i >= currentPage - delta && i <= currentPage + delta)
     ) {
       pages.push(i);
     } else if (pages[pages.length - 1] !== "...") {
@@ -34,11 +33,12 @@ const visiblePages = computed(() => {
 
 function getPageUrl(page: number): string {
   const query = { ...route.query, page: String(page) };
-  return `${props.baseUrl}?${new URLSearchParams(query as any).toString()}`;
+  return `${baseUrl}?${new URLSearchParams(query as any).toString()}`;
 }
 
-const isPrevDisabled = computed(() => props.currentPage <= 1);
-const isNextDisabled = computed(() => props.currentPage >= props.totalPages);
+const isPrevDisabled = computed(() => currentPage <= 1);
+const isNextDisabled = computed(() => currentPage >= totalPages);
+const shouldPrefetchPage = (page: number) => Math.abs(page - currentPage) <= 1;
 </script>
 
 <template>
@@ -48,6 +48,7 @@ const isNextDisabled = computed(() => props.currentPage >= props.totalPages);
       v-if="!isPrevDisabled"
       :to="getPageUrl(currentPage - 1)"
       class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+      prefetch
       @click="emit('pageChange', currentPage - 1)"
     >
       <Icon
@@ -87,6 +88,7 @@ const isNextDisabled = computed(() => props.currentPage >= props.totalPages);
         v-else
         :to="getPageUrl(page as number)"
         class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+        :prefetch="shouldPrefetchPage(page as number)"
         @click="emit('pageChange', page as number)"
       >
         {{ page }}
@@ -98,6 +100,7 @@ const isNextDisabled = computed(() => props.currentPage >= props.totalPages);
       v-if="!isNextDisabled"
       :to="getPageUrl(currentPage + 1)"
       class="px-3 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+      prefetch
       @click="emit('pageChange', currentPage + 1)"
     >
       <Icon

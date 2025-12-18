@@ -22,7 +22,7 @@ const handleSubscribe = () => {
     <div class="footer__top">
       <ul>
         <li v-for="{ name, path } in FOOTER_NAV_LINKS" :key="name">
-          <NuxtLink :to="path">{{ name }}</NuxtLink>
+          <NuxtLink :to="path" :prefetch="false">{{ name }}</NuxtLink>
         </li>
       </ul>
       <div class="footer__form">
@@ -60,6 +60,7 @@ const handleSubscribe = () => {
           target="_blank"
           rel="noopener noreferrer"
           external
+          :prefetch="false"
         >
           <Icon :name="icon" size="30" />
         </NuxtLink>

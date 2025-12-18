@@ -89,6 +89,7 @@ const { data: product } = await useFetch(`/api/products/${route.params.id}`);
               <NuxtLink
                 to="/products"
                 class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                prefetch
               >
                 До каталогу
               </NuxtLink>

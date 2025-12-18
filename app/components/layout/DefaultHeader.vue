@@ -24,6 +24,7 @@ import { NAV_LINKS, HEADER_ICON_LINKS } from "~/constants";
           :key="index"
           :to="path"
           :title="label"
+          :prefetch="['/cart', '/favorites'].includes(path)"
         >
           <Icon :name="icon" size="21" />
         </NuxtLink>
