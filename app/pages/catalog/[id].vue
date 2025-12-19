@@ -89,7 +89,19 @@ const productImages = computed(() => {
         </div>
       </template>
       <template #reviews>
-        <ProductReviews :reviews="data.reviews" />
+        <ClientOnly>
+          <NuxtIsland
+            name="ProductReviews"
+            :props="{
+              productId: data.product.id,
+              reviews: data.reviews,
+            }"
+          />
+
+          <template #fallback>
+            <SkeletonReview :count="3" />
+          </template>
+        </ClientOnly>
       </template>
       <template #specifications>
         <div class="specifications-content">

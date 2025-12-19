@@ -1,9 +1,6 @@
 <script setup lang="ts">
 const route = useRoute();
 const { data: post } = await useFetch(`/api/posts/${route.params.slug}`);
-definePageMeta({
-  layout: "blog",
-});
 </script>
 
 <template>
@@ -11,19 +8,17 @@ definePageMeta({
     <NuxtErrorBoundary>
       <article>
         <!-- Hero image -->
-        <ClientOnly>
-          <NuxtPicture
-            :src="post.featuredImage"
-            :img-attrs="{
-              alt: post.title,
-              class: 'w-full h-96 object-cover rounded-xl mb-8',
-            }"
-            width="1200"
-            height="630"
-            format="webp"
-            preload
-          />
-        </ClientOnly>
+        <NuxtPicture
+          :src="post.featuredImage"
+          :img-attrs="{
+            alt: post.title,
+            class: 'w-full h-96 object-cover rounded-xl mb-8',
+          }"
+          width="1200"
+          height="630"
+          format="webp"
+          preload
+        />
         <!-- Header -->
         <header class="mb-8">
           <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
