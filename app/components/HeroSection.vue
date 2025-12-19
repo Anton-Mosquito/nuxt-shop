@@ -1,6 +1,6 @@
 <!-- components/HeroSection.vue -->
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   title: string;
   subtitle: string;
   image: string;
@@ -12,32 +12,30 @@ const props = defineProps<{
   <section
     class="relative h-screen flex items-center justify-center overflow-hidden"
   >
-    <!-- Background Image - Desktop -->
-    <div class="hidden md:block absolute inset-0">
-      <NuxtImg
+    <!-- Background Image with Art Direction -->
+    <div class="absolute inset-0">
+      <NuxtPicture
         :src="image"
-        alt="Hero background"
+        :img-attrs="{
+          class: 'w-full h-full object-cover',
+          alt: 'Hero background',
+        }"
         width="1920"
         height="1080"
-        sizes="100vw"
-        format="webp"
+        format="webp,avif"
         quality="85"
-        class="w-full h-full object-cover"
-        preload
-      />
-    </div>
-
-    <!-- Background Image - Mobile (якщо є окреме) -->
-    <div class="md:hidden absolute inset-0">
-      <NuxtImg
-        :src="mobileImage || image"
-        alt="Hero background mobile"
-        width="768"
-        height="1024"
         sizes="100vw"
-        format="webp"
-        quality="80"
-        class="w-full h-full object-cover"
+        :modifiers="
+          mobileImage
+            ? {
+                mobile: {
+                  src: mobileImage,
+                  width: 768,
+                  height: 1024,
+                },
+              }
+            : undefined
+        "
         preload
       />
     </div>
