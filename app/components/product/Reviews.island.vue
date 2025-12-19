@@ -9,16 +9,14 @@ interface Props {
 const { reviews, productId } = defineProps<Props>();
 const API_URL = useAPI();
 
-// Не використовуємо await - запит не виконується одразу
 const { data, pending, execute } = useLazyFetch<{
   product: Product;
   reviews: Review[];
 }>(`${API_URL}/products/${productId}/reviews`, {
-  immediate: false, // Не виконувати запит одразу
-  server: false, // Тільки на клієнті
+  immediate: false,
+  server: false,
 });
 
-// Виконати запит при монтуванні компонента
 onMounted(() => {
   execute();
 });
