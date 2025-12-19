@@ -80,7 +80,7 @@ const productImages = computed(() => {
       />
     </div>
 
-    <UiTabs v-model="activeTab" :tabs="productTabs">
+    <UiTabs v-model="activeTab" :tabs="productTabs" lazy>
       <template #description>
         <div class="description-content">
           <p>

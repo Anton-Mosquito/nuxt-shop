@@ -5,19 +5,26 @@ interface Props {
   tabs: Tab[];
   modelValue?: TabId;
   defaultTab?: TabId;
+  lazy?: boolean;
 }
 
 interface Emits {
-  (e: "update:modelValue" | "change", value: TabId): void;
+  (e: "update:modelValue" | "change" | "tab-mounted", value: TabId): void;
 }
 
 const {
   tabs,
   modelValue = undefined,
   defaultTab = undefined,
+  lazy = false,
 } = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
+
+// Трекінг того, які таби вже були відвідані
+const visitedTabs = ref<Set<TabId>>(
+  new Set([modelValue || defaultTab || tabs[0]?.id].filter(Boolean) as TabId[])
+);
 
 // Internal active tab state
 const internalActiveTab = ref<TabId>(
@@ -29,8 +36,10 @@ const activeTab = computed({
   get: () => modelValue ?? internalActiveTab.value,
   set: (value: TabId) => {
     internalActiveTab.value = value;
+    visitedTabs.value.add(value);
     emit("update:modelValue", value);
     emit("change", value);
+    emit("tab-mounted", value);
   },
 });
 
@@ -41,6 +50,12 @@ const setActiveTab = (tabId: TabId) => {
     activeTab.value = tabId;
   }
 };
+
+// Computed для відфільтрованих табів (для lazy режиму)
+const renderedTabs = computed(() => {
+  if (!lazy) return tabs; // Якщо не lazy mode - рендеримо всі таби
+  return tabs.filter((tab) => visitedTabs.value.has(tab.id)); // Інакше тільки відвідані
+});
 
 // Keyboard navigation
 const tabRefs = ref<HTMLButtonElement[]>([]);
@@ -93,6 +108,7 @@ watch(
   (newValue) => {
     if (newValue !== undefined) {
       internalActiveTab.value = newValue;
+      visitedTabs.value.add(newValue);
     }
   }
 );
@@ -123,15 +139,15 @@ watch(
 
     <div class="tabs-content">
       <div
-        v-for="tab in tabs"
+        v-for="tab in renderedTabs"
         v-show="activeTab === tab.id"
         :id="`panel-${tab.id}`"
         :key="tab.id"
+        :aria-labelledby="`tab-${tab.id}`"
         class="tab-panel"
         role="tabpanel"
-        :aria-labelledby="`tab-${tab.id}`"
       >
-        <slot :name="tab.id" :tab="tab" />
+        <slot :name="tab.id" :tab="tab" :is-active="activeTab === tab.id" />
       </div>
     </div>
   </div>
