@@ -1,6 +1,9 @@
-<!-- components/UserAvatar.vue -->
 <script setup lang="ts">
-const props = defineProps<{
+const {
+  src = null,
+  alt,
+  size = "md",
+} = defineProps<{
   src?: string | null;
   alt: string;
   size?: "sm" | "md" | "lg" | "xl";
@@ -22,9 +25,8 @@ const sizePixels = {
 
 const imageError = ref(false);
 
-// Ініціали для fallback
 const initials = computed(() => {
-  const names = props.alt.split(" ");
+  const names = alt.split(" ");
   return names
     .map((n) => n[0])
     .join("")
@@ -51,7 +53,6 @@ const initials = computed(() => {
       @error="imageError = true"
     />
 
-    <!-- Fallback - Initials -->
     <div
       v-else
       class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-500 text-white font-bold"
