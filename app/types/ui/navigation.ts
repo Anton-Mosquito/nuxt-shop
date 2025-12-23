@@ -23,3 +23,16 @@ export interface SocialLink {
   url: string;
   icon: string;
 }
+
+/**
+ * Enhanced navigation item with dropdown support
+ */
+export interface NavItem {
+  label: string;
+  to: string;
+  icon?: string;
+  ariaLabel?: string;
+  badge?: string | number;
+  children?: NavItem[];
+  requiresAuth?: boolean; // For account dropdown
+}

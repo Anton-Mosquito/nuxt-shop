@@ -73,3 +73,9 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+
+- [x] implement custom $fetch composable (docs)[https://nuxt.com/docs/4.x/guide/recipes/custom-usefetch] (example)[https://github.com/TheAlexLichter/alexander-lichter-repository-fetch/blob/main/plugins/api.ts]
+- [ ] 
+- [ ] 

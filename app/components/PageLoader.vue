@@ -22,7 +22,6 @@ provide("pageLoader", { showLoader, hideLoader });
 </script>
 
 <template>
-  <!-- Full page loader -->
   <Teleport to="body">
     <div
       v-if="isLoading"
@@ -30,7 +29,6 @@ provide("pageLoader", { showLoader, hideLoader });
     >
       <div class="bg-white rounded-lg p-6 shadow-xl">
         <div class="flex items-center gap-3">
-          <!-- Spinner (Nuxt Icon) -->
           <Icon
             name="heroicons-outline:arrow-path"
             class="animate-spin h-8 w-8 text-blue-600"
@@ -39,7 +37,7 @@ provide("pageLoader", { showLoader, hideLoader });
 
           <div>
             <p class="font-semibold text-gray-900">{{ loadingMessage }}</p>
-            <p class="text-sm text-gray-500">Будь ласка, зачекайте...</p>
+            <p class="text-sm text-gray-500">Please wait...</p>
           </div>
         </div>
       </div>
