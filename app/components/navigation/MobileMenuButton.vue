@@ -1,12 +1,8 @@
 <script setup lang="ts">
-interface Props {
-  isOpen: boolean;
-}
+import type { MenuStateProps, ToggleActionEmit } from "~/types/ui/navigation";
 
-const { isOpen } = defineProps<Props>();
-const emit = defineEmits<{
-  toggle: [];
-}>();
+const { isOpen } = defineProps<MenuStateProps>();
+const emit = defineEmits<ToggleActionEmit>();
 
 const ariaLabel = computed(() =>
   isOpen ? "Close navigation menu" : "Open navigation menu"

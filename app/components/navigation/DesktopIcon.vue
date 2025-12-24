@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import type { NavItem } from "~/types/ui/navigation";
+import type {
+  DesktopNavigationProps,
+  NavigationActionEmits,
+} from "~/types/ui/navigation";
 
-interface Props {
-  openDropdowns: ReadonlySet<string>;
-  iconNavigation: NavItem[];
-}
-
-interface Emits {
-  "toggle-dropdown": [itemLabel: string];
-  logout: [];
-}
-
-const { iconNavigation, openDropdowns } = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const { iconNavigation, openDropdowns } = defineProps<DesktopNavigationProps>();
+const emit = defineEmits<NavigationActionEmits>();
 
 const { isAuthenticated, isDropdownOpen, isParentActive } =
   useNavigationHelpers(openDropdowns);

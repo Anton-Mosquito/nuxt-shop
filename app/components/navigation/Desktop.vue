@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { HEADER_NAVIGATION } from "~/constants/header-navigation";
+import type {
+  NavigationStateProps,
+  NavigationToggleEmit,
+} from "~/types/ui/navigation";
 
-interface Props {
-  openDropdowns: ReadonlySet<string>;
-}
-
-interface Emits {
-  "toggle-dropdown": [itemLabel: string];
-}
-
-const { openDropdowns } = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const { openDropdowns } = defineProps<NavigationStateProps>();
+const emit = defineEmits<NavigationToggleEmit>();
 
 const { isDropdownOpen, isParentActive } = useNavigationHelpers(openDropdowns);
 

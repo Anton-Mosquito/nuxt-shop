@@ -1,21 +1,13 @@
 <script setup lang="ts">
 import { HEADER_NAVIGATION } from "~/constants/header-navigation";
-import type { NavItem } from "~/types/ui/navigation";
+import type {
+  MobileNavigationProps,
+  MobileNavigationActionEmits,
+} from "~/types/ui/navigation";
 
-interface Props {
-  isOpen: boolean;
-  openDropdowns: ReadonlySet<string>;
-  iconNavigation: NavItem[];
-}
-
-interface Emits {
-  logout: [];
-  close: [];
-  "toggle-dropdown": [itemLabel: string];
-}
-
-const { isOpen, openDropdowns, iconNavigation } = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const { isOpen, openDropdowns, iconNavigation } =
+  defineProps<MobileNavigationProps>();
+const emit = defineEmits<MobileNavigationActionEmits>();
 
 const route = useRoute();
 const { isAuthenticated, isDropdownOpen, isParentActive } =

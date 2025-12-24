@@ -1,7 +1,7 @@
 import type { NavItem } from "~/types/ui/navigation";
 
 /**
- * Enhanced navigation configuration for DefaultHeader1
+ * Enhanced navigation configuration for DefaultHeader
  * Includes main menu items with dropdown support
  */
 export const HEADER_NAVIGATION: readonly NavItem[] = [

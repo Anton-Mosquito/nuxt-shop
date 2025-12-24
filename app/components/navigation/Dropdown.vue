@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import type { NavItem } from "~/types/ui/navigation";
+import type {
+  NavItem,
+  MenuStateProps,
+  CloseActionEmit,
+} from "~/types/ui/navigation";
 import { isString } from "~/types/utils";
 
-interface Props {
+interface Props extends MenuStateProps {
   item: NavItem;
-  isOpen: boolean;
   isMobile?: boolean;
   align?: "left" | "right";
   filterLabels?: string[];
-}
-
-interface Emits {
-  close: [];
 }
 
 const {
@@ -21,7 +20,7 @@ const {
   align = "left",
   filterLabels = [],
 } = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const emit = defineEmits<CloseActionEmit>();
 const route = useRoute();
 
 const navigationItems = computed(() => {
