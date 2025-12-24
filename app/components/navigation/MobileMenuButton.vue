@@ -15,6 +15,7 @@ const ariaLabel = computed(() =>
 
 <template>
   <button
+    type="button"
     class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors text-[#666] hover:text-black"
     :aria-expanded="isOpen"
     aria-controls="mobile-menu"

@@ -3,7 +3,6 @@ const {
   mobileMenuOpen,
   openDropdowns,
   toggleDropdown,
-  handleDropdownKeydown,
   closeMobileMenu,
   toggleMobileMenu,
   handleLogout,
@@ -33,7 +32,6 @@ const { iconNavigationWithBadges } = useNavigationBadges();
           <NavigationDesktop
             :open-dropdowns="openDropdowns"
             @toggle-dropdown="toggleDropdown"
-            @dropdown-keydown="handleDropdownKeydown"
           />
 
           <div class="h-5 border-l border-[#ccc]" aria-hidden="true"></div>
@@ -42,7 +40,6 @@ const { iconNavigationWithBadges } = useNavigationBadges();
             :open-dropdowns="openDropdowns"
             :icon-navigation="iconNavigationWithBadges"
             @toggle-dropdown="toggleDropdown"
-            @dropdown-keydown="handleDropdownKeydown"
             @logout="handleLogout"
           />
         </div>

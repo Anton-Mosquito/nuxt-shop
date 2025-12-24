@@ -76,6 +76,6 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 
 
-- [x] implement custom $fetch composable (docs)[https://nuxt.com/docs/4.x/guide/recipes/custom-usefetch] (example)[https://github.com/TheAlexLichter/alexander-lichter-repository-fetch/blob/main/plugins/api.ts]
-- [ ] 
+- [] implement custom $fetch composable (docs)[https://nuxt.com/docs/4.x/guide/recipes/custom-usefetch] (example)[https://github.com/TheAlexLichter/alexander-lichter-repository-fetch/blob/main/plugins/api.ts]
+- [ ] implement The Nuxt Plugin Object Syntax (docs)[https://nuxt.com/docs/4.x/directory-structure/app/plugins#object-syntax-plugins] (example)[https://www.youtube.com/watch?v=2aXZyXB1QGQ]
 - [ ] 

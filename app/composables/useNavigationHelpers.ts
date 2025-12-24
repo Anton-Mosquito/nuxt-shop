@@ -4,7 +4,7 @@ import type { NavItem } from "~/types/ui/navigation";
  * Shared navigation helper functions
  * Used across desktop and mobile navigation components
  */
-export function useNavigationHelpers(openDropdowns: Ref<ReadonlySet<string>>) {
+export function useNavigationHelpers(openDropdowns: ReadonlySet<string>) {
   const route = useRoute();
   const authStore = useAuthStore();
 
@@ -12,7 +12,7 @@ export function useNavigationHelpers(openDropdowns: Ref<ReadonlySet<string>>) {
   const isAuthenticated = computed(() => !!authStore.token);
 
   // Check if dropdown is open
-  const isDropdownOpen = (label: string) => openDropdowns.value.has(label);
+  const isDropdownOpen = (label: string) => openDropdowns.has(label);
 
   // Check if any child route is active
   const isParentActive = (item: NavItem) => {

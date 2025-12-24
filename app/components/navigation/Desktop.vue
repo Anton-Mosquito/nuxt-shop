@@ -7,30 +7,30 @@ interface Props {
 
 interface Emits {
   "toggle-dropdown": [itemLabel: string];
-  "dropdown-keydown": [event: KeyboardEvent, itemLabel: string];
 }
 
-const props = defineProps<Props>();
+const { openDropdowns } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const route = useRoute();
-const openDropdownsRef = toRef(props, "openDropdowns");
-const { isDropdownOpen, isParentActive } =
-  useNavigationHelpers(openDropdownsRef);
+const { isDropdownOpen, isParentActive } = useNavigationHelpers(openDropdowns);
 
 const dropdownRefs = ref<Record<string, HTMLElement | null>>({});
 
-watchEffect(() => {
-  HEADER_NAVIGATION.forEach((item) => {
-    if (item.children && dropdownRefs.value[item.label]) {
-      onClickOutside(dropdownRefs.value[item.label], () => {
-        if (!isDropdownOpen(item.label)) return;
+useDropdownClickOutside(
+  HEADER_NAVIGATION,
+  dropdownRefs,
+  isDropdownOpen,
+  (label: string) => emit("toggle-dropdown", label)
+);
 
-        emit("toggle-dropdown", item.label);
-      });
-    }
-  });
-});
+const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    emit("toggle-dropdown", itemLabel);
+  } else if (event.key === "Escape" && isDropdownOpen(itemLabel)) {
+    emit("toggle-dropdown", itemLabel);
+  }
+};
 </script>
 
 <template>
@@ -45,9 +45,8 @@ watchEffect(() => {
         v-if="!item.children"
         :to="item.to"
         :aria-label="item.ariaLabel"
-        :aria-current="route.path === item.to ? 'page' : undefined"
         class="flex items-center gap-2 px-3 py-2 rounded-lg transition-colors text-[#666] hover:text-black"
-        :class="{ 'text-black font-semibold': route.path === item.to }"
+        active-class="text-black font-semibold"
         role="menuitem"
       >
         <span>{{ item.label }}</span>
@@ -59,6 +58,7 @@ watchEffect(() => {
         class="relative"
       >
         <button
+          type="button"
           :aria-label="item.ariaLabel"
           :aria-expanded="isDropdownOpen(item.label)"
           aria-haspopup
@@ -67,7 +67,7 @@ watchEffect(() => {
           :class="{ 'text-black font-semibold': isParentActive(item) }"
           role="menuitem"
           @click="emit('toggle-dropdown', item.label)"
-          @keydown="emit('dropdown-keydown', $event, item.label)"
+          @keydown="handleKeydown($event, item.label)"
         >
           <span>{{ item.label }}</span>
           <Icon

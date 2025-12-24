@@ -115,20 +115,3 @@ const isChildActive = (child: NavItem) => route.fullPath === child.to;
     </template>
   </div>
 </template>
-
-<style scoped>
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-slideDown {
-  animation: slideDown 0.2s ease-out;
-}
-</style>

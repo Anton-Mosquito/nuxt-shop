@@ -14,20 +14,21 @@ interface Emits {
   "toggle-dropdown": [itemLabel: string];
 }
 
-const props = defineProps<Props>();
+const { isOpen, openDropdowns, iconNavigation } = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const route = useRoute();
-const openDropdownsRef = toRef(props, "openDropdowns");
 const { isAuthenticated, isDropdownOpen, isParentActive } =
-  useNavigationHelpers(openDropdownsRef);
+  useNavigationHelpers(openDropdowns);
+
+useBodyScrollLock(() => isOpen);
 </script>
 
 <template>
   <div
     v-if="isOpen"
     id="mobile-menu"
-    class="md:hidden pb-4 animate-slideDown"
+    class="fixed inset-x-0 top-16 bottom-0 z-50 bg-white overflow-y-auto md:hidden pb-4 animate-slideDown border-t border-gray-100"
     role="menu"
   >
     <ul class="space-y-1" role="none">
@@ -44,18 +45,20 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
           role="menuitem"
           @click="emit('close')"
         >
-          <Icon
-            v-if="item.icon"
-            :name="item.icon"
-            size="20"
-            aria-hidden="true"
-          />
-          <span>{{ item.label }}</span>
+          <span class="flex items-center gap-3">
+            <Icon
+              v-if="item.icon"
+              :name="item.icon"
+              size="20"
+              aria-hidden="true"
+            />
+            <span>{{ item.label }}</span>
+          </span>
         </NuxtLink>
 
-        <!-- Dropdown in mobile -->
         <div v-else>
           <button
+            type="button"
             :aria-label="item.ariaLabel"
             :aria-expanded="isDropdownOpen(item.label)"
             :aria-controls="`mobile-dropdown-${item.label}`"
@@ -82,7 +85,6 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
             />
           </button>
 
-          <!-- Mobile submenu -->
           <NavigationDropdown
             :item="item"
             :is-open="isDropdownOpen(item.label)"
@@ -92,12 +94,9 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
         </div>
       </li>
 
-      <!-- Divider -->
-      <li class="border-t border-gray-200 my-2" aria-hidden="true"></li>
+      <!-- <li class="border-t border-gray-200 my-2" aria-hidden="true"></li> -->
 
-      <!-- Icon items in mobile -->
       <li v-for="item in iconNavigation" :key="item.to" role="none">
-        <!-- Simple icon link -->
         <NuxtLink
           v-if="!item.children"
           :to="item.to"
@@ -125,7 +124,6 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
           </span>
         </NuxtLink>
 
-        <!-- Account dropdown in mobile -->
         <div v-else>
           <NuxtLink
             v-if="!isAuthenticated"
@@ -135,11 +133,14 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
             role="menuitem"
             @click="emit('close')"
           >
-            <Icon :name="item.icon || ''" size="20" aria-hidden="true" />
-            <span>{{ item.label }}</span>
+            <span class="flex items-center gap-3">
+              <Icon :name="item.icon || ''" size="20" aria-hidden="true" />
+              <span>{{ item.label }}</span>
+            </span>
           </NuxtLink>
           <div v-else>
             <button
+              type="button"
               :aria-label="item.ariaLabel"
               :aria-expanded="isDropdownOpen(item.label)"
               :aria-controls="`mobile-dropdown-${item.label}`"
@@ -161,7 +162,6 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
               />
             </button>
 
-            <!-- Mobile account submenu -->
             <NavigationDropdown
               :item="item"
               :is-open="isDropdownOpen(item.label)"
@@ -171,6 +171,7 @@ const { isAuthenticated, isDropdownOpen, isParentActive } =
             >
               <template #extra-items-mobile>
                 <button
+                  type="button"
                   class="w-full text-left flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-[#666] hover:bg-gray-50 hover:text-black"
                   role="menuitem"
                   @click="emit('logout')"
