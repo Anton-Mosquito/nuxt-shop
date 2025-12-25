@@ -4,7 +4,7 @@ const isLoading = ref(false);
 const loadingMessage = ref("");
 
 // Global loading state
-const showLoader = (message = "Завантаження...") => {
+const showLoader = (message = "Loading...") => {
   isLoading.value = true;
   loadingMessage.value = message;
 };
@@ -30,7 +30,7 @@ provide("pageLoader", { showLoader, hideLoader });
       <div class="bg-white rounded-lg p-6 shadow-xl">
         <div class="flex items-center gap-3">
           <Icon
-            name="heroicons-outline:arrow-path"
+            name="ic:baseline-refresh"
             class="animate-spin h-8 w-8 text-blue-600"
             aria-hidden="true"
           />

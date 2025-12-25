@@ -40,7 +40,7 @@ const handleError = (error: Error | NuxtError) => {
               class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center"
             >
               <Icon
-                name="heroicons-outline:exclamation-circle"
+                name="ic:outline-error-outline"
                 class="w-6 h-6 text-red-600"
                 aria-hidden="true"
               />

@@ -1,6 +1,5 @@
-<!-- components/BeforeAfterSlider.vue -->
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   beforeImage: string;
   afterImage: string;
   label?: string;
@@ -76,7 +75,7 @@ onUnmounted(() => {
       <div
         class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-sm font-bold rounded"
       >
-        ПІСЛЯ
+        After
       </div>
     </div>
 

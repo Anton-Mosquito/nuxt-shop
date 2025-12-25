@@ -99,7 +99,7 @@ const props = defineProps<{
         <ul class="mt-8 space-y-3">
           <li class="flex items-center gap-3 text-sm">
             <Icon
-              name="heroicons-solid:check-circle"
+              name="ic:baseline-check-circle"
               class="w-5 h-5 text-green-500 flex-shrink-0"
               aria-hidden="true"
             />
@@ -107,7 +107,7 @@ const props = defineProps<{
           </li>
           <li class="flex items-center gap-3 text-sm">
             <Icon
-              name="heroicons-solid:check-circle"
+              name="ic:baseline-check-circle"
               class="w-5 h-5 text-green-500 flex-shrink-0"
               aria-hidden="true"
             />
@@ -115,7 +115,7 @@ const props = defineProps<{
           </li>
           <li class="flex items-center gap-3 text-sm">
             <Icon
-              name="heroicons-solid:check-circle"
+              name="ic:baseline-check-circle"
               class="w-5 h-5 text-green-500 flex-shrink-0"
               aria-hidden="true"
             />

@@ -97,7 +97,7 @@ onMounted(() => {
                   @click="close"
                 >
                   <Icon
-                    name="heroicons-outline:x-mark"
+                    name="ic:baseline-close"
                     class="w-6 h-6"
                     aria-hidden="true"
                   />

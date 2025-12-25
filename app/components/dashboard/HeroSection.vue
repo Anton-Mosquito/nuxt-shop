@@ -4,7 +4,7 @@ defineProps<{
   title: string;
   subtitle: string;
   image: string;
-  mobileImage?: string; // Окреме зображення для mobile
+  mobileImage?: string;
 }>();
 </script>
 
@@ -40,12 +40,10 @@ defineProps<{
       />
     </div>
 
-    <!-- Gradient Overlay -->
     <div
       class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"
     ></div>
 
-    <!-- Content -->
     <div class="relative z-10 text-center text-white px-4">
       <h1 class="text-4xl md:text-6xl font-bold mb-4">
         {{ title }}
@@ -56,7 +54,7 @@ defineProps<{
       <button
         class="px-8 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors"
       >
-        Дізнатися більше
+        Know More
       </button>
     </div>
   </section>

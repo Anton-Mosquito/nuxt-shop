@@ -29,7 +29,7 @@ const { data: stats, error: statsError } = await useFetch("/api/stats");
           <div class="bg-red-50 border border-red-200 rounded-lg p-6">
             <div class="flex items-start gap-3">
               <Icon
-                name="heroicons-outline:exclamation-circle"
+                name="ic:outline-error-outline"
                 class="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5"
                 aria-hidden="true"
               />
@@ -65,7 +65,7 @@ const { data: stats, error: statsError } = await useFetch("/api/stats");
           <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
             <div class="flex items-center gap-3">
               <Icon
-                name="heroicons-outline:exclamation-triangle"
+                name="ic:outline-warning"
                 class="w-6 h-6 text-yellow-500"
                 aria-hidden="true"
               />

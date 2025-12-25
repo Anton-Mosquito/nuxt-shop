@@ -1,4 +1,3 @@
-<!-- components/BlogPostHeader.vue -->
 <script setup lang="ts">
 interface Post {
   title: string;

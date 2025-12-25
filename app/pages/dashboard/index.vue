@@ -8,11 +8,6 @@ definePageMeta({
   //middleware: "auth", // захист сторінки
 });
 
-const { data: stats } = await useFetch("/api/stats");
-
-const chartData = computed(() => stats.value?.map((s) => s.value) || []);
-const chartLabels = computed(() => stats.value?.map((s) => s.label) || []);
-
 const API_URL = useAPI();
 const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
 
@@ -47,7 +42,7 @@ function handleWidgetError(widgetId: number, error: Error) {
               class="p-6 border-2 border-dashed border-gray-300 rounded text-center"
             >
               <Icon
-                name="heroicons-outline:exclamation-circle"
+                name="ic:outline-error-outline"
                 class="w-12 h-12 mx-auto text-gray-400 mb-3"
                 aria-hidden="true"
               />
@@ -129,15 +124,15 @@ function handleWidgetError(widgetId: number, error: Error) {
     <div class="container mx-auto p-6">
       <h1 class="text-4xl font-bold mb-8">Наші роботи</h1>
       <div class="space-y-12">
-        <BeforeAfterSlider
+        <DashboardBeforeAfterSlider
           before-image="/images/projects/before1.jpg"
           after-image="/images/projects/after1.jpg"
-          label="Редизайн інтерфейсу"
+          label="Interface Redesign"
         />
-        <BeforeAfterSlider
+        <DashboardBeforeAfterSlider
           before-image="/images/projects/before2.jpg"
           after-image="/images/projects/after2.jpg"
-          label="Оптимізація продуктивності"
+          label="Performance Optimization"
         />
       </div>
     </div>

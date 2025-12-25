@@ -75,7 +75,7 @@ const { data: product } = await useFetch(`/api/products/${route.params.id}`);
         <div class="min-h-[60vh] flex items-center justify-center">
           <div class="text-center max-w-md">
             <Icon
-              name="heroicons-outline:exclamation-circle"
+              name="ic:outline-error-outline"
               class="w-24 h-24 mx-auto text-gray-400 mb-6"
               aria-hidden="true"
             />

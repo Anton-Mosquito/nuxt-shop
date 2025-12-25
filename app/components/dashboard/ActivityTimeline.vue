@@ -1,4 +1,3 @@
-<!-- components/ActivityTimeline.vue -->
 <script setup lang="ts">
 interface Activity {
   id: string;
@@ -9,7 +8,7 @@ interface Activity {
   };
   description: string;
   timestamp: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 const props = defineProps<{
@@ -18,28 +17,27 @@ const props = defineProps<{
 
 const typeConfig = {
   created: {
-    icon: "heroicons-solid:plus",
+    icon: "ic:baseline-add",
     color: "bg-green-500",
     label: "створив",
   },
   updated: {
-    icon: "heroicons-outline:pencil",
+    icon: "ic:baseline-edit",
     color: "bg-blue-500",
     label: "оновив",
   },
   deleted: {
-    icon: "heroicons-outline:trash",
+    icon: "ic:baseline-delete",
     color: "bg-red-500",
     label: "видалив",
   },
   commented: {
-    icon: "heroicons-outline:chat-bubble-left",
+    icon: "ic:outline-chat-bubble-outline",
     color: "bg-purple-500",
     label: "прокоментував",
   },
 };
 
-// Групування активностей по датах
 const groupedActivities = computed(() => {
   const groups: Record<string, Activity[]> = {};
 
@@ -75,11 +73,7 @@ const groupedActivities = computed(() => {
         <!-- Vertical line -->
         <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
 
-        <div
-          v-for="(activity, index) in activities"
-          :key="activity.id"
-          class="relative"
-        >
+        <div v-for="activity in activities" :key="activity.id" class="relative">
           <!-- Timeline dot -->
           <div
             class="absolute -left-8 w-8 h-8 rounded-full flex items-center justify-center text-sm"

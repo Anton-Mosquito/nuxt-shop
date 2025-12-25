@@ -22,7 +22,7 @@ const route = useRoute();
             <!-- Notifications -->
             <button class="relative p-2 text-gray-600 hover:text-gray-900">
               <Icon
-                name="heroicons-outline:bell"
+                name="ic:outline-notifications"
                 class="w-6 h-6"
                 aria-hidden="true"
               />
@@ -45,7 +45,7 @@ const route = useRoute();
       <!-- Debug panel тільки в development -->
       <DevOnly>
         <PerformanceMonitor />
-        <DebugPanel />
+        <DashboardDebugPanel />
       </DevOnly>
     </div>
   </div>
