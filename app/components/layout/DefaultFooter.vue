@@ -1,57 +1,75 @@
 <script setup lang="ts">
+import * as z from "zod";
+import { useForm, useField } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import { FOOTER_NAV_LINKS, SOCIAL_LINKS } from "~/constants";
 
-const email = ref("");
-const showSuccess = ref(false);
+const { success, error } = useToast();
 
-const handleSubscribe = () => {
-  if (!email.value || !email.value.includes("@")) return;
+const validationSchema = toTypedSchema(
+  z.object({
+    email: z.string().email("Invalid email address").or(z.literal("")),
+  })
+);
 
-  showSuccess.value = true;
+const { handleSubmit, resetForm } = useForm({
+  validationSchema,
+});
 
-  setTimeout(() => {
-    showSuccess.value = false;
-    email.value = "";
-  }, 4000);
-};
+const { value: email, errorMessage: emailError } = useField<string>("email");
+
+const handleSubscribe = handleSubmit((values) => {
+  if (!values.email) {
+    error("Please enter your email");
+    return;
+  }
+
+  success("Your email has been subscribed to news and notifications");
+  resetForm();
+});
 </script>
 
 <template>
-  <div class="footer">
-    <hr />
-    <div class="footer__top">
-      <ul>
+  <section class="max-w-screen-xl mx-auto flex flex-col gap-6 py-5 px-4">
+    <hr class="border-b border-[var(--color-gray)] m-0" />
+    <div class="flex justify-between items-center gap-6 py-3">
+      <ul class="flex gap-6 items-center list-none p-0 m-0">
         <li v-for="{ name, path } in FOOTER_NAV_LINKS" :key="name">
-          <NuxtLink :to="path" :prefetch="false">{{ name }}</NuxtLink>
+          <NuxtLink
+            class="no-underline uppercase text-sm text-[var(--color-dark-gray)] hover:text-[var(--color-black)]"
+            :to="path"
+            :prefetch="false"
+            >{{ name }}</NuxtLink
+          >
         </li>
       </ul>
-      <div class="footer__form">
-        <UiInput
-          v-model="email"
-          variant="footer"
-          placeholder="Your email for offers and news"
-          type="email"
-          icon="mdi:email-outline"
-          @keyup.enter="handleSubscribe"
-        />
-        <button
-          class="footer__subscribe"
+      <UiForm
+        class="flex-1 flex items-stretch gap-3 min-w-3xs justify-end"
+        @submit="handleSubscribe"
+      >
+        <UiFormField :error="emailError" class="min-w-3xs mb-0 h-full">
+          <UiFormInput
+            v-model="email"
+            placeholder="Your email for offers and news"
+            type="email"
+            class="h-full"
+          />
+        </UiFormField>
+        <UiButton
           aria-label="subscribe"
-          @click="handleSubscribe"
+          type="submit"
+          variant="primary"
+          class="h-auto"
         >
           <Icon name="ic:sharp-arrow-right-alt" size="25" />
-        </button>
-      </div>
+        </UiButton>
+      </UiForm>
     </div>
-    <UiNotification
-      :show="showSuccess"
-      message="Your email has been subscribed to news and notifications"
-      variant="success"
-      icon="mdi:check-circle"
-    />
-    <div class="footer__bottom">
-      <div>&copy; {{ new Date().getFullYear() }} My Company</div>
-      <div class="footer__social">
+    <div class="flex justify-between items-center pt-2">
+      <div class="text-sm text-[var(--color-dark-gray)]">
+        &copy; <NuxtTime :datetime="new Date()" year="numeric" /> My Company
+      </div>
+      <div class="flex items-center gap-4">
         <NuxtLink
           v-for="{ name, url, icon } in SOCIAL_LINKS"
           :key="name"
@@ -61,114 +79,25 @@ const handleSubscribe = () => {
           rel="noopener noreferrer"
           external
           :prefetch="false"
+          class="flex justify-center items-center text-[var(--color-dark-gray)] hover:text-[var(--color-black)]"
         >
           <Icon :name="icon" size="30" />
         </NuxtLink>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-.footer {
-  margin: 0 auto;
-  max-width: 1248px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 20px 16px;
+section :deep(.form-field) {
+  margin-bottom: 0;
+}
 
-  hr {
-    border: none;
-    border-bottom: 1px solid var(--color-gray);
-    height: 1px;
-    margin: 0;
-  }
+section :deep(.form-field__error) {
+  position: absolute;
+}
 
-  .footer__top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    padding: 12px 0;
-  }
-
-  .footer__top ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 28px;
-    align-items: center;
-  }
-
-  .footer__top a {
-    text-decoration: none;
-    text-transform: uppercase;
-    color: var(--color-dark-gray);
-    font-size: 14px;
-    letter-spacing: 0.02em;
-  }
-
-  .footer__top a:hover {
-    color: var(--color-black);
-  }
-
-  .footer__form {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 260px;
-    justify-content: flex-end;
-  }
-
-  .footer__form input {
-    min-width: 260px;
-    border: none;
-    border-bottom: 1px solid #000;
-    background: transparent;
-    padding: 6px 8px;
-    font-size: 14px;
-    outline: none;
-  }
-
-  .footer__form .footer__subscribe {
-    background: none;
-    border: none;
-    padding: 6px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .footer__bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 8px;
-  }
-
-  .footer__bottom div {
-    color: var(--color-dark-gray);
-    font-size: 14px;
-  }
-
-  .footer__social {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-
-  .footer__social a {
-    color: var(--color-dark-gray);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .footer__social a:hover {
-    color: var(--color-black);
-  }
+section :deep(.ui-button) {
+  padding: 6px;
 }
 </style>

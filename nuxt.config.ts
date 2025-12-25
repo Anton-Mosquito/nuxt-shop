@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
     "@nuxtjs/tailwindcss",
+    "@vee-validate/nuxt",
   ],
   image: {
     format: ["avif", "webp"],
