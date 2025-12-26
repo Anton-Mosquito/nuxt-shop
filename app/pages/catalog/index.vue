@@ -5,6 +5,7 @@ import {
   DEBOUNCE_DELAY,
   MIN_PRICE,
   MAX_PRICE,
+  DEFAULT_PAGE,
 } from "~/constants/catalog";
 
 useSeoMeta({
@@ -57,7 +58,7 @@ const { data: productsData } = await useFetch<GetProductsResponse>(
 
 const totalPages = computed(() => {
   const total = Number(productsData.value?.total ?? 0);
-  return Math.max(1, Math.ceil(total / LIMIT));
+  return Math.max(DEFAULT_PAGE, Math.ceil(total / LIMIT));
 });
 
 const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
@@ -99,8 +100,8 @@ const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
   }
 );
 
-type QueryUpdates = Record<string, string | number | boolean | undefined> & {
-  offset?: number | string | undefined;
+type QueryUpdates = Partial<Record<string, string | number | boolean>> & {
+  offset?: string | number;
 };
 
 const updateRoute = (queryUpdates: QueryUpdates) => {
@@ -108,7 +109,7 @@ const updateRoute = (queryUpdates: QueryUpdates) => {
     query: {
       ...route.query,
       ...queryUpdates,
-      offset: queryUpdates.offset ?? 1,
+      offset: String(queryUpdates.offset ?? DEFAULT_PAGE),
     },
   });
 };
@@ -178,7 +179,9 @@ function useDiscount() {
 }
 
 function loadQueryParameters() {
-  const currentPage = computed(() => Number(route.query.offset) || 1);
+  const currentPage = computed(
+    () => Number(route.query.offset) || DEFAULT_PAGE
+  );
 
   const apiQuery = computed(() => ({
     limit: LIMIT,
@@ -228,7 +231,7 @@ function loadQueryParameters() {
           :columns="3"
         />
         <UiPagination
-          v-if="totalPages > 1"
+          v-if="totalPages > DEFAULT_PAGE"
           :current-page="currentPage"
           :total-pages="totalPages"
           base-url="/catalog"
