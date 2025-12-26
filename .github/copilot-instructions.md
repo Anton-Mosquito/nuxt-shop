@@ -459,6 +459,12 @@ Located in [`instructions/`](instructions/):
 - **[dynamic-patterns.instructions.md](instructions/dynamic-patterns.instructions.md)**: Dynamic slots, arguments, and CSS binding
 - **[npm-security.instructions.md](instructions/npm-security.instructions.md)**: NPM security best practices
 
+### TypeScript Best Practices
+
+Located in [`instructions/`](instructions/):
+
+- **[typescript-best-practices.instructions.md](instructions/typescript-best-practices.instructions.md)**: Professional TypeScript best practices for clarity, safety, and maintainability
+
 ### Advanced Vue 3 Reactivity Instructions
 
 Located in [`instructions/`](instructions/):

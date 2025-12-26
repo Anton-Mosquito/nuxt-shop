@@ -1,74 +1,66 @@
 <script setup lang="ts">
 import type { GetCategoriesResponse, GetProductsResponse } from "~/types/api";
+import {
+  LIMIT,
+  DEBOUNCE_DELAY,
+  MIN_PRICE,
+  MAX_PRICE,
+} from "~/constants/catalog";
 
 useSeoMeta({
   title: "Catalog - Nuxt Shop",
   description: "Browse our extensive catalog of products at Nuxt Shop.",
   ogDescription: "Browse our extensive catalog of products at Nuxt Shop.",
 });
-// useHead({
-//   title: "Catalog - Nuxt Shop",
-//   meta: [
-//     {
-//       name: "description",
-//       content: "Browse our extensive catalog of products at Nuxt Shop.",
-//     },
-//   ],
-// });
+
 const nuxtApp = useNuxtApp();
 const API_URL = useAPI();
 const route = useRoute();
 const router = useRouter();
-const category_id = ref(route.query.category_id?.toString() ?? "");
-const search = ref(route.query.search?.toString() ?? "");
-const priceFrom = ref(Number(route.query.price_from) || 0);
-const priceTo = ref(Number(route.query.price_to) || 1200);
-const hasDiscount = ref<boolean>(false);
-const limit = 6;
-const currentPage = ref(Number(route.query.offset) || 0);
+
+const { search } = useSearch();
+const { categoryId, categoriesSelect } = useCategory();
+const { priceFrom, priceTo } = usePrice();
+const { hasDiscount } = useDiscount();
+const { currentPage, apiQuery } = loadQueryParameters();
 
 watch(
-  [category_id, search, priceFrom, priceTo, hasDiscount, currentPage],
-  () => {
-    changeRoute(
-      category_id,
-      search,
-      priceFrom,
-      priceTo,
-      hasDiscount,
-      currentPage
-    );
+  () => route.query,
+  (query) => {
+    const normalized = {
+      search: query.search?.toString() ?? "",
+      category_id: query.category_id?.toString() ?? "",
+      price_from: Number(query.price_from) || MIN_PRICE,
+      price_to: Number(query.price_to) || MAX_PRICE,
+      has_discount: query.has_discount === "true",
+    };
+
+    if (search.value !== normalized.search) search.value = normalized.search;
+    if (categoryId.value !== normalized.category_id)
+      categoryId.value = normalized.category_id;
+    if (priceFrom.value !== normalized.price_from)
+      priceFrom.value = normalized.price_from;
+    if (priceTo.value !== normalized.price_to)
+      priceTo.value = normalized.price_to;
+    if (hasDiscount.value !== normalized.has_discount)
+      hasDiscount.value = normalized.has_discount;
   }
 );
 
-const changeRoute = useDebounceFn(
-  (category_id, search, priceFrom, priceTo, hasDiscount, currentPage) => {
-    router.replace({
-      query: {
-        ...route.query,
-        category_id: category_id.value,
-        search: search.value,
-        price_from: priceFrom.value,
-        price_to: priceTo.value,
-        has_discount: hasDiscount.value,
-        offset: currentPage.value,
-      },
-    });
-  },
-  300
+const { data: productsData } = await useFetch<GetProductsResponse>(
+  `${API_URL}/products`,
+  {
+    key: "get-products",
+    query: apiQuery,
+  }
 );
 
-const query = computed(() => ({
-  limit,
-  offset: currentPage.value,
-  category_id: route.query.category_id || undefined,
-  search: route.query.search || undefined,
-  price_from: route.query.price_from || undefined,
-  price_to: route.query.price_to || undefined,
-  has_discount: route.query.has_discount || undefined,
-}));
+const totalPages = computed(() => {
+  const total = Number(productsData.value?.total ?? 0);
+  return Math.max(1, Math.ceil(total / LIMIT));
+});
 
-const { data } = await useFetch<GetCategoriesResponse>(
+const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
   `${API_URL}/categories`,
   {
     transform(input) {
@@ -107,68 +99,103 @@ const { data } = await useFetch<GetCategoriesResponse>(
   }
 );
 
-const selectDefault = {
-  value: "",
-  label: "Select a category",
+type QueryUpdates = Record<string, string | number | boolean | undefined> & {
+  offset?: number | string | undefined;
 };
 
-const categoriesSelect = computed(() =>
-  [selectDefault].concat(
-    data.value?.categories.map((category) => ({
-      value: `${category.id}`,
-      label: category.name,
-    })) ?? []
-  )
-);
-
-const { data: productsData } = await useFetch<GetProductsResponse>(
-  `${API_URL}/products`,
-  {
-    key: "get-products",
-    query,
-  }
-);
-
-const totalPages = computed(() => {
-  const total = productsData.value?.total || 0;
-  return Math.ceil(total / limit);
-});
-
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
+const updateRoute = (queryUpdates: QueryUpdates) => {
+  router.push({
+    query: {
+      ...route.query,
+      ...queryUpdates,
+      offset: queryUpdates.offset ?? 1,
+    },
+  });
 };
 
-// const { data, error, refresh } = await useAsyncData(
-//   "categories",
-//   () =>
-//     $fetch<IGetCategoriesResponse>(`${config.public.api_url}/categories`, {
-//       method: "GET",
-//     }),
-//   {
-//     watch: [input],
-//   }
-// );
+function useSearch() {
+  const search = ref(route.query.search?.toString() ?? "");
 
-// async function sendRequest() {
-//   await refresh();
-// }
+  const debouncedSearchUpdate = useDebounceFn(() => {
+    updateRoute({
+      search: search.value || undefined,
+    });
+  }, DEBOUNCE_DELAY);
 
-//$fetch - no ssr friendly
-// useFetch - ssr friendly use only in setup
-// useAsyncData - ssr friendly use in setup and outside setup, complex variants
+  watch(search, () => debouncedSearchUpdate());
 
-// try {
-//   const data = await $fetch<IGetCategoriesResponse>(
-//     `${config.public.api_url}/categories`
-//   );
-//   console.log("🚀 ~ data:", data);
-// } catch (error) {
-//   console.error("Error fetching categories:", error);
-// }
+  return { search };
+}
+
+function useCategory() {
+  const categoryId = ref(route.query.category_id?.toString() ?? "");
+
+  watch(categoryId, (newVal) => {
+    updateRoute({ category_id: newVal || undefined });
+  });
+
+  const selectDefault = {
+    value: "",
+    label: "Select a category",
+  };
+
+  const categoriesSelect = computed(() =>
+    [selectDefault].concat(
+      categoriesData.value?.categories.map((category) => ({
+        value: `${category.id}`,
+        label: category.name,
+      })) ?? []
+    )
+  );
+
+  return { categoryId, categoriesSelect };
+}
+
+function usePrice() {
+  const priceFrom = ref(Number(route.query.price_from) || 0);
+  const priceTo = ref(Number(route.query.price_to) || 1200);
+
+  const debouncedPriceUpdate = useDebounceFn(() => {
+    updateRoute({
+      price_from: priceFrom.value > 0 ? priceFrom.value : undefined,
+      price_to: priceTo.value < 1200 ? priceTo.value : undefined,
+    });
+  }, DEBOUNCE_DELAY);
+
+  watch([priceFrom, priceTo], () => debouncedPriceUpdate());
+
+  return { priceFrom, priceTo };
+}
+
+function useDiscount() {
+  const hasDiscount = ref(route.query.has_discount === "true");
+
+  watch(hasDiscount, (newVal) => {
+    updateRoute({ has_discount: newVal ? "true" : undefined });
+  });
+
+  return { hasDiscount };
+}
+
+function loadQueryParameters() {
+  const currentPage = computed(() => Number(route.query.offset) || 1);
+
+  const apiQuery = computed(() => ({
+    limit: LIMIT,
+    offset: (currentPage.value - 1) * LIMIT,
+    category_id: route.query.category_id || undefined,
+    search: route.query.search || undefined,
+    price_from: route.query.price_from || undefined,
+    price_to: route.query.price_to || undefined,
+    has_discount: route.query.has_discount || undefined,
+  }));
+
+  return { currentPage, apiQuery };
+}
 </script>
 
 <template>
-  <div class="catalog-page">
+  <section class="catalog-page">
     <h1 class="catalog-page__title">Product catalog</h1>
     <div class="catalog-page__layout">
       <div class="catalog-page__filter">
@@ -180,7 +207,7 @@ const handlePageChange = (page: number) => {
             icon="mdi:magnify"
           />
         </div>
-        <SelectField v-model="category_id" :options="categoriesSelect" />
+        <SelectField v-model="categoryId" :options="categoriesSelect" />
         <UiRangeSlider
           v-model:min-value="priceFrom"
           v-model:max-value="priceTo"
@@ -204,11 +231,11 @@ const handlePageChange = (page: number) => {
           v-if="totalPages > 1"
           :current-page="currentPage"
           :total-pages="totalPages"
-          @page-change="handlePageChange"
+          base-url="/catalog"
         />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
