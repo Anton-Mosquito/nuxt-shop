@@ -152,13 +152,13 @@ function useCategory() {
 }
 
 function usePrice() {
-  const priceFrom = ref(Number(route.query.price_from) || 0);
-  const priceTo = ref(Number(route.query.price_to) || 1200);
+  const priceFrom = ref(Number(route.query.price_from) || MIN_PRICE);
+  const priceTo = ref(Number(route.query.price_to) || MAX_PRICE);
 
   const debouncedPriceUpdate = useDebounceFn(() => {
     updateRoute({
-      price_from: priceFrom.value > 0 ? priceFrom.value : undefined,
-      price_to: priceTo.value < 1200 ? priceTo.value : undefined,
+      price_from: priceFrom.value > MIN_PRICE ? priceFrom.value : undefined,
+      price_to: priceTo.value < MAX_PRICE ? priceTo.value : undefined,
     });
   }, DEBOUNCE_DELAY);
 
@@ -196,10 +196,10 @@ function loadQueryParameters() {
 
 <template>
   <section class="catalog-page">
-    <h1 class="catalog-page__title">Product catalog</h1>
-    <div class="catalog-page__layout">
-      <div class="catalog-page__filter">
-        <div class="catalog-page__search">
+    <h1 class="text-3xl font-normal mb-12 text-left">Product catalog</h1>
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-9">
+      <div class="w-full lg:w-[260px] flex flex-col gap-6">
+        <div class="relative">
           <UiInput
             v-model="search"
             variant="default"
@@ -211,8 +211,8 @@ function loadQueryParameters() {
         <UiRangeSlider
           v-model:min-value="priceFrom"
           v-model:max-value="priceTo"
-          :min="0"
-          :max="1200"
+          :min="MIN_PRICE"
+          :max="MAX_PRICE"
           :step="10"
           locale="en-US"
           currency="USD"
@@ -221,7 +221,7 @@ function loadQueryParameters() {
         />
         <UiDiscountToggle v-model="hasDiscount" />
       </div>
-      <div class="catalog-page__content">
+      <div class="flex-1">
         <ProductGrid
           v-if="productsData?.products"
           :products="productsData.products"
@@ -237,42 +237,3 @@ function loadQueryParameters() {
     </div>
   </section>
 </template>
-
-<style scoped>
-.catalog-page__title {
-  font-size: 32px;
-  font-weight: 400;
-  margin-bottom: 48px;
-  text-align: left;
-}
-
-.catalog-page__layout {
-  display: flex;
-  gap: 36px;
-}
-
-.catalog-page__filter {
-  width: 260px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.catalog-page__search {
-  position: relative;
-}
-
-.catalog-page__content {
-  flex: 1;
-}
-
-@media (max-width: 1024px) {
-  .catalog-page__layout {
-    flex-direction: column;
-  }
-
-  .catalog-page__filter {
-    width: 100%;
-  }
-}
-</style>
