@@ -3,7 +3,7 @@ import type { ButtonProps } from "~/types/components/ui/button";
 
 const {
   variant = "primary",
-  size = "md",
+  size = "medium",
   disabled = false,
   block = false,
   type = "button",
@@ -45,17 +45,17 @@ const {
 }
 
 /* Sizes */
-.ui-button--sm {
+.ui-button--small {
   padding: 8px 16px;
   font-size: 13px;
 }
 
-.ui-button--md {
+.ui-button--medium {
   padding: 12px 24px;
   font-size: 16px;
 }
 
-.ui-button--lg {
+.ui-button--large {
   padding: 16px 32px;
   font-size: 16px;
   font-weight: 700;

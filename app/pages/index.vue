@@ -7,6 +7,10 @@ useSeoMeta({
   ogDescription: "Welcome to Nuxt Shop - your destination for quality jewelry.",
 });
 
+// definePageMeta({
+//   layout: "default",
+// });
+
 const API_URL = useAPI();
 const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
   query: { limit: 6, offset: 0 },
@@ -23,7 +27,9 @@ const hasProducts = computed(() => products.value.length > 0);
     <section class="home__section">
       <div class="home__header">
         <h2 class="home__title">Recent Arrivals</h2>
-        <NuxtLink to="/catalog" class="home__link">All products</NuxtLink>
+        <NuxtLink to="/catalog" class="home__link" prefetch
+          >All products</NuxtLink
+        >
       </div>
       <ProductGrid v-if="hasProducts" :products="products" :columns="3" />
     </section>

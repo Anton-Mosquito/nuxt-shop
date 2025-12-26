@@ -4,13 +4,13 @@
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  baseUrl?: string;
   maxVisible?: number;
 }
 
 /**
  * Pagination component emits
  */
-export type PaginationEmits = {
-  "update:current-page": [page: number];
-  change: [page: number];
-};
+export interface PaginationEmits {
+  "page-change": [page: number];
+}

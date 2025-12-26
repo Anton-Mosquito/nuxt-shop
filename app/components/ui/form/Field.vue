@@ -43,6 +43,7 @@ const fieldId = useId();
 
 <style scoped>
 .form-field {
+  position: relative;
   margin-bottom: 20px;
 }
 

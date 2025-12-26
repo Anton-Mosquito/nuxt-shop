@@ -39,7 +39,7 @@ const averageRating = computed(() => {
       <span class="review-count">{{ reviewCount }} {{ reviewWord }}</span>
     </div>
 
-    <p class="product-description">{{ product.shortDescription }}</p>
+    <p class="product-description">{{ product.short_description }}</p>
 
     <div class="product-actions">
       <UiQuantityInput v-model="quantity" :min="1" :max="99" />

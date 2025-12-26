@@ -15,7 +15,13 @@ export default defineNuxtConfig({
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
     "@nuxtjs/tailwindcss",
+    "@vee-validate/nuxt",
   ],
+  image: {
+    format: ["avif", "webp"],
+    quality: 80,
+    domains: ["localhost:3000"],
+  },
   //css: ["~/assets/styles/main.css"],
   components: [{ path: "~/components", pathPrefix: true }],
   runtimeConfig: {
@@ -152,5 +158,9 @@ export default defineNuxtConfig({
     devStorage: {
       db: { driver: "fs-lite", base: "./db" },
     },
+  },
+  experimental: {
+    componentIslands: true,
+    payloadExtraction: true,
   },
 });
