@@ -7,3 +7,11 @@ export interface Toast {
 }
 
 export type ToastPayload = Omit<Toast, "id">;
+
+/**
+ * Toast options for creating new toasts
+ */
+export interface ToastOptions {
+  message: string;
+  duration?: number;
+}

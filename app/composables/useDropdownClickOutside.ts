@@ -10,16 +10,15 @@ import type { NavItem } from "~/types/ui/navigation";
  * @param onClose - Callback to close a dropdown
  */
 export function useDropdownClickOutside(
-  items: readonly NavItem[] | NavItem[] | ComputedRef<NavItem[]>,
+  items: readonly NavItem[] | NavItem[],
   dropdownRefs: Ref<Record<string, HTMLElement | null>>,
   isDropdownOpen: (label: string) => boolean,
   onClose: (label: string) => void
 ) {
   watchEffect(() => {
-    const itemsList = isRef(items) ? items.value : items;
     const disposers: Array<() => void> = [];
 
-    itemsList.forEach((item) => {
+    items.forEach((item) => {
       const target = dropdownRefs.value[item.label];
       if (!item.children || !target) return;
 

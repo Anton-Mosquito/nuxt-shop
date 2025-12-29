@@ -20,11 +20,11 @@ const { value: email, errorMessage: emailError } = useField<string>("email");
 
 const handleSubscribe = handleSubmit((values) => {
   if (!values.email) {
-    error("Please enter your email");
+    error({ message: "Please enter your email" });
     return;
   }
 
-  success("Your email has been subscribed to news and notifications");
+  success({ message: "Your email has been subscribed to news and notifications" });
   resetForm();
 });
 </script>
@@ -48,8 +48,9 @@ const handleSubscribe = handleSubmit((values) => {
         @submit="handleSubscribe"
       >
         <UiFormField :error="emailError" class="min-w-3xs mb-0 h-full">
-          <UiFormInput
+          <UiInput
             v-model="email"
+            variant="form"
             placeholder="Your email for offers and news"
             type="email"
             class="h-full"
@@ -98,6 +99,6 @@ section :deep(.form-field__error) {
 }
 
 section :deep(.ui-button) {
-  padding: 6px;
+  padding: 10px;
 }
 </style>

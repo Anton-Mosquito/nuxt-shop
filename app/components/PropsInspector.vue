@@ -16,8 +16,8 @@ const formatted = computed(() => JSON.stringify(props.data, null, 2));
         🔍 {{ label || "Props Inspector" }}
       </h4>
       <button
-        @click="isExpanded = !isExpanded"
         class="text-sm text-yellow-600 hover:text-yellow-800"
+        @click="isExpanded = !isExpanded"
       >
         {{ isExpanded ? "Згорнути" : "Розгорнути" }}
       </button>

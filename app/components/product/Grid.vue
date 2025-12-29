@@ -3,44 +3,24 @@ import type { Product } from "~/types";
 
 interface Props {
   products: Product[];
-  columns?: number;
+  isLoading?: boolean;
 }
 
-const { columns = 3, products } = defineProps<Props>();
+const { products, isLoading = false } = defineProps<Props>();
 </script>
 
 <template>
-  <div class="product-grid">
-    <CatalogCard
-      v-for="product in products"
-      :key="product.id"
-      v-bind="product"
-    />
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-3 max-w-full [&>*]:w-full [&>*]:max-w-full">
+    <template v-if="isLoading">
+      <SkeletonCard v-for="n in 6" :key="n" />
+    </template>
+
+    <template v-else>
+      <ProductCard
+        v-for="product in products"
+        :key="product.id"
+        v-bind="product"
+      />
+    </template>
   </div>
 </template>
-
-<style scoped>
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(v-bind(columns), minmax(min(100%, 300px), 1fr));
-  gap: 64px 12px;
-  max-width: 100%;
-}
-
-.product-grid > * {
-  max-width: 100%;
-  width: 100%;
-}
-
-@media (max-width: 1024px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

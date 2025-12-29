@@ -26,7 +26,7 @@ watchEffect(async () => {
 
 <template>
   <div class="catalog__grid">
-    <CatalogCard
+    <ProductCard
       v-for="product in products"
       :key="product.id"
       v-bind="product"

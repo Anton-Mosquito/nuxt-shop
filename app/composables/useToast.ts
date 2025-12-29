@@ -1,4 +1,4 @@
-import type { Toast, ToastPayload } from "~/types";
+import type { Toast, ToastPayload, ToastOptions } from "~/types";
 
 export function useToast() {
   const toasts = useState<Toast[]>("toasts", () => []);
@@ -29,17 +29,17 @@ export function useToast() {
     toasts.value = toasts.value.filter((t) => t.id !== id);
   };
 
-  const success = (message: string, duration?: number) =>
-    addToast({ type: "success", message, duration });
+  const success = (options: ToastOptions) =>
+    addToast({ type: "success", ...options });
 
-  const error = (message: string, duration?: number) =>
-    addToast({ type: "error", message, duration });
+  const error = (options: ToastOptions) =>
+    addToast({ type: "error", ...options });
 
-  const warning = (message: string, duration?: number) =>
-    addToast({ type: "warning", message, duration });
+  const warning = (options: ToastOptions) =>
+    addToast({ type: "warning", ...options });
 
-  const info = (message: string, duration?: number) =>
-    addToast({ type: "info", message, duration });
+  const info = (options: ToastOptions) =>
+    addToast({ type: "info", ...options });
 
   return {
     toasts: readonly(toasts),

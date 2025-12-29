@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GetCategoriesResponse, GetProductsResponse } from "~/types/api";
+import type { GetCategoriesResponse, GetProductsResponse, QueryUpdates } from "~/types";
 import {
   LIMIT,
   DEBOUNCE_DELAY,
@@ -48,7 +48,7 @@ watch(
   }
 );
 
-const { data: productsData } = await useFetch<GetProductsResponse>(
+const { data: productsData, status } = await useFetch<GetProductsResponse>(
   `${API_URL}/products`,
   {
     key: "get-products",
@@ -99,10 +99,6 @@ const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
     },
   }
 );
-
-type QueryUpdates = Partial<Record<string, string | number | boolean>> & {
-  offset?: string | number;
-};
 
 const updateRoute = (queryUpdates: QueryUpdates) => {
   router.push({
@@ -216,7 +212,6 @@ function loadQueryParameters() {
           v-model:max-value="priceTo"
           :min="MIN_PRICE"
           :max="MAX_PRICE"
-          :step="10"
           locale="en-US"
           currency="USD"
           spacing="medium"
@@ -226,9 +221,8 @@ function loadQueryParameters() {
       </div>
       <div class="flex-1">
         <ProductGrid
-          v-if="productsData?.products"
-          :products="productsData.products"
-          :columns="3"
+          :products="productsData?.products ?? []"
+          :is-loading="status === 'pending'"
         />
         <UiPagination
           v-if="totalPages > DEFAULT_PAGE"
