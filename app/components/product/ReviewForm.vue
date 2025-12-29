@@ -116,8 +116,9 @@ const handleSubmit = async () => {
 
       <div class="review-form__row">
         <UiFormField label="Your Name" required :error="errors.name">
-          <UiFormInput
+          <UiInput 
             v-model="formData.name"
+            variant="form"
             placeholder="Enter your name"
             autocomplete="name"
             @blur="touchField('name')"
@@ -125,8 +126,9 @@ const handleSubmit = async () => {
         </UiFormField>
 
         <UiFormField label="Your Email" required :error="errors.email">
-          <UiFormInput
+          <UiInput 
             v-model="formData.email"
+            variant="form"
             type="email"
             placeholder="example@mail.com"
             autocomplete="email"
