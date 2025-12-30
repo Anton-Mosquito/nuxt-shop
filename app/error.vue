@@ -41,7 +41,3 @@ function goHome() {
     </UiButton>
   </div>
 </template>
-
-<style scoped>
-/* Styles removed: Tailwind utilities are used in the template. */
-</style>
