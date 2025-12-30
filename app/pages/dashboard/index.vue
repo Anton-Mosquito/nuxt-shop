@@ -12,9 +12,9 @@ const API_URL = useAPI();
 const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
 
 const widgets = [
-  { id: 1, component: "WidgetA", props: { data: [] } },
-  { id: 2, component: "WidgetB", props: { data: null } }, // може впасти
-  { id: 3, component: "WidgetC", props: { data: {} } },
+  { id: 1, component: "RiskyComponent", props: { data: [1, 2, 3] } },
+  { id: 2, component: "RiskyComponent", props: { data: null } }, // впаде
+  { id: 3, component: "RiskyComponent", props: { data: [4, 5] } },
 ];
 
 const failedWidgets = ref<number[]>([]);
@@ -31,29 +31,12 @@ function handleWidgetError(widgetId: number, error: Error) {
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="widget in widgets" :key="widget.id">
-        <NuxtClientFallback
+        <RetryableComponent
           @error="(error: Error) => handleWidgetError(widget.id, error)"
         >
           <!-- Динамічний компонент -->
           <component :is="widget.component" v-bind="widget.props" />
-
-          <template #fallback="{ error }">
-            <div
-              class="p-6 border-2 border-dashed border-gray-300 rounded text-center"
-            >
-              <Icon
-                name="ic:outline-error-outline"
-                class="w-12 h-12 mx-auto text-gray-400 mb-3"
-                aria-hidden="true"
-              />
-              <p class="text-gray-600 text-sm mb-2">Віджет недоступний</p>
-              <details class="text-xs text-gray-500">
-                <summary class="cursor-pointer">Деталі помилки</summary>
-                <p class="mt-2">{{ error.message }}</p>
-              </details>
-            </div>
-          </template>
-        </NuxtClientFallback>
+        </RetryableComponent>
       </div>
     </div>
 
@@ -112,14 +95,6 @@ function handleWidgetError(widgetId: number, error: Error) {
     />
 
     <UserProfile />
-
-    <ResponsiveHero
-      mobile-image="/images/hero-mobile-portrait.jpg"
-      tablet-image="/images/hero-tablet-landscape.jpg"
-      desktop-image="/images/hero-desktop-wide.jpg"
-      title="Створюємо майбутнє разом"
-      description="Інноваційні рішення для вашого бізнесу з використанням новітніх технологій"
-    />
 
     <div class="container mx-auto p-6">
       <h1 class="text-4xl font-bold mb-8">Наші роботи</h1>

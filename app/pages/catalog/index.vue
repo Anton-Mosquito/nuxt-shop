@@ -6,7 +6,7 @@ import {
   MIN_PRICE,
   MAX_PRICE,
   DEFAULT_PAGE,
-} from "~/constants/catalog";
+} from "~/constants";
 
 useSeoMeta({
   title: "Catalog - Nuxt Shop",
@@ -206,7 +206,7 @@ function loadQueryParameters() {
             icon="mdi:magnify"
           />
         </div>
-        <SelectField v-model="categoryId" :options="categoriesSelect" />
+        <UiSelect v-model="categoryId" :options="categoriesSelect" />
         <UiRangeSlider
           v-model:min-value="priceFrom"
           v-model:max-value="priceTo"

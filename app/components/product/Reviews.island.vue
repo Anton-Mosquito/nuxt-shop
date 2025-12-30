@@ -38,7 +38,7 @@ const localReviewCount = computed(() => localReviews.value.length);
         class="pb-6 border-b border-solid border-[var(--color-gray)]"
       >
         <div class="flex gap-3">
-          <UserAvatar
+          <UiAvatar
             :src="review.avatar"
             :alt="review.name"
             size="sm"

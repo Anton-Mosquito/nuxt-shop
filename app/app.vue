@@ -54,7 +54,8 @@ const handleAppError = (error: Error) => {
       </NuxtLayout>
     </ErrorBoundary>
 
-    <ToastContainer />
+    <UiToast />
+    <UiPageLoader />
   </div>
 </template>
 

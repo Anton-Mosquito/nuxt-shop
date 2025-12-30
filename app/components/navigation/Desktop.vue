@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HEADER_NAVIGATION } from "~/constants/header-navigation";
+import { HEADER_NAVIGATION } from "~/constants";
 import type {
   NavigationStateProps,
   NavigationToggleEmit,

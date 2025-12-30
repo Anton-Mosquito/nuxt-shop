@@ -1,4 +1,3 @@
-<!-- components/PerformanceMonitor.vue -->
 <script setup lang="ts">
 // Моніторинг продуктивності сторінки
 const metrics = ref({

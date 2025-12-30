@@ -93,7 +93,7 @@ const groupedActivities = computed(() => {
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
-                  <UserAvatar
+                  <UiAvatar
                     :src="activity.user.avatar"
                     :alt="activity.user.name"
                     size="sm"

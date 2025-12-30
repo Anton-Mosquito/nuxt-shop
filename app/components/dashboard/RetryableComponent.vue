@@ -11,6 +11,10 @@ const shouldRetry = computed(() => {
   return retryCount.value < (props.maxRetries || 3);
 });
 
+const emit = defineEmits<{
+  (e: "error", error: any): void;
+}>();
+
 function retry() {
   retryCount.value++;
   componentKey.value++; // Force re-render
@@ -18,7 +22,7 @@ function retry() {
 </script>
 
 <template>
-  <NuxtClientFallback>
+  <NuxtClientFallback @error="(err) => emit('error', err)">
     <!-- Використовуй key для force re-render -->
     <slot :key="componentKey" />
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BREADCRUMB_LABELS } from "~/constants/navigation";
+import { BREADCRUMB_LABELS } from "~/constants";
 
 const route = useRoute();
 const router = useRouter();

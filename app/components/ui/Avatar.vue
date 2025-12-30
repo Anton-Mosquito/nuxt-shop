@@ -1,52 +1,32 @@
 <script setup lang="ts">
-const {
-  src = null,
-  alt,
-  size = "md",
-} = defineProps<{
-  src?: string | null;
-  alt: string;
-  size?: "sm" | "md" | "lg" | "xl";
-}>();
+import type { AvatarProps } from "~/types";
+import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS } from "~/types";
 
-const sizeClasses = {
-  sm: "w-8 h-8",
-  md: "w-12 h-12",
-  lg: "w-16 h-16",
-  xl: "w-24 h-24",
-};
-
-const sizePixels = {
-  sm: 32,
-  md: 48,
-  lg: 64,
-  xl: 96,
-};
+const { src = null, alt, size = "md" } = defineProps<AvatarProps>();
 
 const imageError = ref(false);
 
-const initials = computed(() => {
-  const names = alt.split(" ");
-  return names
+const initials = computed(() =>
+  alt
+    .split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2);
-});
+    .slice(0, 2)
+);
 </script>
 
 <template>
   <div
     class="rounded-full overflow-hidden flex items-center justify-center"
-    :class="[sizeClasses[size || 'md']]"
+    :class="AVATAR_SIZE_CLASSES[size]"
   >
-    <!-- Image -->
     <NuxtImg
       v-if="src && !imageError"
       :src="src"
       :alt="alt"
-      :width="sizePixels[size || 'md']"
-      :height="sizePixels[size || 'md']"
+      :width="AVATAR_SIZE_PIXELS[size]"
+      :height="AVATAR_SIZE_PIXELS[size]"
       format="webp"
       quality="90"
       class="w-full h-full object-cover"

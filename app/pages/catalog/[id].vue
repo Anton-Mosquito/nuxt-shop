@@ -109,12 +109,6 @@ const productImages = computed(() => {
         </div>
       </template>
     </UiTabs>
-
-    <!-- Показується тільки в dev -->
-    <DevOnly>
-      <PropsInspector :data="data.product" label="Product Data" />
-      <PropsInspector :data="route.params" label="Route Params" />
-    </DevOnly>
   </div>
 
   <div v-else class="loading">

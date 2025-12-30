@@ -1,13 +1,8 @@
-<!-- components/WindowSize.vue -->
 <script setup lang="ts">
-// Компонент що відслідковує розмір вікна
-// window не існує на сервері!
-
 const width = ref(0);
 const height = ref(0);
 
 function updateSize() {
-  // Guard: тільки на клієнті
   if (typeof window === "undefined") return;
   width.value = window.innerWidth;
   height.value = window.innerHeight;
@@ -26,7 +21,6 @@ onUnmounted(() => {
   }
 });
 
-// Визначення breakpoint
 const breakpoint = computed(() => {
   if (width.value < 640) return "mobile";
   if (width.value < 1024) return "tablet";

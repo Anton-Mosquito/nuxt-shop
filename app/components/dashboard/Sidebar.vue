@@ -189,7 +189,7 @@ function isExpanded(itemTo: string): boolean {
     <!-- Footer -->
     <div class="p-4 border-t border-gray-800 mt-auto">
       <div class="flex items-center gap-3 px-4 py-3">
-        <UserAvatar src="/images/admin-avatar.jpg" alt="Admin" size="sm" />
+        <UiAvatar src="/images/admin-avatar.jpg" alt="Admin" size="sm" />
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium truncate">Олена Петренко</p>
           <p class="text-xs text-gray-400 truncate">admin@example.com</p>

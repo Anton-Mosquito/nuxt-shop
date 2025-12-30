@@ -50,7 +50,7 @@ const averageRating = computed(() => {
     </div>
 
     <div class="product-icons">
-      <AddFavorite :id="product.id" variant="inline" is-shown />
+      <ProductAddFavorite :id="product.id" variant="inline" is-shown />
       <div class="product-icons__separator"></div>
       <button
         v-for="{ platform, icon, label } in SHARE_BUTTONS"

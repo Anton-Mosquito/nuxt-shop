@@ -27,7 +27,7 @@ const isHovered = ref(false);
         class="absolute inset-0 w-full h-full object-cover z-1"
       />
       <span v-if="discount > 0" class="absolute top-3 left-3 py-1 px-2.5 rounded-md text-xs bg-[var(--color-accent)] text-[var(--color-white-light)] z-20 transition-[opacity,transform] duration-100">- {{ discount }}%</span>
-      <AddFavorite :id="id" :is-shown="isHovered" />
+      <ProductAddFavorite :id="id" :is-shown="isHovered" />
     </div>
     <div class="flex flex-col gap-4">
       <div class="text-xl font-semibold text-[var(--color-accent)]">

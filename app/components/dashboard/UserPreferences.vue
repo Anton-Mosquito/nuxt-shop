@@ -1,16 +1,10 @@
-<!-- components/UserPreferences.vue -->
 <script setup lang="ts">
-// Створи компонент що читає/пише в localStorage
-// Проблема: localStorage не існує на сервері!
-
 const theme = ref<"light" | "dark">("light");
 const fontSize = ref<number>(16);
 
-// Функція для завантаження налаштувань
 function loadPreferences() {
   try {
     if (typeof window === "undefined" || typeof localStorage === "undefined") {
-      // залишаємо дефолти під SSR
       theme.value = "light";
       fontSize.value = 16;
       return;
@@ -22,13 +16,11 @@ function loadPreferences() {
     const f = localStorage.getItem("fontSize");
     fontSize.value = f ? Number(f) : 16;
   } catch {
-    // safe fallback if access denied
     theme.value = "light";
     fontSize.value = 16;
   }
 }
 
-// Функція для збереження
 function savePreferences() {
   try {
     if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
@@ -40,12 +32,10 @@ function savePreferences() {
   }
 }
 
-// Завантажуємо при монтуванні (тільки на клієнті!)
 onMounted(() => {
   loadPreferences();
 });
 
-// Автоматичне збереження при зміні
 watch([theme, fontSize], () => {
   savePreferences();
 });

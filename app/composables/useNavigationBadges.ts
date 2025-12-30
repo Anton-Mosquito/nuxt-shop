@@ -1,4 +1,4 @@
-import { HEADER_ICON_NAVIGATION } from "~/constants/header-navigation";
+import { HEADER_ICON_NAVIGATION } from "~/constants";
 import type { NavItem } from "~/types/ui/navigation";
 
 /**

@@ -6,10 +6,10 @@ useSeoMeta({
 });
 
 const route = useRoute();
-const loader = inject("pageLoader");
+const { showLoader, hideLoader } = usePageLoader();
 
 async function deleteProduct() {
-  loader.showLoader("Видалення продукту...");
+  showLoader("Видалення продукту...");
 
   try {
     await $fetch(`/api/products/${route.params.id}`, {
@@ -20,7 +20,7 @@ async function deleteProduct() {
   } catch (error) {
     console.error(error);
   } finally {
-    loader.hideLoader();
+    hideLoader();
   }
 }
 </script>

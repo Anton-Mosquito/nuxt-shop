@@ -33,7 +33,7 @@ const route = useRoute();
 
             <!-- User menu -->
             <div class="flex items-center gap-3">
-              <UserAvatar src="/images/admin.jpg" alt="Admin" size="sm" />
+              <UiAvatar src="/images/admin.jpg" alt="Admin" size="sm" />
               <span class="text-sm font-medium">Адмін</span>
             </div>
           </div>

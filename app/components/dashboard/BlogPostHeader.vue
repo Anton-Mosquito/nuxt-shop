@@ -89,7 +89,7 @@ const formattedDate = computed(() => {
 
       <div class="flex items-center gap-4 text-sm text-gray-600">
         <div class="flex items-center gap-2">
-          <UserAvatar
+          <UiAvatar
             :src="post.author.avatar"
             :alt="post.author.name"
             size="sm"
