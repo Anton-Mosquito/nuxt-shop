@@ -19,3 +19,10 @@ export interface ButtonProps {
 export type ButtonEmits = {
   click: [];
 };
+
+
+export interface AddFavoriteProps {
+  id: number;
+  isShown?: boolean;
+  variant?: "card" | "icon";
+}
