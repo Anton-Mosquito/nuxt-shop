@@ -5,32 +5,42 @@ interface Props {
   products: Product[];
 }
 
-type SlideItem = Pick<Product, "id" | "name" | "price" | "images">;
-
 const { products } = defineProps<Props>();
-const currentSlide = ref(0);
-const sliderRef = ref<HTMLDivElement | null>(null);
+const { currentSlide, sliderRef, slides, scrollToSlide, goToProduct } =
+  useSlider();
 
-const slides = computed<SlideItem[]>(() =>
-  products.slice(0, 3).map(({ id, name, price, images }) => ({
-    id,
-    name,
-    price,
-    images,
-  }))
-);
+function useSlider() {
+  const currentSlide = ref(0);
+  const sliderRef = ref<HTMLDivElement | null>(null);
 
-const scrollToSlide = (index: number) => {
-  const slider = sliderRef.value;
-  const slide = slider?.children[index];
+  const slides = computed<Pick<Product, "id" | "name" | "price" | "images">[]>(
+    () =>
+      products.slice(0, 3).map(({ id, name, price, images }) => ({
+        id,
+        name,
+        price,
+        images,
+      }))
+  );
 
-  slide?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  currentSlide.value = index;
-};
+  const scrollToSlide = (index: number) => {
+    const slider = sliderRef.value;
+    const slide = slider?.children[index];
 
-const goToProduct = (id: number) => {
-  navigateTo(`/catalog/${id}`);
-};
+    slide?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    currentSlide.value = index;
+  };
+
+  const goToProduct = (id: number) => navigateTo(`/catalog/${id}`);
+
+  return {
+    currentSlide,
+    sliderRef,
+    slides,
+    scrollToSlide,
+    goToProduct,
+  };
+}
 </script>
 
 <template>

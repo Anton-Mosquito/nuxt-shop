@@ -1,11 +1,9 @@
 <script setup lang="ts">
-interface Props {
-  loading?: boolean;
-}
+import type { FormProps, FormEmits } from "~/types/components/ui/form/form";
 
-const { loading = false } = defineProps<Props>();
+const { loading = false } = defineProps<FormProps>();
 
-const emit = defineEmits<{ submit: [] }>();
+const emit = defineEmits<FormEmits>();
 
 const handleSubmit = () => {
   if (loading) return;

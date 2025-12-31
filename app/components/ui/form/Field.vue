@@ -1,17 +1,12 @@
 <script setup lang="ts">
-interface Props {
-  label?: string;
-  error?: string;
-  required?: boolean;
-  hint?: string;
-}
+import type { FormFieldProps } from "~/types/components/ui/form/field";
 
 const {
   label = "",
   error = "",
   required = false,
   hint = "",
-} = defineProps<Props>();
+} = defineProps<FormFieldProps>();
 
 const fieldId = useId();
 </script>

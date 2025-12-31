@@ -3,7 +3,7 @@ import { HEADER_NAVIGATION } from "~/constants";
 import type {
   MobileNavigationProps,
   MobileNavigationActionEmits,
-} from "~/types/ui/navigation";
+} from "~/types";
 
 const { isOpen, openDropdowns, iconNavigation } =
   defineProps<MobileNavigationProps>();

@@ -1,24 +1,5 @@
 <script setup lang="ts">
-interface CheckoutFormData {
-  // Personal info
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-
-  // Delivery address
-  city: string;
-  address: string;
-  zipCode: string;
-
-  // Payment & delivery
-  deliveryMethod: "nova-poshta" | "ukrposhta" | "courier";
-  paymentMethod: "card" | "cash" | "online";
-
-  // Additional
-  comment?: string;
-  subscribe?: boolean;
-}
+import type { CheckoutFormData } from "~/types/forms/checkout";
 
 const emit = defineEmits<{
   submit: [data: CheckoutFormData];

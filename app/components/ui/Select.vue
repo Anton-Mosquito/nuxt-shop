@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import type { SelectProps } from "~/types/components/ui/select";
+
 const model = defineModel<string>();
 
-const { options } = defineProps<{
-  options: { label: string; value: string }[];
-}>();
+const { options } = defineProps<SelectProps>();
 </script>
 
 <template>

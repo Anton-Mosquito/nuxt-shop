@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { HEADER_NAVIGATION } from "~/constants";
-import type {
-  NavigationStateProps,
-  NavigationToggleEmit,
-} from "~/types/ui/navigation";
+import type { NavigationStateProps, NavigationToggleEmit } from "~/types";
 
 const { openDropdowns } = defineProps<NavigationStateProps>();
 const emit = defineEmits<NavigationToggleEmit>();

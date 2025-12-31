@@ -1,15 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{
-  modelValue: boolean;
-  title?: string;
-  size?: "sm" | "md" | "lg" | "xl";
-  persistent?: boolean;
-}>();
+import type {
+  ModalProps,
+  ModalEmits,
+} from "~/types/components/ui/modal";
 
-const emit = defineEmits<{
-  "update:modelValue": [value: boolean];
-  close: [];
-}>();
+const props = defineProps<ModalProps>();
+
+const emit = defineEmits<ModalEmits>();
 
 const sizeClasses = {
   sm: "max-w-sm",

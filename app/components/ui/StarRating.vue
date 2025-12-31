@@ -1,17 +1,12 @@
 <script setup lang="ts">
-interface Props {
-  rating?: number;
-  maxStars?: number;
-  size?: string;
-  interactive?: boolean;
-}
+import type { StarRatingProps } from "~/types/components/ui/star-rating";
 
 const {
   rating = 0,
   maxStars = 5,
   size = "16px",
   interactive = false,
-} = defineProps<Props>();
+} = defineProps<StarRatingProps>();
 
 const modelValue = defineModel<number>({ default: 0 });
 

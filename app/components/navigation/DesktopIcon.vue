@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {
-  DesktopNavigationProps,
-  NavigationActionEmits,
-} from "~/types/ui/navigation";
+import type { DesktopNavigationProps, NavigationActionEmits } from "~/types";
 
 const { iconNavigation, openDropdowns } = defineProps<DesktopNavigationProps>();
 const emit = defineEmits<NavigationActionEmits>();

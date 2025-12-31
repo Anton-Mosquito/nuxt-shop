@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MenuStateProps, ToggleActionEmit } from "~/types/ui/navigation";
+import type { MenuStateProps, ToggleActionEmit } from "~/types";
 
 const { isOpen } = defineProps<MenuStateProps>();
 const emit = defineEmits<ToggleActionEmit>();

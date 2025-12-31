@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import type {
-  NavItem,
-  MenuStateProps,
-  CloseActionEmit,
-} from "~/types/ui/navigation";
+import type { NavItem, MenuStateProps, CloseActionEmit } from "~/types";
 import { isString } from "~/types/utils";
 
 interface Props extends MenuStateProps {

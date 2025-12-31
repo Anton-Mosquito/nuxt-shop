@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { AvatarProps } from "~/types";
-import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS } from "~/types";
+import type { AvatarProps } from "~/types/components/ui/avatar";
+import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS } from "~/constants/ui";
 
 const { src = null, alt, size = "md" } = defineProps<AvatarProps>();
 

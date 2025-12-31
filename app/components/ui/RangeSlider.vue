@@ -1,17 +1,8 @@
 <script setup lang="ts">
-interface Props {
-  min?: number;
-  max?: number;
-  step?: number;
-  minValue: number;
-  maxValue: number;
-  locale?: string;
-  currency?: string;
-  bold?: boolean;
-  spacing?: "small" | "medium" | "large";
-  fractionDigits?: number;
-  label?: string;
-}
+import type {
+  RangeSliderProps,
+  RangeSliderEmits,
+} from "~/types/components/ui/range-slider";
 
 const {
   min = 0,
@@ -23,12 +14,9 @@ const {
   spacing = "medium",
   fractionDigits = 0,
   label = "",
-} = defineProps<Props>();
+} = defineProps<RangeSliderProps>();
 
-const emit = defineEmits<{
-  "update:min-value": [value: number];
-  "update:max-value": [value: number];
-}>();
+const emit = defineEmits<RangeSliderEmits>();
 
 const localMinValue = ref(min);
 const localMaxValue = ref(max);

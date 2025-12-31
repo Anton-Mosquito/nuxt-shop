@@ -1,12 +1,5 @@
 <script setup lang="ts">
-interface Props {
-  min?: number;
-  max?: number;
-  disabled?: boolean;
-  readonly?: boolean;
-  repeatDelay?: number;
-  repeatInterval?: number;
-}
+import type { QuantityInputProps } from "~/types/components/ui/quantity-input";
 
 const {
   min = 1,
@@ -15,7 +8,7 @@ const {
   readonly = false,
   repeatDelay = 400,
   repeatInterval = 120,
-} = defineProps<Props>();
+} = defineProps<QuantityInputProps>();
 
 // V-model implementation (Vue 3.3+)
 const modelValue = defineModel<number>({ default: 1 });

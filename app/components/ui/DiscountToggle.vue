@@ -1,12 +1,13 @@
 <script setup lang="ts">
-const { modelValue = false, label = "with discount" } = defineProps<{
-  modelValue?: boolean;
-  label?: string;
-}>();
+import type {
+  DiscountToggleProps,
+  DiscountToggleEmits,
+} from "~/types/components/ui/discount-toggle";
 
-const emit = defineEmits<{
-  (e: "update:modelValue", value: boolean): void;
-}>();
+const { modelValue = false, label = "with discount" } =
+  defineProps<DiscountToggleProps>();
+
+const emit = defineEmits<DiscountToggleEmits>();
 
 const local = ref<boolean>(modelValue);
 

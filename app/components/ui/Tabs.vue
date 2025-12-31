@@ -1,25 +1,19 @@
 <script setup lang="ts">
-import type { Tab, TabId } from "~/types/components/ui/tabs";
-
-interface Props {
-  tabs: Tab[];
-  modelValue?: TabId;
-  defaultTab?: TabId;
-  lazy?: boolean;
-}
-
-interface Emits {
-  (e: "update:modelValue" | "change" | "tab-mounted", value: TabId): void;
-}
+import type {
+  Tab,
+  TabId,
+  TabsProps,
+  TabsEmits,
+} from "~/types/components/ui/tabs";
 
 const {
   tabs,
   modelValue = undefined,
   defaultTab = undefined,
   lazy = false,
-} = defineProps<Props>();
+} = defineProps<TabsProps>();
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<TabsEmits>();
 
 // Трекінг того, які таби вже були відвідані
 const visitedTabs = ref<Set<TabId>>(

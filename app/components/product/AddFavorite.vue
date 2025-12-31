@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { AddFavoriteProps} from "~/types";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/utils/cn";
 
@@ -23,7 +22,9 @@ const buttonVariants = cva(
 
 type ButtonVariants = VariantProps<typeof buttonVariants>;
 
-interface Props extends Omit<AddFavoriteProps, "variant"> {
+interface Props {
+  id: number;
+  isShown?: boolean;
   variant?: ButtonVariants["variant"];
 }
 
@@ -34,7 +35,9 @@ const favoriteStore = useFavoriteStore();
 <template>
   <button
     v-show="isShown || favoriteStore.isFavorite(id)"
-    :class="cn(buttonVariants({ variant, active: favoriteStore.isFavorite(id) }))"
+    :class="
+      cn(buttonVariants({ variant, active: favoriteStore.isFavorite(id) }))
+    "
     :aria-pressed="favoriteStore.isFavorite(id)"
     @click.stop.prevent="() => favoriteStore.toggleFavorite(id)"
   >

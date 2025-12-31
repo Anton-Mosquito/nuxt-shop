@@ -1,12 +1,5 @@
 <script setup lang="ts">
-interface Props {
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  rows?: number;
-  maxlength?: number;
-  resize?: "none" | "both" | "horizontal" | "vertical";
-}
+import type { FormTextareaProps } from "~/types/components/ui/form/textarea";
 
 const {
   rows = 4,
@@ -15,7 +8,7 @@ const {
   disabled = false,
   required = false,
   maxlength = undefined,
-} = defineProps<Props>();
+} = defineProps<FormTextareaProps>();
 
 const modelValue = defineModel<string>({ default: "" });
 

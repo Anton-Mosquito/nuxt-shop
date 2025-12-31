@@ -1,12 +1,7 @@
 <script setup lang="ts">
-interface Props {
-  label?: string;
-  disabled?: boolean;
-  size?: "sm" | "md" | "lg";
-  variant?: "default" | "primary";
-}
+import type { CheckboxProps } from "~/types/components/ui/checkbox";
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<CheckboxProps>(), {
   size: "md",
   variant: "default",
 });
