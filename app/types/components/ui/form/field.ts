@@ -3,4 +3,5 @@ export interface FormFieldProps {
   error?: string;
   required?: boolean;
   hint?: string;
+  class?: string;
 }

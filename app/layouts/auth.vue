@@ -18,7 +18,7 @@
 
       <!-- Footer -->
       <p class="text-center text-white text-sm mt-6">
-        © 2024 MyApp. Всі права захищені.
+        © 2024 MyApp. All rights reserved.
       </p>
     </div>
   </div>

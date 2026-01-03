@@ -42,7 +42,7 @@ export function useGlobalErrorHandler() {
     if (showToast) {
       const reloadMessage = preventReload ? "" : " The page will be reloaded.";
       const errorMessage = getErrorMessage(error);
-      toast.error(`${errorMessage}${reloadMessage}`);
+      toast.error({ message: `${errorMessage}${reloadMessage}` });
     }
 
     // Reload the page to recover from the error state (with delay to show toast)

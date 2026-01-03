@@ -1,47 +1,46 @@
 <script setup lang="ts">
-import type {
-  ModalProps,
-  ModalEmits,
-} from "~/types/components/ui/modal";
+import { useFocusTrap } from "@vueuse/integrations/useFocusTrap";
+import type { ModalProps, ModalEmits } from "~/types";
+import { MODAL_SIZE_CLASSES } from "~/constants";
 
-const props = defineProps<ModalProps>();
+const { persistent = false, size = "md" } = defineProps<ModalProps>();
 
+const modelValue = defineModel<boolean>({ default: false });
 const emit = defineEmits<ModalEmits>();
 
-const sizeClasses = {
-  sm: "max-w-sm",
-  md: "max-w-md",
-  lg: "max-w-lg",
-  xl: "max-w-xl",
-};
+const titleId = useId();
 
-function close() {
-  if (!props.persistent) {
-    emit("update:modelValue", false);
-    emit("close");
-  }
-}
+useBodyScrollLock(modelValue);
+
+
+const modalRef = useTemplateRef("modalRef");
+const { activate, deactivate } = useFocusTrap(modalRef);
 
 watch(
-  () => props.modelValue,
-  (isOpen) => {
-    if (import.meta.client) {
-      document.body.style.overflow = isOpen ? "hidden" : "";
+  modelValue,
+  async (val) => {
+    if (val) {
+      await nextTick();
+      activate();
+    } else {
+      deactivate();
     }
-  }
+  },
+  { immediate: true }
 );
 
+function close() {
+  if (persistent) return;
+
+  modelValue.value = false;
+  emit("close");
+}
+
 onMounted(() => {
-  const handleEscape = (e: KeyboardEvent) => {
-    if (e.key === "Escape" && props.modelValue) {
+  useEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "Escape" && modelValue.value) {
       close();
     }
-  };
-  document.addEventListener("keydown", handleEscape);
-
-  onUnmounted(() => {
-    document.removeEventListener("keydown", handleEscape);
-    document.body.style.overflow = "";
   });
 });
 </script>
@@ -49,53 +48,67 @@ onMounted(() => {
 <template>
   <Teleport to="body">
     <Transition
-      enter-active-class="transition-all duration-300"
+      enter-active-class="transition duration-300 ease-out"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
-      leave-active-class="transition-all duration-200"
+      leave-active-class="transition duration-200 ease-in"
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
       <div
         v-if="modelValue"
         class="fixed inset-0 z-50 overflow-y-auto"
-        @click.self="close"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="title ? titleId : undefined"
       >
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm"></div>
+        <div
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+          aria-hidden="true"
+          @click="close"
+        ></div>
 
-        <div class="flex min-h-full items-center justify-center p-4">
+        <div
+          class="flex min-h-full items-center justify-center p-4 text-center"
+        >
           <Transition
-            enter-active-class="transition-all duration-300"
-            enter-from-class="opacity-0 scale-95"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition-all duration-200"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-95"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-95 translate-y-4 sm:translate-y-0"
+            enter-to-class="opacity-100 scale-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100 translate-y-0"
+            leave-to-class="opacity-0 scale-95 translate-y-4 sm:translate-y-0"
           >
             <div
               v-if="modelValue"
-              class="relative bg-white rounded-lg shadow-2xl w-full"
-              :class="sizeClasses[size || 'md']"
+              ref="modalRef"
+              class="relative w-full transform rounded-lg bg-white text-left shadow-xl transition-all"
+              :class="MODAL_SIZE_CLASSES[size]"
               @click.stop
             >
               <div
                 v-if="title || $slots.header"
-                class="flex items-center justify-between p-6 border-b"
+                class="flex items-center justify-between border-b px-6 py-4"
               >
                 <slot name="header">
-                  <h3 class="text-xl font-bold text-gray-900">
+                  <h3
+                    :id="titleId"
+                    class="text-lg font-semibold leading-6 text-gray-900"
+                  >
                     {{ title }}
                   </h3>
                 </slot>
 
                 <button
                   v-if="!persistent"
-                  class="text-gray-400 hover:text-gray-600 transition-colors"
+                  type="button"
+                  class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  aria-label="Close"
                   @click="close"
                 >
                   <Icon
                     name="ic:baseline-close"
-                    class="w-6 h-6"
+                    class="h-6 w-6"
                     aria-hidden="true"
                   />
                 </button>
@@ -107,7 +120,7 @@ onMounted(() => {
 
               <div
                 v-if="$slots.footer"
-                class="flex items-center justify-end gap-3 p-6 border-t bg-gray-50"
+                class="bg-gray-50 px-6 py-4 sm:flex sm:flex-row-reverse sm:px-6 rounded-b-lg gap-3"
               >
                 <slot name="footer" :close="close" />
               </div>

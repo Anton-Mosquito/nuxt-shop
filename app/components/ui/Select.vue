@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SelectProps } from "~/types/components/ui/select";
+import type { SelectProps } from "~/types";
 
 const model = defineModel<string>();
 
@@ -18,7 +18,7 @@ const { options } = defineProps<SelectProps>();
       </option>
     </select>
     <Icon
-      name="mdi:chevron-down"
+      name="ic:baseline-keyboard-arrow-down"
       size="16"
       class="absolute top-1/2 right-2.5 transform -translate-y-1/2 pointer-events-none text-[var(--color-dark-gray)]"
       aria-hidden="true"

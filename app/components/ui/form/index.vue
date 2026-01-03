@@ -1,33 +1,26 @@
 <script setup lang="ts">
-import type { FormProps, FormEmits } from "~/types/components/ui/form/form";
 
-const { loading = false } = defineProps<FormProps>();
+const { loading = false } = defineProps<{
+  loading?: boolean;
+}>();
 
-const emit = defineEmits<FormEmits>();
+const emit = defineEmits<{
+  submit: [];
+}>();
 
 const handleSubmit = () => {
   if (loading) return;
+
   emit("submit");
 };
 </script>
 
 <template>
   <form
-    class="ui-form"
-    :class="{ 'ui-form--loading': loading }"
+    class="w-full"
+    :class="{ 'pointer-events-none opacity-60': loading }"
     @submit.prevent="handleSubmit"
   >
     <slot />
   </form>
 </template>
-
-<style scoped>
-.ui-form {
-  width: 100%;
-}
-
-.ui-form--loading {
-  pointer-events: none;
-  opacity: 0.6;
-}
-</style>

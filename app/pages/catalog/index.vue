@@ -217,7 +217,7 @@ function loadQueryParameters() {
           spacing="medium"
           bold
         />
-        <UiDiscountToggle v-model="hasDiscount" />
+        <UiToggle v-model="hasDiscount" />
       </div>
       <div class="flex-1">
         <ProductGrid

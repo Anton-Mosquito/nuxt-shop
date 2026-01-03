@@ -1,39 +1,22 @@
 <script setup lang="ts">
-import type { Product, Review } from "~/types/entities";
+import type { Review } from "~/types";
 
 interface Props {
   reviews: Review[];
-  productId: number;
 }
 
-const { reviews, productId } = defineProps<Props>();
-const API_URL = useAPI();
-
-const { data, pending, execute } = useLazyFetch<{
-  product: Product;
-  reviews: Review[];
-}>(`${API_URL}/products/${productId}/reviews`, {
-  immediate: false,
-  server: false,
-});
-
-onMounted(() => {
-  execute();
-});
-
-const localReviews = computed(() => data.value?.reviews || reviews || []);
-const localReviewCount = computed(() => localReviews.value.length);
+const { reviews } = defineProps<Props>();
 </script>
 
 <template>
   <div class="max-w-3xl">
-    <h3 class="text-xl font-medium mb-6">Reviews ({{ localReviewCount }})</h3>
+    <h3 class="text-xl font-medium mb-6">Reviews ({{ reviews.length }})</h3>
 
-    <SkeletonReview v-if="pending" :count="3" />
+    <SkeletonReview v-if="false" :count="3" />
 
     <div v-else class="flex flex-col gap-6 mb-10">
       <div
-        v-for="review in localReviews"
+        v-for="review in reviews"
         :key="review.id"
         class="pb-6 border-b border-solid border-[var(--color-gray)]"
       >
@@ -50,6 +33,7 @@ const localReviewCount = computed(() => localReviews.value.length);
                 {{ review.name }}
               </div>
               <NuxtTime
+                v-if="review.createdAt"
                 :datetime="review.createdAt"
                 class="text-sm"
                 year="numeric"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { AvatarProps } from "~/types/components/ui/avatar";
-import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS } from "~/constants/ui";
+import type { AvatarProps } from "~/types";
+import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS, AVATAR_TEXT_SIZE } from "~/constants";
 
 const { src = null, alt, size = "md" } = defineProps<AvatarProps>();
 
@@ -36,12 +36,7 @@ const initials = computed(() =>
     <div
       v-else
       class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-purple-500 text-white font-bold"
-      :class="{
-        'text-xs': size === 'sm',
-        'text-sm': size === 'md',
-        'text-lg': size === 'lg',
-        'text-2xl': size === 'xl',
-      }"
+      :class="AVATAR_TEXT_SIZE[size]"
     >
       {{ initials }}
     </div>

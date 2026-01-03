@@ -1,255 +1,171 @@
 <script setup lang="ts">
-import type {
-  Tab,
-  TabId,
-  TabsProps,
-  TabsEmits,
-} from "~/types/components/ui/tabs";
+import type { TabId, TabsProps } from "~/types";
 
-const {
-  tabs,
-  modelValue = undefined,
-  defaultTab = undefined,
-  lazy = false,
-} = defineProps<TabsProps>();
+const { tabs, defaultTab = undefined, lazy = false } = defineProps<TabsProps>();
 
-const emit = defineEmits<TabsEmits>();
+const model = defineModel<TabId>({ required: false });
 
-// Трекінг того, які таби вже були відвідані
-const visitedTabs = ref<Set<TabId>>(
-  new Set([modelValue || defaultTab || tabs[0]?.id].filter(Boolean) as TabId[])
-);
+const visitedTabs = ref(new Set<TabId>());
 
-// Internal active tab state
-const internalActiveTab = ref<TabId>(
-  modelValue || defaultTab || tabs[0]?.id || ""
-);
-
-// Computed for v-model support
-const activeTab = computed({
-  get: () => modelValue ?? internalActiveTab.value,
-  set: (value: TabId) => {
-    internalActiveTab.value = value;
-    visitedTabs.value.add(value);
-    emit("update:modelValue", value);
-    emit("change", value);
-    emit("tab-mounted", value);
-  },
+onMounted(() => {
+  if (!model.value) {
+    model.value = defaultTab || tabs[0]?.id;
+  }
+  if (model.value) visitedTabs.value.add(model.value);
 });
 
-// Set active tab
 const setActiveTab = (tabId: TabId) => {
   const tab = tabs.find((t) => t.id === tabId);
-  if (tab && !tab.disabled) {
-    activeTab.value = tabId;
-  }
+  if (!tab || tab.disabled) return;
+
+  model.value = tabId;
+  visitedTabs.value.add(tabId);
 };
 
-// Computed для відфільтрованих табів (для lazy режиму)
 const renderedTabs = computed(() => {
-  if (!lazy) return tabs; // Якщо не lazy mode - рендеримо всі таби
-  return tabs.filter((tab) => visitedTabs.value.has(tab.id)); // Інакше тільки відвідані
+  if (!lazy) return tabs;
+
+  return tabs.filter((tab) => visitedTabs.value.has(tab.id));
 });
 
-// Keyboard navigation
-const tabRefs = ref<HTMLButtonElement[]>([]);
+const tabButtonRefs = ref<Map<number, HTMLButtonElement>>(new Map());
 
-const handleKeyDown = (event: KeyboardEvent, currentIndex: number) => {
-  let newIndex = currentIndex;
+const getNextIndex = (current: number, direction: 1 | -1): number => {
+  let next = current + direction;
+  const len = tabs.length;
 
-  switch (event.key) {
-    case "ArrowLeft":
-      event.preventDefault();
-      newIndex = currentIndex > 0 ? currentIndex - 1 : tabs.length - 1;
-      break;
-    case "ArrowRight":
-      event.preventDefault();
-      newIndex = currentIndex < tabs.length - 1 ? currentIndex + 1 : 0;
-      break;
-    case "Home":
-      event.preventDefault();
-      newIndex = 0;
-      break;
-    case "End":
-      event.preventDefault();
-      newIndex = tabs.length - 1;
-      break;
-    default:
-      return;
+  if (next < 0) next = len - 1;
+  if (next >= len) next = 0;
+
+  if (tabs[next]?.disabled) {
+    if (next === current) return current;
+    return getNextIndex(next, direction);
   }
 
-  // Skip disabled tabs
-  while (tabs[newIndex]?.disabled) {
-    if (event.key === "ArrowLeft" || event.key === "End") {
-      newIndex = newIndex > 0 ? newIndex - 1 : tabs.length - 1;
-    } else {
-      newIndex = newIndex < tabs.length - 1 ? newIndex + 1 : 0;
-    }
-    // Prevent infinite loop if all tabs are disabled
-    if (newIndex === currentIndex) break;
-  }
+  return next;
+};
 
-  const targetTab = tabs[newIndex];
-  if (targetTab && !targetTab.disabled) {
-    setActiveTab(targetTab.id);
-    tabRefs.value[newIndex]?.focus();
+const handleKeyDown = (event: KeyboardEvent, index: number) => {
+  const actions: Record<string, () => void> = {
+    ArrowLeft: () => {
+      const next = getNextIndex(index, -1);
+      if (tabs[next]) {
+        setActiveTab(tabs[next].id);
+        tabButtonRefs.value.get(next)?.focus();
+      }
+    },
+    ArrowRight: () => {
+      const next = getNextIndex(index, 1);
+      if (tabs[next]) {
+        setActiveTab(tabs[next].id);
+        tabButtonRefs.value.get(next)?.focus();
+      }
+    },
+    Home: () => {
+      const first = tabs.findIndex((t) => !t.disabled);
+      if (first > -1) {
+        const tab = tabs[first];
+        if (tab) {
+          setActiveTab(tab.id);
+          tabButtonRefs.value.get(first)?.focus();
+        }
+      }
+    },
+    End: () => {
+      const last = [...tabs].reverse().findIndex((t) => !t.disabled);
+      const realIndex = last > -1 ? tabs.length - 1 - last : -1;
+      if (realIndex > -1) {
+        const tab = tabs[realIndex];
+        if (tab) {
+          setActiveTab(tab.id);
+          tabButtonRefs.value.get(realIndex)?.focus();
+        }
+      }
+    },
+  };
+
+  const action = actions[event.key];
+
+  if (action) {
+    event.preventDefault();
+    action();
   }
 };
 
-// Watch for external modelValue changes
-watch(
-  () => modelValue,
-  (newValue) => {
-    if (newValue !== undefined) {
-      internalActiveTab.value = newValue;
-      visitedTabs.value.add(newValue);
-    }
-  }
-);
+watch(model, (val) => {
+  if (!val) return;
+  
+  visitedTabs.value.add(val);
+});
 </script>
 
 <template>
-  <div class="tabs">
-    <div class="tabs-nav" role="tablist">
+  <div class="mt-10">
+    <!-- Tab List -->
+    <div
+      class="flex gap-2 border-b border-gray-200 mb-8 overflow-x-auto scrollbar-thin"
+      role="tablist"
+    >
       <button
         v-for="(tab, index) in tabs"
         :key="tab.id"
-        :ref="(el) => (tabRefs[index] = el as HTMLButtonElement)"
-        class="tab-btn"
-        :class="{ active: activeTab === tab.id, disabled: tab.disabled }"
+        :ref="
+          (el) => {
+            if (el) tabButtonRefs.set(index, el as HTMLButtonElement);
+          }
+        "
+        type="button"
+        class="group inline-flex items-center gap-2 px-6 py-3 text-base font-medium border-b-2 transition-all duration-200 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:rounded-t"
+        :class="[
+          model === tab.id
+            ? 'border-primary text-gray-900'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+          tab.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
+        ]"
         :disabled="tab.disabled"
-        :aria-selected="activeTab === tab.id"
+        :aria-selected="model === tab.id"
         :aria-controls="`panel-${tab.id}`"
-        :tabindex="activeTab === tab.id ? 0 : -1"
+        :tabindex="model === tab.id ? 0 : -1"
         role="tab"
         @click="setActiveTab(tab.id)"
         @keydown="handleKeyDown($event, index)"
       >
-        <Icon v-if="tab.icon" :name="tab.icon" size="18" class="tab-icon" />
-        <span class="tab-label">{{ tab.label }}</span>
-        <span v-if="tab.badge" class="tab-badge">{{ tab.badge }}</span>
+        <Icon v-if="tab.icon" :name="tab.icon" size="18" class="shrink-0" />
+
+        <span>{{ tab.label }}</span>
+
+        <span
+          v-if="tab.badge"
+          class="inline-flex items-center justify-center h-5 px-1.5 text-xs font-bold rounded-full transition-colors"
+          :class="
+            model === tab.id
+              ? 'bg-primary text-white'
+              : 'bg-gray-100 text-gray-600'
+          "
+        >
+          {{ tab.badge }}
+        </span>
       </button>
     </div>
 
-    <div class="tabs-content">
-      <div
-        v-for="tab in renderedTabs"
-        v-show="activeTab === tab.id"
-        :id="`panel-${tab.id}`"
-        :key="tab.id"
-        :aria-labelledby="`tab-${tab.id}`"
-        class="tab-panel"
-        role="tabpanel"
-      >
-        <slot :name="tab.id" :tab="tab" :is-active="activeTab === tab.id" />
-      </div>
+    <!-- Tab Content -->
+    <div class="relative">
+      <template v-for="tab in renderedTabs" :key="tab.id">
+        <Transition
+          enter-active-class="transition duration-300 ease-in"
+          enter-from-class="opacity-0 translate-y-2"
+          enter-to-class="opacity-100 translate-y-0"
+        >
+          <div
+            v-show="model === tab.id"
+            :id="`panel-${tab.id}`"
+            :aria-labelledby="`tab-${tab.id}`"
+            role="tabpanel"
+          >
+            <slot :name="tab.id" :tab="tab" :is-active="model === tab.id" />
+          </div>
+        </Transition>
+      </template>
     </div>
   </div>
 </template>
-
-<style scoped>
-.tabs {
-  margin-top: 60px;
-}
-
-.tabs-nav {
-  display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--color-gray);
-  margin-bottom: 32px;
-}
-
-.tab-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: var(--color-dark-gray);
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
-  position: relative;
-  top: 1px;
-  white-space: nowrap;
-}
-
-.tab-btn:hover:not(.disabled) {
-  color: var(--color-black);
-}
-
-.tab-btn:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: -2px;
-  border-radius: 4px 4px 0 0;
-}
-
-.tab-btn.active {
-  color: var(--color-black);
-  border-bottom-color: var(--color-accent);
-}
-
-.tab-btn.disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-  color: var(--color-gray);
-}
-
-.tab-icon {
-  flex-shrink: 0;
-}
-
-.tab-label {
-  flex: 1;
-}
-
-.tab-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 0 6px;
-  background-color: var(--color-gray);
-  color: var(--color-dark-gray);
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.tab-btn.active .tab-badge {
-  background-color: var(--color-accent);
-  color: white;
-}
-
-.tab-panel {
-  animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .tabs-nav {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-
-  .tab-btn {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-}
-</style>

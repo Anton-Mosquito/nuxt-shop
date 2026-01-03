@@ -12,5 +12,4 @@ export interface InputProps {
   icon?: string;
   error?: string | boolean;
   autocomplete?: string;
-  class?: string;
 }

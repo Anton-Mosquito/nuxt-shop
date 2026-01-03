@@ -23,12 +23,3 @@ export interface TabsProps {
   defaultTab?: TabId;
   lazy?: boolean;
 }
-
-/**
- * Tabs component emits
- */
-export interface TabsEmits {
-  "update:modelValue": [value: TabId];
-  change: [value: TabId];
-  "tab-mounted": [value: TabId];
-}

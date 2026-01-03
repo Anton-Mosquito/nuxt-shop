@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/utils/cn";
-import type { InputProps as BaseInputProps } from "~/types/components/ui/input";
+import type { InputProps as BaseInputProps } from "~/types";
 
 const inputVariants = cva(
   "w-full py-3 border-none bg-transparent text-base font-normal text-[var(--color-black)] outline-none transition-colors duration-200 ease-in-out placeholder:font-normal placeholder:text-[var(--color-dark-gray)] disabled:opacity-50 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
@@ -104,17 +104,13 @@ const wrapperVariants = cva("flex flex-col gap-1 w-full", {
       />
       <input
         v-model="modelValue"
+        v-bind="$attrs"
         :type="inputType"
         :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
         :autocomplete="autocomplete"
-        :class="
-          cn(
-            inputVariants({ variant, hasIcon: !!icon, error: !!error }),
-            $attrs.class as string
-          )
-        "
+        :class="cn(inputVariants({ variant, hasIcon: !!icon, error: !!error }))"
       />
       <button
         v-if="type === 'password'"
@@ -122,9 +118,8 @@ const wrapperVariants = cva("flex flex-col gap-1 w-full", {
         class="absolute right-0 bg-none border-none cursor-pointer p-1 inline-flex items-center justify-center text-[var(--color-dark-gray)] hover:text-[var(--color-black)] transition-colors"
         @click="togglePasswordVisibility"
       >
-        <Icon :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'" size="20" />
+        <Icon :name="showPassword ? 'ic:baseline-visibility-off' : 'ic:baseline-visibility'" size="20" />
       </button>
     </div>
-    <span v-if="error" class="text-xs text-[#d32f2f] mt-1">{{ error }}</span>
   </div>
 </template>

@@ -52,7 +52,7 @@ const favoriteStore = useFavoriteStore();
     >
       <Icon
         :key="favoriteStore.isFavorite(id) ? 'filled' : 'outline'"
-        :name="favoriteStore.isFavorite(id) ? 'mdi:heart' : 'mdi:heart-outline'"
+        :name="favoriteStore.isFavorite(id) ? 'ic:baseline-favorite' : 'ic:baseline-favorite-border'"
         :size="variant === 'card' ? 18 : 20"
       />
     </Transition>

@@ -93,3 +93,23 @@ export const AVATAR_SIZE_PIXELS = {
   xl: 96,
 } as const;
 
+export const AVATAR_TEXT_SIZE = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-lg",
+  xl: "text-2xl",
+} as const;
+
+export const MODAL_SIZE_CLASSES = {
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+} as const;
+
+
+export const RANGE_SIZE_CLASSES = {
+  small: "mt-1",
+  medium: "mt-2",
+  large: "mt-3",
+} as const;

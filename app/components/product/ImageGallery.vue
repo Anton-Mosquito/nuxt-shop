@@ -14,13 +14,10 @@ function useImageSwipe() {
   const { isSwiping, direction } = useSwipe(mainImageRef);
   const selectedImage = ref(0);
 
-  const clampIndex = (index: number) =>
-    Math.min(Math.max(index, 0), images.length - 1);
-
   const selectImage = (index: number) => {
     if (!images?.length) return;
 
-    selectedImage.value = clampIndex(index);
+    selectedImage.value = clamp(index, 0, images.length - 1);
   };
 
   watch(isSwiping, (newValue, oldValue) => {

@@ -1,162 +1,97 @@
 <script setup lang="ts">
-import type { CheckboxProps } from "~/types/components/ui/checkbox";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "~/utils/cn";
+import type { CheckboxProps as BaseCheckboxProps } from "~/types";
 
-const props = withDefaults(defineProps<CheckboxProps>(), {
-  size: "md",
-  variant: "default",
-});
+const checkboxVariants = cva(
+  "inline-flex items-center gap-2 cursor-pointer select-none relative",
+  {
+    variants: {
+      disabled: {
+        true: "cursor-not-allowed opacity-50",
+        false: "",
+      },
+    },
+    defaultVariants: {
+      disabled: false,
+    },
+  }
+);
+
+const checkboxBoxVariants = cva(
+  "relative flex items-center justify-center shrink-0 border-2 border-[var(--color-gray)] rounded bg-white transition-all duration-200 ease-in-out peer-hover:enabled:border-[var(--color-dark-gray)] peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-[var(--color-accent)] peer-focus-visible:outline-offset-2",
+  {
+    variants: {
+      size: {
+        sm: "w-4 h-4",
+        md: "w-5 h-5",
+        lg: "w-6 h-6",
+      },
+      variant: {
+        default:
+          "peer-checked:bg-[var(--color-black)] peer-checked:border-[var(--color-black)] peer-indeterminate:bg-[var(--color-black)] peer-indeterminate:border-[var(--color-black)] peer-checked:[&>*]:opacity-100 peer-checked:[&>*]:scale-100 peer-indeterminate:[&>*]:opacity-100 peer-indeterminate:[&>*]:scale-100",
+        primary:
+          "peer-checked:bg-[var(--color-accent)] peer-checked:border-[var(--color-accent)] peer-indeterminate:bg-[var(--color-accent)] peer-indeterminate:border-[var(--color-accent)] peer-checked:[&>*]:opacity-100 peer-checked:[&>*]:scale-100 peer-indeterminate:[&>*]:opacity-100 peer-indeterminate:[&>*]:scale-100",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+      variant: "default",
+    },
+  }
+);
+
+const checkboxIconVariants = cva(
+  "text-white opacity-0 scale-0 transition-all duration-150 ease-in-out",
+  {
+    variants: {
+      size: {
+        sm: "text-[12px]",
+        md: "text-[14px]",
+        lg: "text-[16px]",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  }
+);
+
+type CheckboxVariants = VariantProps<typeof checkboxBoxVariants>;
+
+interface Props extends Omit<BaseCheckboxProps, "variant" | "size"> {
+  variant?: CheckboxVariants["variant"];
+  size?: CheckboxVariants["size"];
+}
+
+const {
+  size = "md",
+  variant = "default",
+  disabled = false,
+  label,
+} = defineProps<Props>();
 
 const modelValue = defineModel<boolean>({ default: false });
-
 const checkboxId = useId();
-
-const sizeClasses = computed(
-  () =>
-    ({
-      sm: "checkbox--sm",
-      md: "checkbox--md",
-      lg: "checkbox--lg",
-    }[props.size])
-);
 </script>
 
 <template>
-  <label
-    :for="checkboxId"
-    class="checkbox"
-    :class="[
-      sizeClasses,
-      `checkbox--${variant}`,
-      { 'checkbox--disabled': disabled },
-    ]"
-  >
+  <label :for="checkboxId" :class="cn(checkboxVariants({ disabled }))">
     <input
       :id="checkboxId"
       v-model="modelValue"
       type="checkbox"
       :disabled="disabled"
-      class="checkbox__input"
+      class="peer absolute opacity-0 w-0 h-0"
     />
-    <span class="checkbox__box">
-      <Icon name="mdi:check" class="checkbox__icon" />
+    <span :class="cn(checkboxBoxVariants({ size, variant }))">
+      <Icon name="ic:baseline-check" :class="cn(checkboxIconVariants({ size }))" />
     </span>
-    <span v-if="label || $slots.default" class="checkbox__label">
+    <span
+      v-if="label || $slots.default"
+      class="text-sm text-[var(--color-black)] leading-[1.4]"
+    >
       <slot>{{ label }}</slot>
     </span>
   </label>
 </template>
-
-<style scoped>
-.checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  user-select: none;
-  position: relative;
-}
-
-.checkbox--disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.checkbox__input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.checkbox__box {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 2px solid var(--color-gray);
-  border-radius: 4px;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-/* Sizes */
-.checkbox--sm .checkbox__box {
-  width: 16px;
-  height: 16px;
-}
-
-.checkbox--md .checkbox__box {
-  width: 20px;
-  height: 20px;
-}
-
-.checkbox--lg .checkbox__box {
-  width: 24px;
-  height: 24px;
-}
-
-.checkbox--sm .checkbox__icon {
-  font-size: 12px;
-}
-
-.checkbox--md .checkbox__icon {
-  font-size: 14px;
-}
-
-.checkbox--lg .checkbox__icon {
-  font-size: 16px;
-}
-
-.checkbox__icon {
-  opacity: 0;
-  color: #fff;
-  transform: scale(0);
-  transition: all 0.15s ease;
-}
-
-.checkbox__label {
-  font-size: 14px;
-  color: var(--color-black);
-  line-height: 1.4;
-}
-
-/* Hover state */
-.checkbox:not(.checkbox--disabled):hover .checkbox__box {
-  border-color: var(--color-dark-gray);
-}
-
-/* Focus state */
-.checkbox__input:focus-visible + .checkbox__box {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* Checked state - default variant */
-.checkbox--default .checkbox__input:checked + .checkbox__box {
-  background-color: var(--color-black);
-  border-color: var(--color-black);
-}
-
-/* Checked state - primary variant */
-.checkbox--primary .checkbox__input:checked + .checkbox__box {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.checkbox__input:checked + .checkbox__box .checkbox__icon {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Indeterminate state (optional, for future use) */
-.checkbox__input:indeterminate + .checkbox__box {
-  background-color: var(--color-black);
-  border-color: var(--color-black);
-}
-
-.checkbox__input:indeterminate + .checkbox__box .checkbox__icon {
-  opacity: 1;
-  transform: scale(1);
-}
-</style>

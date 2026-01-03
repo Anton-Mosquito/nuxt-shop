@@ -17,18 +17,18 @@ const productTabs = computed<Tab[]>(() => [
   {
     id: "description",
     label: "Description",
-    icon: "mdi:text-box-outline",
+    icon: "ic:baseline-description",
   },
   {
     id: "reviews",
     label: "Reviews",
-    icon: "mdi:star-outline",
+    icon: "ic:baseline-star-border",
     badge: reviewCount.value,
   },
   {
     id: "specifications",
     label: "Specifications",
-    icon: "mdi:format-list-bulleted",
+    icon: "ic:baseline-format-list-bulleted",
     disabled: true,
   },
 ]);
@@ -89,19 +89,10 @@ const productImages = computed(() => {
         </div>
       </template>
       <template #reviews>
-        <ClientOnly>
-          <NuxtIsland
-            name="ProductReviews"
-            :props="{
-              productId: data.product.id,
-              reviews: data.reviews,
-            }"
-          />
-
-          <template #fallback>
-            <SkeletonReview :count="3" />
-          </template>
-        </ClientOnly>
+        <LazyProductReviews
+          :product-id="data.product.id"
+          :reviews="data.reviews"
+        />
       </template>
       <template #specifications>
         <div class="specifications-content">

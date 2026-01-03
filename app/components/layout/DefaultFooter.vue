@@ -24,7 +24,9 @@ const handleSubscribe = handleSubmit((values) => {
     return;
   }
 
-  success({ message: "Your email has been subscribed to news and notifications" });
+  success({
+    message: "Your email has been subscribed to news and notifications",
+  });
   resetForm();
 });
 </script>
@@ -47,20 +49,26 @@ const handleSubscribe = handleSubmit((values) => {
         class="flex-1 flex items-stretch gap-3 min-w-3xs justify-end"
         @submit="handleSubscribe"
       >
-        <UiFormField :error="emailError" class="min-w-3xs mb-0 h-full">
-          <UiInput
-            v-model="email"
-            variant="form"
-            placeholder="Your email for offers and news"
-            type="email"
-            class="h-full"
-          />
+        <UiFormField class="min-w-3xs h-full" :error="emailError">
+          <template #default="{ id, error, errorClass }">
+            <UiInput
+              :id="id"
+              v-model="email"
+              variant="form"
+              placeholder="Your email for offers and news"
+              type="email"
+              :error="error"
+              :class="['h-full', error ? errorClass : '']"
+              :aria-invalid="error"
+            />
+          </template>
         </UiFormField>
         <UiButton
           aria-label="subscribe"
           type="submit"
           variant="primary"
-          class="h-auto"
+          class="h-auto p-[10px]"
+          size="small"
         >
           <Icon name="ic:sharp-arrow-right-alt" size="25" />
         </UiButton>
@@ -90,15 +98,7 @@ const handleSubscribe = handleSubmit((values) => {
 </template>
 
 <style scoped>
-section :deep(.form-field) {
-  margin-bottom: 0;
-}
-
 section :deep(.form-field__error) {
   position: absolute;
-}
-
-section :deep(.ui-button) {
-  padding: 10px;
 }
 </style>

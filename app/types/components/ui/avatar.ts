@@ -1,4 +1,4 @@
-import { AVATAR_SIZE_CLASSES } from "~/constants/ui";
+import type { AVATAR_SIZE_CLASSES } from "~/constants";
 
 export type AvatarSize = keyof typeof AVATAR_SIZE_CLASSES;
 
