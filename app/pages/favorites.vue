@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from "~/types/entities";
+import type { Product } from "~/types";
 
 useSeoMeta({
   title: "Favorites - Nuxt Shop",

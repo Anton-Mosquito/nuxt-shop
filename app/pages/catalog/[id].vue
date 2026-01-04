@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import type { Product, Review, Tab } from "~/types";
-import { PRODUCT_TABS } from "~/constants/products";
+import { ERROR_MESSAGES, PRODUCT_TABS } from "~/constants";
 
 interface Props {
   product: Product;
   reviews: Review[];
 }
+
+const route = useRoute();
+const API_URL = useAPI();
+const { showLoader, hideLoader } = usePageLoader();
+
+const { data, error, status } = await useFetch<Props>(
+  () => `${API_URL}/products/${route.params.id}`,
+  {
+    lazy: true,
+    watch: [() => route.params.id],
+  }
+);
 
 useSeoMeta({
   title: () =>
@@ -26,18 +38,6 @@ useSeoMeta({
       : "Product - Nuxt Shop",
 });
 
-const route = useRoute();
-const API_URL = useAPI();
-const { showLoader, hideLoader } = usePageLoader();
-
-const { data, error, status } = await useFetch<Props>(
-  () => `${API_URL}/products/${route.params.id}`,
-  {
-    lazy: true,
-    watch: [() => route.params.id],
-  }
-);
-
 const { activeTab, productTabs } = useTabManager();
 const { reviewCount, productDescription, productImages } = useData();
 
@@ -55,10 +55,10 @@ watch(
 
 watch(error, (newError) => {
   if (!newError) return;
-  
+
   showError({
     statusCode: newError.statusCode || 500,
-    statusMessage: newError.statusMessage || "Product not found",
+    statusMessage: newError.statusMessage || ERROR_MESSAGES.PRODUCT_NOT_FOUND,
     fatal: true,
   });
 });

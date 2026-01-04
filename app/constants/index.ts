@@ -56,14 +56,6 @@ export const BREAKPOINTS = {
   DESKTOP: 1280,
 } as const;
 
-/**
- * Pagination configuration
- * Default settings for paginated lists
- */
-export const PAGINATION = {
-  DEFAULT_PAGE_SIZE: 12,
-  PAGE_SIZE_OPTIONS: [12, 24, 48],
-} as const;
 
 // Re-export grouped constant modules for convenience
 export * from "./navigation";
@@ -71,3 +63,8 @@ export * from "./social";
 export * from "./catalog";
 export * from "./ui";
 export * from "./header-navigation";
+export * from "./messages";
+export * from "./products";
+export * from "./footer";
+export * from "./validation";
+export * from "./accessibility";

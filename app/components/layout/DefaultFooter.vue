@@ -2,7 +2,12 @@
 import * as z from "zod";
 import { useForm, useField } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { FOOTER_NAV_LINKS, SOCIAL_LINKS } from "~/constants";
+import {
+  FOOTER_NAV_LINKS,
+  SOCIAL_LINKS,
+  VALIDATION_MESSAGES,
+  FOOTER_STRINGS,
+} from "~/constants";
 
 const { success, error } = useToast();
 
@@ -20,12 +25,12 @@ const { value: email, errorMessage: emailError } = useField<string>("email");
 
 const handleSubscribe = handleSubmit((values) => {
   if (!values.email) {
-    error({ message: "Please enter your email" });
+    error({ message: VALIDATION_MESSAGES.EMAIL_REQUIRED });
     return;
   }
 
   success({
-    message: "Your email has been subscribed to news and notifications",
+    message: VALIDATION_MESSAGES.SUBSCRIBE_SUCCESS,
   });
   resetForm();
 });
@@ -55,7 +60,7 @@ const handleSubscribe = handleSubmit((values) => {
               :id="id"
               v-model="email"
               variant="form"
-              placeholder="Your email for offers and news"
+              :placeholder="VALIDATION_MESSAGES.INPUT_PLACEHOLDER"
               type="email"
               :error="error"
               :class="['h-full', error ? errorClass : '']"
@@ -64,7 +69,7 @@ const handleSubscribe = handleSubmit((values) => {
           </template>
         </UiFormField>
         <UiButton
-          aria-label="subscribe"
+          :aria-label="FOOTER_STRINGS.BUTTON_SUBSCRIBE_ARIA"
           type="submit"
           variant="primary"
           class="h-auto p-[10px]"
@@ -76,7 +81,8 @@ const handleSubscribe = handleSubmit((values) => {
     </div>
     <div class="flex justify-between items-center pt-2">
       <div class="text-sm text-[var(--color-dark-gray)]">
-        &copy; <NuxtTime :datetime="new Date()" year="numeric" /> My Company
+        &copy; <NuxtTime :datetime="new Date()" year="numeric" />
+        {{ FOOTER_STRINGS.COPYRIGHT_OWNER }}
       </div>
       <div class="flex items-center gap-4">
         <NuxtLink

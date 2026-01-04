@@ -86,8 +86,6 @@ useBodyScrollLock(() => isOpen);
         </div>
       </li>
 
-      <!-- <li class="border-t border-gray-200 my-2" aria-hidden="true"></li> -->
-
       <li v-for="item in iconNavigation" :key="item.to" role="none">
         <NuxtLink
           v-if="!item.children"

@@ -48,3 +48,4 @@ export const BREADCRUMB_LABELS: Record<string, string> = {
   favorites: "Обране",
   catalog: "Каталог",
 };
+

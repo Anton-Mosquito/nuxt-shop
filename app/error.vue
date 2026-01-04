@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { NuxtError } from "#app";
+import { ERROR_MESSAGES } from "~/constants";
 
 const { error } = defineProps<{ error: NuxtError }>();
 
@@ -25,7 +26,7 @@ function goHome() {
       id="error-desc"
       class="text-xl font-normal leading-7 text-center mb-8"
     >
-      Page not found
+      {{ ERROR_MESSAGES.PAGE_NOT_FOUND }}
     </div>
 
     <div

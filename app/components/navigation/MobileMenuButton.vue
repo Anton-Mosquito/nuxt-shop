@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { MenuStateProps, ToggleActionEmit } from "~/types";
+import { MOBILE_MENU_ARIA } from "~/constants";
 
 const { isOpen } = defineProps<MenuStateProps>();
 const emit = defineEmits<ToggleActionEmit>();
 
 const ariaLabel = computed(() =>
-  isOpen ? "Close navigation menu" : "Open navigation menu"
+  isOpen ? MOBILE_MENU_ARIA.CLOSE : MOBILE_MENU_ARIA.OPEN
 );
 </script>
 
