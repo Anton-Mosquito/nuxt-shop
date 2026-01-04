@@ -19,3 +19,4 @@ export interface ButtonProps {
 export type ButtonEmits = {
   click: [];
 };
+

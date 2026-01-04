@@ -1,37 +1,23 @@
-// import type { PaymentMethod, DeliveryMethod } from "../enums";
-
-/**
- * Address form data
- * @unused - Reserved for future use
- */
-// export interface AddressFormData {
-//   street: string;
-//   city: string;
-//   state: string;
-//   zipCode: string;
-//   country: string;
-// }
-
 /**
  * Checkout form data
- * @unused - Reserved for future use
  */
-// export interface CheckoutFormData {
-//   email: string;
-//   firstName: string;
-//   lastName: string;
-//   phone: string;
-//   shippingAddress: AddressFormData;
-//   billingAddress: AddressFormData;
-//   useSameAddress: boolean;
-//   deliveryMethod: DeliveryMethod;
-//   paymentMethod: PaymentMethod;
-//   cardNumber?: string;
-//   cardExpiry?: string;
-//   cardCvc?: string;
-//   savePaymentMethod?: boolean;
-//   newsletter?: boolean;
-// }
+export interface CheckoutFormData {
+  // Personal info
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
 
-// Empty export to prevent "empty file" error
-export {};
+  // Delivery address
+  city: string;
+  address: string;
+  zipCode: string;
+
+  // Payment & delivery
+  deliveryMethod: "nova-poshta" | "ukrposhta" | "courier";
+  paymentMethod: "card" | "cash" | "online";
+
+  // Additional
+  comment?: string;
+  subscribe?: boolean;
+}

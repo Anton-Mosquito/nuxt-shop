@@ -1,28 +1,4 @@
-import type { NavLink, IconLink } from "~/types/ui/navigation";
-
-/**
- * Main navigation links for header menu
- * Used in: DefaultHeader.vue
- */
-export const NAV_LINKS: readonly NavLink[] = [
-  { name: "Shop", path: "/catalog" },
-  { name: "About Us", path: "/about" },
-] as const;
-
-/**
- * Header action icon links
- * Used in: DefaultHeader.vue
- */
-export const HEADER_ICON_LINKS: readonly IconLink[] = [
-  { path: "/search", icon: "ic:baseline-search", label: "Search" },
-  { path: "/cart", icon: "ic:outline-shopping-cart", label: "Cart" },
-  {
-    path: "/favorites",
-    icon: "ic:baseline-favorite-border",
-    label: "Favorites",
-  },
-  { path: "/account", icon: "ic:outline-account-circle", label: "Account" },
-] as const;
+import type { NavLink } from "~/types/ui/navigation";
 
 /**
  * Footer navigation links
@@ -43,3 +19,33 @@ export const FOOTER_INFO_LINKS: readonly NavLink[] = [
   { name: "Delivery", path: "/delivery" },
   { name: "Returns", path: "/returns" },
 ] as const;
+
+/**
+ * Breadcrumb labels mapping
+ * Used in: Breadcrumbs.vue
+ */
+export const BREADCRUMB_LABELS: Record<string, string> = {
+  "": "Головна",
+  dashboard: "Dashboard",
+  users: "Користувачі",
+  products: "Продукти",
+  orders: "Замовлення",
+  analytics: "Аналітика",
+  settings: "Налаштування",
+  new: "Створити",
+  edit: "Редагувати",
+  categories: "Категорії",
+  inventory: "Інвентар",
+  general: "Загальні",
+  security: "Безпека",
+  notifications: "Сповіщення",
+  integrations: "Інтеграції",
+  account: "Акаунт",
+  auth: "Авторизація",
+  login: "Вхід",
+  register: "Реєстрація",
+  cart: "Кошик",
+  favorites: "Обране",
+  catalog: "Каталог",
+};
+

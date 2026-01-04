@@ -1,17 +1,12 @@
 <script setup lang="ts">
-interface Props {
-  rating?: number;
-  maxStars?: number;
-  size?: string;
-  interactive?: boolean;
-}
+import type { StarRatingProps } from "~/types";
 
 const {
   rating = 0,
   maxStars = 5,
   size = "16px",
   interactive = false,
-} = defineProps<Props>();
+} = defineProps<StarRatingProps>();
 
 const modelValue = defineModel<number>({ default: 0 });
 
@@ -39,7 +34,6 @@ const handleMouseLeave = () => {
   hoverRating.value = 0;
 };
 
-// Display rating calculation for interactive mode with hover
 const displayRating = computed(() => {
   if (interactive && hoverRating.value > 0) {
     return hoverRating.value;
@@ -52,8 +46,12 @@ const displayFilledStars = computed(() => Math.floor(displayRating.value));
 
 <template>
   <div
-    class="star-rating"
-    :class="{ 'star-rating--interactive': interactive }"
+    class="flex gap-1 text-black"
+    :class="{ 'cursor-pointer': interactive }"
+    :role="!interactive ? 'img' : undefined"
+    :aria-label="
+      !interactive ? `Rating: ${rating} out of ${maxStars}` : undefined
+    "
     @mouseleave="handleMouseLeave"
   >
     <!-- Display mode (non-interactive) with half stars -->
@@ -61,16 +59,16 @@ const displayFilledStars = computed(() => Math.floor(displayRating.value));
       <Icon
         v-for="i in filledStars"
         :key="`filled-${i}`"
-        class="star star--filled"
-        :name="'mdi:star'"
+        class="text-black leading-none"
+        name="ic:baseline-star"
         :size="size"
         aria-hidden="true"
       />
 
       <Icon
         v-if="hasHalfStar"
-        class="star star--half"
-        :name="'mdi:star-half'"
+        class="text-black opacity-50 leading-none"
+        name="ic:baseline-star-half"
         :size="size"
         aria-hidden="true"
       />
@@ -78,8 +76,8 @@ const displayFilledStars = computed(() => Math.floor(displayRating.value));
       <Icon
         v-for="i in emptyStars"
         :key="`empty-${i}`"
-        class="star star--empty"
-        :name="'mdi:star-outline'"
+        class="text-gray-300 leading-none"
+        name="ic:baseline-star-border"
         :size="size"
         aria-hidden="true"
       />
@@ -91,17 +89,20 @@ const displayFilledStars = computed(() => Math.floor(displayRating.value));
         v-for="i in maxStars"
         :key="i"
         type="button"
-        class="star-btn"
-        :class="{
-          'star-btn--active': i <= displayFilledStars,
-          'star-btn--empty': i > displayFilledStars,
-        }"
+        class="p-0 border-none bg-transparent cursor-pointer leading-none transition-transform duration-150 ease-out hover:scale-110 focus-visible:outline-2 focus-visible:outline-primary-500 focus-visible:outline-offset-2 focus-visible:rounded-sm"
+        :class="[i <= displayFilledStars ? 'text-black' : 'text-gray-300']"
+        :style="{ fontSize: size }"
         :aria-label="`Rate ${i} out of ${maxStars} stars`"
         @click="handleStarClick(i)"
         @mouseenter="handleStarHover(i)"
       >
         <Icon
-          :name="i <= displayFilledStars ? 'mdi:star' : 'mdi:star-outline'"
+          class="pointer-events-none"
+          :name="
+            i <= displayFilledStars
+              ? 'ic:baseline-star'
+              : 'ic:baseline-star-border'
+          "
           :size="size"
           aria-hidden="true"
         />
@@ -109,63 +110,3 @@ const displayFilledStars = computed(() => Math.floor(displayRating.value));
     </template>
   </div>
 </template>
-
-<style scoped>
-.star-rating {
-  display: flex;
-  gap: 4px;
-  color: var(--color-black);
-}
-
-.star {
-  font-size: v-bind(size);
-  line-height: 1;
-}
-
-.star--filled {
-  color: var(--color-black);
-}
-
-.star--half {
-  color: var(--color-black);
-  opacity: 0.5;
-}
-
-.star--empty {
-  color: var(--color-gray);
-}
-
-/* Interactive mode styles */
-.star-rating--interactive {
-  cursor: pointer;
-}
-
-.star-btn {
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: v-bind(size);
-  line-height: 1;
-  color: var(--color-black);
-  transition: transform 0.15s ease;
-}
-
-.star-btn:hover {
-  transform: scale(1.1);
-}
-
-.star-btn:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.star-btn--active {
-  color: var(--color-black);
-}
-
-.star-btn--empty {
-  color: var(--color-gray);
-}
-</style>

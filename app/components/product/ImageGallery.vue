@@ -5,219 +5,120 @@ interface Props {
   solid?: boolean; // when true, indicator is a continuous line without gaps
 }
 
-const props = defineProps<Props>();
-const images = props.images;
-const alt = props.alt;
-const solid = props.solid ?? false;
-const config = useRuntimeConfig();
-const selectedImage = ref(0);
+const { images, alt, solid = false } = defineProps<Props>();
+const mainImageRef = useTemplateRef<HTMLDivElement>("mainImageRef");
 
-// pointer / touch swipe support
-const pointerStartX = ref<number | null>(null);
-const swipeThreshold = 40; // px
+const { selectedImage, selectImage } = useImageSwipe();
 
-const selectImage = (index: number) => {
-  if (index < 0) index = 0;
-  if (index > images.length - 1) index = images.length - 1;
-  selectedImage.value = index;
-};
+function useImageSwipe() {
+  const { isSwiping, direction } = useSwipe(mainImageRef);
+  const selectedImage = ref(0);
 
-const onPointerDown = (e: PointerEvent) => {
-  pointerStartX.value = e.clientX;
-};
+  const selectImage = (index: number) => {
+    if (!images?.length) return;
 
-const onPointerUp = (e: PointerEvent) => {
-  if (pointerStartX.value === null) return;
-  const start = pointerStartX.value;
-  // ensure number
-  const end = typeof e.clientX === "number" ? e.clientX : start;
-  const delta = end - start;
-  if (delta > swipeThreshold) {
-    selectImage(selectedImage.value - 1);
-  } else if (delta < -swipeThreshold) {
-    selectImage(selectedImage.value + 1);
-  }
-  pointerStartX.value = null;
-};
+    selectedImage.value = clamp(index, 0, images.length - 1);
+  };
 
-const onPointerCancel = () => {
-  pointerStartX.value = null;
-};
+  watch(isSwiping, (newValue, oldValue) => {
+    if (!(oldValue && !newValue)) return;
 
-// Touch fallback (some browsers)
-const touchStartX = ref<number | null>(null);
-const onTouchStart = (e: TouchEvent) => {
-  const t = e.touches && e.touches[0];
-  touchStartX.value = t ? t.clientX : null;
-};
-const onTouchEnd = (e: TouchEvent) => {
-  if (touchStartX.value === null) return;
-  const changed = e.changedTouches && e.changedTouches[0];
-  if (!changed) {
-    touchStartX.value = null;
-    return;
-  }
-  const delta = changed.clientX - touchStartX.value;
-  if (delta > swipeThreshold) selectImage(selectedImage.value - 1);
-  else if (delta < -swipeThreshold) selectImage(selectedImage.value + 1);
-  touchStartX.value = null;
-};
+    const step =
+      direction.value === "left" ? 1 : direction.value === "right" ? -1 : 0;
+
+    if (!step) return;
+
+    selectImage(selectedImage.value + step);
+  });
+
+  return {
+    selectedImage,
+    selectImage,
+  };
+}
 </script>
 
 <template>
-  <div class="product-gallery">
-    <div class="thumbnails">
+  <div v-if="images?.length" class="flex flex-col-reverse gap-6 md:flex-row">
+    <div
+      class="thumbnails flex flex-row gap-4 overflow-x-auto md:flex-col md:overflow-visible [&::-webkit-scrollbar]:hidden"
+      role="tablist"
+      aria-label="Product thumbnails"
+    >
       <button
         v-for="(image, index) in images"
         :key="index"
-        class="thumbnail"
-        :class="{ active: selectedImage === index }"
+        class="thumbnail relative flex h-[60px] w-[60px] shrink-0 cursor-pointer items-center justify-center border bg-[#f9f9f9] p-2 transition-colors duration-200 md:h-20 md:w-20 md:shrink"
+        :class="[
+          selectedImage === index
+            ? 'border-[var(--color-accent)]'
+            : 'border-[var(--color-gray)] hover:border-[var(--color-accent)]',
+        ]"
+        role="tab"
+        :aria-selected="selectedImage === index"
+        :aria-label="`View image ${index + 1}`"
+        :tabindex="selectedImage === index ? 0 : -1"
         @click="selectImage(index)"
       >
-        <img
-          :src="`${config.public.image_url}${image}`"
-          :alt="`${alt} ${index + 1}`"
+        <NuxtImg
+          :src="useImageUrl(image)"
+          :alt="`${alt} thumbnail ${index + 1}`"
+          provider="ipx"
+          format="webp"
+          quality="80"
+          width="160"
+          height="160"
+          loading="lazy"
+          class="h-full w-full object-contain"
         />
       </button>
     </div>
-    <div class="main-column">
+    <div class="main-column flex w-full flex-col gap-3">
       <div
-        class="main-image"
-        @pointerdown="onPointerDown"
-        @pointerup="onPointerUp"
-        @pointercancel="onPointerCancel"
-        @touchstart.passive="onTouchStart"
-        @touchend.passive="onTouchEnd"
+        ref="mainImageRef"
+        class="main-image relative flex min-h-[400px] flex-1 touch-pan-y items-center justify-center overflow-hidden bg-[#f9f9f9]"
       >
-        <img
-          :src="`${config.public.image_url}${images[selectedImage]}`"
-          :alt="alt"
-        />
+        <Transition
+          enter-active-class="transition-opacity duration-300 ease-out"
+          enter-from-class="opacity-0"
+          leave-active-class="transition-opacity duration-300 ease-in"
+          leave-to-class="opacity-0"
+          mode="out-in"
+        >
+          <NuxtImg
+            :key="selectedImage"
+            :src="useImageUrl(images[selectedImage])"
+            :alt="alt"
+            provider="ipx"
+            format="webp"
+            quality="90"
+            width="1000"
+            height="1000"
+            sizes="sm:100vw md:80vw lg:60vw"
+            class="main-image__img max-h-[500px] max-w-full select-none object-contain"
+            style="-webkit-user-drag: none"
+          />
+        </Transition>
       </div>
 
-      <!-- Linear indicator -->
-      <div class="indicator" :class="{ solid: solid }">
+      <div
+        class="indicator group flex items-center justify-center py-4"
+        :class="[solid ? 'gap-0 solid' : 'gap-1.5']"
+      >
         <button
           v-for="(_, index) in images"
           :key="index"
-          :aria-label="`Перейти до зображення ${index + 1}`"
-          class="indicator-segment"
-          :class="{ active: selectedImage === index }"
+          :aria-label="`Go to image ${index + 1}`"
+          :aria-current="selectedImage === index"
+          class="indicator-segment h-[3px] max-w-[80px] flex-1 cursor-pointer border-none p-0 transition-colors duration-300 group-[.solid]:max-w-none group-[.solid]:rounded-none"
+          :class="[
+            selectedImage === index
+              ? 'active bg-[#c19a6b]'
+              : 'bg-[#e5e5e5] hover:bg-[#c9c9c9]',
+          ]"
           @click="selectImage(index)"
         />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.product-gallery {
-  display: flex;
-  gap: 24px;
-}
-
-.thumbnails {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.main-column {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-}
-
-.thumbnail {
-  width: 80px;
-  height: 80px;
-  border: 1px solid var(--color-gray);
-  background: #f9f9f9;
-  cursor: pointer;
-  padding: 8px;
-  transition: border-color 0.2s;
-}
-
-.thumbnail:hover {
-  border-color: var(--color-accent);
-}
-
-.thumbnail.active {
-  border-color: var(--color-accent);
-}
-
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.main-image {
-  flex: 1;
-  background: #f9f9f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-}
-
-.main-image img {
-  max-width: 100%;
-  max-height: 500px;
-  object-fit: contain;
-}
-
-/* Linear indicator */
-.indicator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  padding: 16px 0;
-}
-
-.indicator.solid {
-  gap: 0;
-}
-
-.indicator.solid .indicator-segment {
-  border-radius: 0;
-  max-width: none;
-}
-
-.indicator-segment {
-  height: 3px;
-  flex: 1;
-  max-width: 80px;
-  background-color: #e5e5e5;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  padding: 0;
-}
-
-.indicator-segment:hover:not(.active) {
-  background-color: #c9c9c9;
-}
-
-.indicator-segment.active {
-  background-color: #c19a6b;
-}
-
-@media (max-width: 768px) {
-  .product-gallery {
-    flex-direction: column-reverse;
-  }
-
-  .thumbnails {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  .thumbnail {
-    width: 60px;
-    height: 60px;
-  }
-}
-</style>

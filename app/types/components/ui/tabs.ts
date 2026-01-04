@@ -19,13 +19,7 @@ export type TabId = string;
  */
 export interface TabsProps {
   tabs: Tab[];
-  activeTab?: TabId;
+  modelValue?: TabId;
+  defaultTab?: TabId;
+  lazy?: boolean;
 }
-
-/**
- * Tabs component emits
- */
-export type TabsEmits = {
-  "update:activeTab": [tabId: TabId];
-  change: [tabId: TabId];
-};

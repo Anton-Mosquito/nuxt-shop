@@ -1,90 +1,57 @@
 <script setup lang="ts">
-import type { Review } from "~/types/entities";
+import type { Review } from "~/types";
 
 interface Props {
   reviews: Review[];
 }
 
-interface ReviewFormData {
-  name: string;
-  email: string;
-  rating: number;
-  comment: string;
-  saveData?: boolean;
-}
-
 const { reviews } = defineProps<Props>();
-
-const handleReviewSubmit = (data: ReviewFormData) => {
-  console.log("New review submitted:", data);
-  // TODO: Send to API
-  // await $fetch('/api/reviews', { method: 'POST', body: data })
-};
 </script>
 
 <template>
-  <div class="product-reviews">
-    <h3 class="reviews-title">Відгуки ({{ reviews.length }})</h3>
+  <div class="max-w-3xl">
+    <h3 class="text-xl font-medium mb-6">Reviews ({{ reviews.length }})</h3>
 
-    <div class="reviews-list">
-      <div v-for="review in reviews" :key="review.id" class="review-item">
-        <div class="review-header">
-          <div class="review-author">{{ review.name }}</div>
-          <div class="review-date">{{ review.createdAt }}</div>
+    <SkeletonReview v-if="false" :count="3" />
+
+    <div v-else class="flex flex-col gap-6 mb-10">
+      <div
+        v-for="review in reviews"
+        :key="review.id"
+        class="pb-6 border-b border-solid border-[var(--color-gray)]"
+      >
+        <div class="flex gap-3">
+          <UiAvatar
+            :src="review.avatar"
+            :alt="review.name"
+            size="sm"
+            class="flex-shrink-0"
+          />
+          <div class="flex-1">
+            <div class="flex justify-between items-center mb-2">
+              <div class="font-medium text-[var(--color-black)]">
+                {{ review.name }}
+              </div>
+              <NuxtTime
+                v-if="review.createdAt"
+                :datetime="review.createdAt"
+                class="text-sm"
+                year="numeric"
+                month="long"
+                day="numeric"
+                hour="2-digit"
+                minute="2-digit"
+              />
+            </div>
+            <UiStarRating :rating="review.rating" size="20px" />
+            <p class="text-sm leading-[1.6] mt-3 text-[var(--color-dark-gray)]">
+              {{ review.text }}
+            </p>
+          </div>
         </div>
-        <UiStarRating :rating="review.rating" size="20px" />
-        <p class="review-text">{{ review.text }}</p>
       </div>
     </div>
 
-    <ProductReviewForm @submit="handleReviewSubmit" />
+    <ProductReviewForm />
   </div>
 </template>
-
-<style scoped>
-.product-reviews {
-  max-width: 800px;
-}
-
-.reviews-title {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 24px;
-}
-
-.reviews-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 40px;
-}
-
-.review-item {
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--color-gray);
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.review-author {
-  font-weight: 500;
-  color: var(--color-black);
-}
-
-.review-date {
-  font-size: 14px;
-  color: var(--color-dark-gray);
-}
-
-.review-text {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-dark-gray);
-  margin-top: 12px;
-}
-</style>

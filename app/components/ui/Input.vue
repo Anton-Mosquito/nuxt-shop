@@ -1,14 +1,63 @@
 <script setup lang="ts">
-import type { InputProps } from "~/types/components/ui/input";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "~/utils/cn";
+import type { InputProps as BaseInputProps } from "~/types";
+
+const inputVariants = cva(
+  "w-full py-3 border-none bg-transparent text-base font-normal text-[var(--color-black)] outline-none transition-colors duration-200 ease-in-out placeholder:font-normal placeholder:text-[var(--color-dark-gray)] disabled:opacity-50 disabled:cursor-not-allowed [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+  {
+    variants: {
+      variant: {
+        default:
+          "border-b border-solid border-[var(--color-gray)] focus:border-[var(--color-black)]",
+        search:
+          "bg-[#f5f5f5] py-[10px] px-[12px] pl-[36px] rounded-[6px] border-none placeholder:text-[#999]",
+        form: "border border-solid border-[var(--color-gray)] rounded-[4px] px-[12px] py-[12px] bg-[var(--color-white)] text-sm hover:enabled:border-[var(--color-dark-gray)] focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] disabled:bg-[#f5f5f5] disabled:opacity-60",
+      },
+      hasIcon: {
+        true: "pl-[36px]",
+      },
+      error: {
+        true: "",
+      },
+    },
+    compoundVariants: [
+      {
+        variant: "default",
+        error: true,
+        class: "border-b-[#d32f2f]",
+      },
+      {
+        variant: "form",
+        error: true,
+        class: "border-[#d32f2f] focus:border-[#d32f2f]",
+      },
+    ],
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+);
+
+type InputVariants = VariantProps<typeof inputVariants>;
+
+interface Props extends Omit<BaseInputProps, "variant"> {
+  variant?: InputVariants["variant"];
+}
 
 const {
   type = "text",
   variant = "default",
   disabled = false,
   required = false,
-} = defineProps<InputProps>();
+  autocomplete,
+  placeholder,
+  label,
+  icon,
+  error,
+} = defineProps<Props>();
 
-const modelValue = defineModel<string>();
+const modelValue = defineModel<string | number>();
 const showPassword = ref(false);
 
 const inputType = computed(() => {
@@ -21,173 +70,56 @@ const inputType = computed(() => {
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
+
+const wrapperVariants = cva("flex flex-col gap-1 w-full", {
+  variants: {
+    variant: {
+      default: "",
+      search: "max-w-[320px]",
+      form: "",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
 </script>
 
 <template>
-  <div :class="['input-wrapper', `input-wrapper--${variant}`]">
+  <div :class="cn(wrapperVariants({ variant }))">
     <label
       v-if="label"
-      :class="['input-label', { 'input-label--required': required }]"
+      :aria-required="required"
+      class="text-sm font-normal text-[var(--color-dark-gray)]"
+      :class="[required && 'after:content-[&#42;] after:text-[#d32f2f]']"
     >
       {{ label }}
     </label>
-    <div class="input-container">
-      <Icon v-if="icon" :name="icon" size="20" class="input-icon" />
+    <div class="relative flex items-center w-full">
+      <Icon
+        v-if="icon"
+        :name="icon"
+        size="20"
+        class="absolute left-2 text-[var(--color-dark-gray)] pointer-events-none"
+      />
       <input
         v-model="modelValue"
+        v-bind="$attrs"
         :type="inputType"
         :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
-        :class="[
-          'input',
-          `input--${variant}`,
-          { 'input--with-icon': icon, 'input--error': error },
-        ]"
+        :autocomplete="autocomplete"
+        :class="cn(inputVariants({ variant, hasIcon: !!icon, error: !!error }))"
       />
       <button
         v-if="type === 'password'"
         type="button"
-        class="input-toggle"
+        class="absolute right-0 bg-none border-none cursor-pointer p-1 inline-flex items-center justify-center text-[var(--color-dark-gray)] hover:text-[var(--color-black)] transition-colors"
         @click="togglePasswordVisibility"
       >
-        <Icon :name="showPassword ? 'mdi:eye-off' : 'mdi:eye'" size="20" />
+        <Icon :name="showPassword ? 'ic:baseline-visibility-off' : 'ic:baseline-visibility'" size="20" />
       </button>
     </div>
-    <span v-if="error" class="input-error">{{ error }}</span>
   </div>
 </template>
-
-<style scoped>
-.input-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-}
-
-.input-label {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-dark-gray);
-}
-
-.input-label--required::after {
-  content: " *";
-  color: #d32f2f;
-}
-
-.input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.input {
-  width: 100%;
-  padding: 12px 0;
-  border: none;
-  background: none;
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--color-black);
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.input::placeholder {
-  color: var(--color-dark-gray);
-  font-weight: 400;
-}
-
-.input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Variant: default (gray underline) */
-.input--default {
-  border-bottom: 1px solid var(--color-gray);
-}
-
-.input--default:focus {
-  border-bottom-color: var(--color-black);
-}
-
-/* Variant: black (black underline) */
-.input--black {
-  border-bottom: 2px solid var(--color-black);
-}
-
-/* Variant: footer (for email subscription in footer) */
-.input--footer {
-  border-bottom: 1px solid var(--color-black);
-  font-size: 14px;
-  padding: 6px 8px;
-}
-
-/* Variant: search (with background) */
-.input--search {
-  background: #f5f5f5;
-  padding: 10px 12px;
-  padding-left: 36px;
-  border-radius: 6px;
-  border: none;
-}
-
-.input--search::placeholder {
-  color: #999;
-}
-
-/* With icon */
-.input--with-icon {
-  padding-left: 36px;
-}
-
-.input-icon {
-  position: absolute;
-  left: 8px;
-  color: var(--color-dark-gray);
-  pointer-events: none;
-}
-
-/* Password toggle button */
-.input-toggle {
-  position: absolute;
-  right: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-dark-gray);
-  transition: color 0.2s ease;
-}
-
-.input-toggle:hover {
-  color: var(--color-black);
-}
-
-/* Error state */
-.input--error {
-  border-bottom-color: #d32f2f !important;
-}
-
-.input-error {
-  font-size: 12px;
-  color: #d32f2f;
-  margin-top: 4px;
-}
-
-/* Wrapper variants */
-.input-wrapper--search {
-  max-width: 320px;
-}
-
-.input-wrapper--footer {
-  min-width: 260px;
-}
-</style>

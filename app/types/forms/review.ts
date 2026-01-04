@@ -1,14 +1,14 @@
 /**
  * Review form data
- * @unused - Reserved for future use
  */
-// export interface ReviewFormData {
-//   name: string;
-//   email: string;
-//   rating: number;
-//   comment: string;
-//   saveData?: boolean;
-// }
+export interface ReviewFormData {
+  name: string;
+  email: string;
+  rating: number;
+  comment: string;
+  saveData?: boolean;
+}
 
-// Empty export to prevent "empty file" error
-export {};
+export interface ReviewFormEmits{
+  submit: [data: ReviewFormData];
+}

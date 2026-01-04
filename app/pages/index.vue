@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GetProductsResponse } from "~/types/api";
+import type { GetProductsResponse } from "~/types";
 
 useSeoMeta({
   title: "Home - Nuxt Shop",
@@ -11,67 +11,36 @@ const API_URL = useAPI();
 const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
   query: { limit: 6, offset: 0 },
 });
+const { products, hasProducts } = useProducts();
 
-const products = computed(() => data.value?.products ?? []);
-const hasProducts = computed(() => products.value.length > 0);
+function useProducts() {
+  const products = computed(() => data.value?.products ?? []);
+  const hasProducts = computed(() => products.value.length > 0);
+
+  return {
+    products,
+    hasProducts,
+  };
+}
 </script>
 
 <template>
-  <div class="home">
+  <div class="max-w-[1248px] mx-auto px-4 pb-20">
     <ProductSlider v-if="hasProducts" :products="products" />
 
-    <section class="home__section">
-      <div class="home__header">
-        <h2 class="home__title">Recent Arrivals</h2>
-        <NuxtLink to="/catalog" class="home__link">All products</NuxtLink>
+    <section class="mt-20">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-normal text-[var(--color-black)] md:text-2xl">
+          Recent Arrivals
+        </h2>
+        <NuxtLink
+          to="/catalog"
+          class="text-[var(--color-accent)] no-underline text-sm transition-colors hover:text-[var(--color-accent-dark)]"
+          prefetch
+          >All products</NuxtLink
+        >
       </div>
       <ProductGrid v-if="hasProducts" :products="products" :columns="3" />
     </section>
   </div>
 </template>
-
-<style scoped>
-.home {
-  max-width: 1248px;
-  margin: 0 auto;
-  padding: 0 16px 80px;
-}
-
-.home__section {
-  margin-top: 80px;
-}
-
-.home__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 48px;
-}
-
-.home__title {
-  font-size: 32px;
-  font-weight: 400;
-  color: var(--color-black);
-}
-
-.home__link {
-  color: var(--color-accent);
-  text-decoration: none;
-  font-size: 16px;
-  transition: color 0.2s;
-}
-
-.home__link:hover {
-  color: var(--color-accent-dark);
-}
-
-@media (max-width: 768px) {
-  .home__title {
-    font-size: 24px;
-  }
-
-  .home__section {
-    margin-top: 48px;
-  }
-}
-</style>

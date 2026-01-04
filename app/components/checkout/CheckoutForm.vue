@@ -1,24 +1,5 @@
 <script setup lang="ts">
-interface CheckoutFormData {
-  // Personal info
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-
-  // Delivery address
-  city: string;
-  address: string;
-  zipCode: string;
-
-  // Payment & delivery
-  deliveryMethod: "nova-poshta" | "ukrposhta" | "courier";
-  paymentMethod: "card" | "cash" | "online";
-
-  // Additional
-  comment?: string;
-  subscribe?: boolean;
-}
+import type { CheckoutFormData } from "~/types/forms/checkout";
 
 const emit = defineEmits<{
   submit: [data: CheckoutFormData];
@@ -168,7 +149,7 @@ const handleSubmit = async () => {
 
         <div class="checkout-form__row">
           <UiFormField label="Ім'я" required :error="errors.firstName">
-            <UiFormInput
+            <UiInput variant="form"
               v-model="formData.firstName"
               placeholder="Іван"
               autocomplete="given-name"
@@ -177,7 +158,7 @@ const handleSubmit = async () => {
           </UiFormField>
 
           <UiFormField label="Прізвище" required :error="errors.lastName">
-            <UiFormInput
+            <UiInput variant="form"
               v-model="formData.lastName"
               placeholder="Іваненко"
               autocomplete="family-name"
@@ -188,7 +169,7 @@ const handleSubmit = async () => {
 
         <div class="checkout-form__row">
           <UiFormField label="Email" required :error="errors.email">
-            <UiFormInput
+            <UiInput variant="form"
               v-model="formData.email"
               type="email"
               placeholder="example@mail.com"
@@ -203,7 +184,7 @@ const handleSubmit = async () => {
             :error="errors.phone"
             hint="Формат: 0501234567"
           >
-            <UiFormInput
+            <UiInput variant="form"
               v-model="formData.phone"
               type="tel"
               placeholder="0501234567"
@@ -219,7 +200,7 @@ const handleSubmit = async () => {
         <h3 class="checkout-form__section-title">Адреса доставки</h3>
 
         <UiFormField label="Місто" required :error="errors.city">
-          <UiFormInput
+          <UiInput variant="form"
             v-model="formData.city"
             placeholder="Київ"
             autocomplete="address-level2"
@@ -228,7 +209,7 @@ const handleSubmit = async () => {
         </UiFormField>
 
         <UiFormField label="Адреса" required :error="errors.address">
-          <UiFormInput
+          <UiInput variant="form"
             v-model="formData.address"
             placeholder="вул. Хрещатик, буд. 1, кв. 5"
             autocomplete="street-address"
@@ -242,7 +223,7 @@ const handleSubmit = async () => {
           :error="errors.zipCode"
           hint="5 цифр"
         >
-          <UiFormInput
+          <UiInput variant="form"
             v-model="formData.zipCode"
             placeholder="01001"
             autocomplete="postal-code"

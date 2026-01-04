@@ -22,5 +22,11 @@
 //   icon?: string;
 // }
 
-// Empty export to prevent "empty file" error
-export {};
+/**
+ * Query string update payload used when pushing router updates.
+ * - Allows string/number/boolean values
+ * - `offset` remains optional and keeps numeric type for pagination
+ */
+export type QueryUpdates = Partial<Record<string, string | number | boolean>> & {
+	offset?: string | number;
+};

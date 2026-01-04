@@ -7,15 +7,15 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  shortDescription: string;
-  longDescription: string;
+  short_description: string;
+  long_description: string;
   sku: string;
   discount: number;
   images: string[];
-  categoryId: number;
+  category_id: number;
   category: Category;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
