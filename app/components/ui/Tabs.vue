@@ -94,14 +94,13 @@ const handleKeyDown = (event: KeyboardEvent, index: number) => {
 
 watch(model, (val) => {
   if (!val) return;
-  
+
   visitedTabs.value.add(val);
 });
 </script>
 
 <template>
   <div class="mt-10">
-    <!-- Tab List -->
     <div
       class="flex gap-2 border-b border-gray-200 mb-8 overflow-x-auto scrollbar-thin"
       role="tablist"
@@ -148,7 +147,6 @@ watch(model, (val) => {
       </button>
     </div>
 
-    <!-- Tab Content -->
     <div class="relative">
       <template v-for="tab in renderedTabs" :key="tab.id">
         <Transition

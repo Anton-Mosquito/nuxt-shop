@@ -1,148 +1,150 @@
 <script setup lang="ts">
 import type { Product, Review, Tab } from "~/types";
+import { PRODUCT_TABS } from "~/constants/products";
 
 interface Props {
   product: Product;
   reviews: Review[];
 }
 
+useSeoMeta({
+  title: () =>
+    data.value
+      ? `${data.value.product.name} - Nuxt Shop`
+      : "Product - Nuxt Shop",
+  description: () =>
+    data.value
+      ? data.value.product.short_description
+      : "Browse our extensive catalog of products at Nuxt Shop.",
+  ogDescription: () =>
+    data.value
+      ? data.value.product.short_description
+      : "Browse our extensive catalog of products at Nuxt Shop.",
+  ogTitle: () =>
+    data.value
+      ? `${data.value.product.name} - Nuxt Shop`
+      : "Product - Nuxt Shop",
+});
+
 const route = useRoute();
 const API_URL = useAPI();
-const id = ref(route.params.id);
+const { showLoader, hideLoader } = usePageLoader();
 
-const { data } = await useFetch<Props>(`${API_URL}/products/${id.value}`);
-const activeTab = ref("description");
-const reviewCount = computed(() => data.value?.reviews?.length || 0);
-const productTabs = computed<Tab[]>(() => [
+const { data, error, status } = await useFetch<Props>(
+  () => `${API_URL}/products/${route.params.id}`,
   {
-    id: "description",
-    label: "Description",
-    icon: "ic:baseline-description",
-  },
-  {
-    id: "reviews",
-    label: "Reviews",
-    icon: "ic:baseline-star-border",
-    badge: reviewCount.value,
-  },
-  {
-    id: "specifications",
-    label: "Specifications",
-    icon: "ic:baseline-format-list-bulleted",
-    disabled: true,
-  },
-]);
-
-useSeoMeta({
-  title: data.value
-    ? `${data.value.product.name} - Nuxt Shop`
-    : "Product - Nuxt Shop",
-  description: data.value
-    ? data.value.product.short_description
-    : "Browse our extensive catalog of products at Nuxt Shop.",
-  ogDescription: data.value
-    ? data.value.product.short_description
-    : "Browse our extensive catalog of products at Nuxt Shop.",
-});
-
-const productDescription = computed(
-  () =>
-    data.value?.product.long_description ||
-    data.value?.product.short_description ||
-    "No description available."
+    lazy: true,
+    watch: [() => route.params.id],
+  }
 );
 
-const productImages = computed(() => {
-  if (!data.value?.product.images || data.value.product.images.length === 0) {
-    return ["/placeholder.jpg"];
-  }
-  return data.value.product.images;
+const { activeTab, productTabs } = useTabManager();
+const { reviewCount, productDescription, productImages } = useData();
+
+watch(
+  status,
+  (newStatus) => {
+    if (newStatus === "pending") {
+      showLoader("Loading product details...");
+    } else {
+      hideLoader();
+    }
+  },
+  { immediate: true }
+);
+
+watch(error, (newError) => {
+  if (!newError) return;
+  
+  showError({
+    statusCode: newError.statusCode || 500,
+    statusMessage: newError.statusMessage || "Product not found",
+    fatal: true,
+  });
 });
+
+function useData() {
+  const reviewCount = computed(() => data.value?.reviews?.length || 0);
+  const productDescription = computed(
+    () =>
+      data.value?.product.long_description ||
+      data.value?.product.short_description ||
+      "No description available."
+  );
+
+  const productImages = computed(() => {
+    if (!data.value?.product.images || data.value.product.images.length === 0) {
+      return ["/placeholder.jpg"];
+    }
+    return data.value.product.images;
+  });
+
+  return {
+    reviewCount,
+    productDescription,
+    productImages,
+  };
+}
+
+function useTabManager() {
+  const activeTab = ref("description");
+
+  const productTabs = computed<Tab[]>(() =>
+    PRODUCT_TABS.map((tab) => {
+      if (tab.id !== "reviews") return tab;
+
+      return {
+        ...tab,
+        badge: reviewCount.value,
+      };
+    })
+  );
+
+  return {
+    activeTab,
+    productTabs,
+  };
+}
 </script>
 
 <template>
-  <div v-if="data?.product" class="product-page">
-    <Head>
-      <Title>{{ data.product.name }} - Nuxt Shop</Title>
-      <Meta name="description" :content="data.product.short_description" />
-    </Head>
+  <div class="p-0">
+    <UiPageLoader />
 
-    <div class="product-container">
-      <ProductImageGallery
-        :images="productImages"
-        :alt="data.product.name"
-        solid
-      />
-      <ProductInfo
-        :product="data.product"
-        :reviews="data.reviews"
-        :review-count="reviewCount"
-      />
-    </div>
-
-    <UiTabs v-model="activeTab" :tabs="productTabs" lazy>
-      <template #description>
-        <div class="description-content">
-          <p>
-            {{ productDescription }}
-          </p>
-        </div>
-      </template>
-      <template #reviews>
-        <LazyProductReviews
-          :product-id="data.product.id"
-          :reviews="data.reviews"
+    <div v-if="data?.product">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
+        <ProductImageGallery
+          :images="productImages"
+          :alt="data.product.name"
+          solid
         />
-      </template>
-      <template #specifications>
-        <div class="specifications-content">
-          <p>Specifications will be added later...</p>
-        </div>
-      </template>
-    </UiTabs>
-  </div>
+        <ProductInfo
+          :product="data.product"
+          :reviews="data.reviews"
+          :review-count="reviewCount"
+        />
+      </div>
 
-  <div v-else class="loading">
-    <p>Загрузка товара...</p>
+      <UiTabs v-model="activeTab" :tabs="productTabs" lazy>
+        <template #description>
+          <div class="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
+            <p>
+              {{ productDescription }}
+            </p>
+          </div>
+        </template>
+        <template #reviews>
+          <LazyProductReviews
+            :product-id="data.product.id"
+            :reviews="data.reviews"
+          />
+        </template>
+        <template #specifications>
+          <div class="max-w-3xl text-sm leading-relaxed text-gray-600">
+            <p>Specifications will be added later...</p>
+          </div>
+        </template>
+      </UiTabs>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.product-page {
-  padding: 0;
-}
-
-.product-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  margin-bottom: 40px;
-}
-
-.description-content {
-  max-width: 800px;
-}
-
-.description-content p {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-dark-gray);
-  margin-bottom: 16px;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
-  font-size: 16px;
-  color: var(--color-dark-gray);
-}
-
-@media (max-width: 1024px) {
-  .product-container {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-</style>
