@@ -8,6 +8,8 @@ export const VALIDATION_MESSAGES = {
   INVALID_EMAIL: "Invalid email address",
   SUBSCRIBE_SUCCESS: "Your email has been subscribed to news and notifications",
   SUBMIT_ERROR: "Failed to submit the form. Please try again.",
+  PASSWORDS_NO_MATCH: "Passwords do not match",
+  TERMS_REQUIRED: "You must agree to the processing of personal data",
 } as const;
 
 export type ValidationMessageKey = keyof typeof VALIDATION_MESSAGES;

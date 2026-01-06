@@ -5,7 +5,7 @@ import type { GetCategoriesResponse } from "~/types";
 definePageMeta({
   layout: "dashboard",
   title: "Головна панель",
-  //middleware: "auth", // захист сторінки
+  middleware: ["authenticated"],
 });
 
 const API_URL = useAPI();

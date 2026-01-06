@@ -16,6 +16,7 @@ export default defineNuxtConfig({
     "@nuxtjs/robots",
     "@nuxtjs/tailwindcss",
     "@vee-validate/nuxt",
+    "nuxt-auth-utils",
   ],
   image: {
     format: ["avif", "webp"],
@@ -33,6 +34,9 @@ export default defineNuxtConfig({
       api_base: "",
       api_url: "",
       image_url: "",
+    },
+    session: {
+      password: process.env.NUXT_SESSION_PASSWORD || "",
     },
   },
   icon: {
@@ -125,8 +129,8 @@ export default defineNuxtConfig({
       ],
       script: [],
     },
-    //pageTransition: { name: "page", mode: "out-in" },
-    layoutTransition: { name: "layout", mode: "out-in" },
+    pageTransition: { name: "page", mode: "out-in" },
+    // layoutTransition: { name: "layout", mode: "out-in" },
   },
   sitemap: {
     sources: ["~/server/api/sitemap/url.ts"],
@@ -163,4 +167,5 @@ export default defineNuxtConfig({
     componentIslands: true,
     payloadExtraction: true,
   },
+  sourcemap: { server: true, client: true },
 });

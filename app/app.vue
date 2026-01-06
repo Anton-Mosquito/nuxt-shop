@@ -49,7 +49,7 @@ const handleAppError = (error: Error) => {
     >
       <NuxtLayout>
         <main class="main">
-          <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
+          <NuxtPage/>
         </main>
       </NuxtLayout>
     </ErrorBoundary>

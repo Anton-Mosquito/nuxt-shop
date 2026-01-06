@@ -10,8 +10,8 @@ const { isOpen, openDropdowns, iconNavigation } =
 const emit = defineEmits<MobileNavigationActionEmits>();
 
 const route = useRoute();
-const { isAuthenticated, isDropdownOpen, isParentActive } =
-  useNavigationHelpers(openDropdowns);
+const { isDropdownOpen, isParentActive } = useNavigationHelpers(openDropdowns);
+const { loggedIn } = useAuth();
 
 useBodyScrollLock(() => isOpen);
 </script>
@@ -116,7 +116,7 @@ useBodyScrollLock(() => isOpen);
 
         <div v-else>
           <NuxtLink
-            v-if="!isAuthenticated"
+            v-if="!loggedIn"
             to="/auth/login"
             :aria-label="item.ariaLabel"
             class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors text-[#666] hover:bg-gray-50 hover:text-black"

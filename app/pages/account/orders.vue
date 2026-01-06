@@ -46,8 +46,8 @@ const handleLogout = async () => {
       </button>
       <button
         type="button"
-        @click="handleLogout"
         class="pb-3 text-lg font-normal border-b border-transparent text-[#7D7D7D] hover:text-black transition-colors px-1"
+        @click="handleLogout"
       >
         Logout
       </button>

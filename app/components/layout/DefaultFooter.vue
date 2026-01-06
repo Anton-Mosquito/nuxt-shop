@@ -102,9 +102,3 @@ const handleSubscribe = handleSubmit((values) => {
     </div>
   </section>
 </template>
-
-<style scoped>
-section :deep(.form-field__error) {
-  position: absolute;
-}
-</style>

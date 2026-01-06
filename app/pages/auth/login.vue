@@ -1,95 +1,102 @@
 <script setup lang="ts">
-import type { LoginResponse } from "~/types/api";
+import * as z from "zod";
+import { useForm, useField } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { VALIDATION_MESSAGES } from "~/constants";
 
 definePageMeta({
   layout: "auth",
+  pageTransition: {
+    name: "auth-fade",
+    mode: "out-in",
+  },
 });
 
-const API_URL = useAPI();
-const email = ref<string | undefined>();
-const password = ref<string | undefined>();
-const authStore = useAuthStore();
+const { login } = useAuth();
 const favoriteStore = useFavoriteStore();
 
-async function login() {
-  const data = await $fetch<LoginResponse>(`${API_URL}/auth/login`, {
-    method: "POST",
-    body: {
-      email: email.value,
-      password: password.value,
-    },
-  });
-  authStore.setToken(data.token);
-  authStore.setEmail(data.user.email);
-  await favoriteStore.restore(data.user.email);
+const validationSchema = toTypedSchema(
+  z.object({
+    email: z
+      .string()
+      .min(1, { message: VALIDATION_MESSAGES.REQUIRED_FIELD })
+      .email({ message: VALIDATION_MESSAGES.INVALID_EMAIL }),
+    password: z
+      .string()
+      .min(1, { message: VALIDATION_MESSAGES.REQUIRED_FIELD }),
+  })
+);
 
-  await navigateTo("/account");
-  // try {
-  //   const auth = useAuth();
-  //   await auth.login({
-  //     email: email.value!,
-  //     password: password.value!,
-  //   });
-  //   await navigateTo("/");
-  // } catch (error) {
-  //   console.error("Login error:", error);
-  //   alert("Login failed. Please check your credentials and try again.");
-  // }
-}
+const { handleSubmit } = useForm({
+  validationSchema,
+});
+
+const { value: email, errorMessage: emailError } = useField<string>("email");
+const { value: password, errorMessage: passwordError } =
+  useField<string>("password");
+const rememberMe = ref(false);
+
+const onLogin = handleSubmit(async (values) => {
+  // TODO: Handle rememberMe
+  await login(values.email, values.password);
+  await favoriteStore.restore(values.email);
+});
 </script>
 
 <template>
   <div>
-    <h1>My account</h1>
-    <form class="login-form">
-      <div class="login-form__fields">
-        <InputField v-model="email" variant="gray" placeholder="Email" />
-        <InputField
-          v-model="password"
-          variant="gray"
-          placeholder="Password"
-          type="password"
-        />
+    <h1 class="text-center text-[28px] font-medium mb-8">My account</h1>
+
+    <AuthNavigation />
+
+    <UiForm class="flex flex-col gap-6" @submit="onLogin">
+      <div class="flex flex-col gap-6">
+        <UiFormField label="Email" :error="emailError">
+          <template #default="{ id, error }">
+            <UiInput
+              :id="id"
+              v-model="email"
+              variant="default"
+              type="text"
+              :error="!!error"
+            />
+          </template>
+        </UiFormField>
+        <UiFormField label="Password" :error="passwordError">
+          <template #default="{ id, error }">
+            <UiInput
+              :id="id"
+              v-model="password"
+              variant="default"
+              type="password"
+              :error="!!error"
+            />
+          </template>
+        </UiFormField>
       </div>
-      <div class="login-form__actions">
-        <UiButton @click.stop.prevent="login">
-          <span>Login</span>
+
+      <div class="flex items-center gap-2">
+        <UiCheckbox v-model="rememberMe" size="sm">Remember me</UiCheckbox>
+      </div>
+
+      <div class="flex flex-col gap-4 mt-2">
+        <UiButton
+          type="submit"
+          class="w-full bg-black text-white hover:bg-gray-800 rounded-md py-3 text-base font-medium"
+        >
+          Login
         </UiButton>
-        <NuxtLink to="/auth/restore">Forget Password?</NuxtLink>
+        <div class="text-center">
+          <NuxtLink
+            to="/auth/restore"
+            class="text-sm text-black no-underline hover:underline"
+          >
+            Forgot Password?
+          </NuxtLink>
+        </div>
       </div>
-    </form>
+    </UiForm>
   </div>
 </template>
 
-<style scoped>
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 70px;
-  max-width: 500px;
-  margin: 0 auto;
-  margin-top: 64px;
-
-  & .login-form__fields {
-    display: flex;
-    flex-direction: column;
-    gap: 46px;
-  }
-
-  & .login-form__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
-
-    a {
-      text-decoration: none;
-      margin: 0 auto;
-      color: var(--color-black);
-
-      :hover {
-        color: var(--color-black-hover);
-      }
-    }
-  }
-}
-</style>
+<style scoped></style>

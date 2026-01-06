@@ -4,8 +4,9 @@ import type { DesktopNavigationProps, NavigationActionEmits } from "~/types";
 const { iconNavigation, openDropdowns } = defineProps<DesktopNavigationProps>();
 const emit = defineEmits<NavigationActionEmits>();
 
-const { isAuthenticated, isDropdownOpen, isParentActive } =
+const { isDropdownOpen, isParentActive } =
   useNavigationHelpers(openDropdowns);
+const { loggedIn } = useAuth();
 const dropdownRefs = ref<Record<string, HTMLElement | null>>({});
 
 useDropdownClickOutside(
@@ -59,7 +60,7 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         class="relative"
       >
         <button
-          v-if="isAuthenticated"
+          v-if="loggedIn"
           type="button"
           :aria-label="item.ariaLabel"
           :aria-expanded="isDropdownOpen(item.label)"
@@ -84,7 +85,7 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         </NuxtLink>
 
         <NavigationDropdown
-          v-if="isAuthenticated"
+          v-if="loggedIn"
           :item="item"
           :is-open="isDropdownOpen(item.label)"
           :filter-labels="['Logout']"
