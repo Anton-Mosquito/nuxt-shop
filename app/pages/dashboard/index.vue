@@ -23,6 +23,9 @@ function handleWidgetError(widgetId: number, error: Error) {
   console.error(`Widget ${widgetId} failed:`, error);
   failedWidgets.value.push(widgetId);
 }
+
+const chartData = [65, 59, 80, 81, 56, 55, 40];
+const chartLabels = ["January", "February", "March", "April", "May", "June", "July"];
 </script>
 
 <template>
