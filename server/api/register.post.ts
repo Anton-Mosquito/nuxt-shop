@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const hashedPassword = await hashPassword(password);
 
-  await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       email,
       password: hashedPassword,
@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
 
   await setUserSession(event, {
     user: {
+      id: newUser.id,
       email,
     },
     loggedInAt: Date.now(),
