@@ -34,7 +34,7 @@ const averageRating = computed(() => {
     <h1
       class="text-2xl md:text-[26px] font-normal text-[var(--color-black)] m-0"
     >
-      {{ product.name }}
+      {{ product.title }}
     </h1>
 
     <div class="text-lg font-semibold text-[var(--color-accent)]">
@@ -49,7 +49,7 @@ const averageRating = computed(() => {
     </div>
 
     <p class="text-sm leading-6 text-[var(--color-dark-gray)] my-2">
-      {{ product.short_description }}
+      {{ product.description }}
     </p>
 
     <div class="flex flex-col gap-4 md:flex-row md:items-center mt-2">
@@ -89,10 +89,8 @@ const averageRating = computed(() => {
         <span class="text-[var(--color-black)]">{{ product.sku }}</span>
       </div>
       <div class="flex gap-2 text-sm">
-        <span class="text-[var(--color-dark-gray)]">Category:</span>
-        <span class="text-[var(--color-black)]">{{
-          product.category.name
-        }}</span>
+        <span class="text-[var(--color-dark-gray)]">Tags:</span>
+        <span class="text-[var(--color-black)]">{{ product.tags }}</span>
       </div>
     </div>
   </div>

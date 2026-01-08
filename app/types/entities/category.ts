@@ -1,21 +1,7 @@
-/**
- * Product category
- */
-export interface Category {
-  id: number;
-  name: string;
-  alias: string;
-  parentId?: number;
-  description?: string;
-  image?: string;
-  order?: number;
-}
+import type { Category as PrismaCategory } from "../database";
 
 /**
- * Category tree node for nested categories
- * @unused - Reserved for future use
+ * Product category matching Prisma `Category` model
+ * Now re-exported from the generated Prisma Client via database.ts
  */
-// export interface CategoryTreeNode extends Category {
-//   children: CategoryTreeNode[];
-//   level: number;
-// }
+export type Category = PrismaCategory;

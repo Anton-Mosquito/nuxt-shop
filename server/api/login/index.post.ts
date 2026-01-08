@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { User } from "~/types";
 
 const invalidCredentialsError = createError({
   statusCode: 401,
@@ -7,8 +6,6 @@ const invalidCredentialsError = createError({
 });
 
 export default defineEventHandler(async (event) => {
-  const db = useDatabase();
-
   const { email, password } = await readValidatedBody(
     event,
     z.object({
@@ -17,11 +14,9 @@ export default defineEventHandler(async (event) => {
     }).parse
   );
 
-  const user = await db.sql<{
-    rows: User[];
-  }>`SELECT * FROM users WHERE email = ${email}`.then(
-    (result) => result.rows[0]
-  );
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
 
   if (!user) {
     throw invalidCredentialsError;
@@ -33,7 +28,10 @@ export default defineEventHandler(async (event) => {
 
   if (passwordNeedsReHash(user.password)) {
     const hashedPassword = await hashPassword(password);
-    await db.sql`UPDATE users SET password = ${hashedPassword} WHERE id = ${user.id}`;
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
   }
 
   await setUserSession(event, {

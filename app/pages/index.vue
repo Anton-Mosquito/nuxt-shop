@@ -7,8 +7,7 @@ useSeoMeta({
   ogDescription: "Welcome to Nuxt Shop - your destination for quality jewelry.",
 });
 
-const API_URL = useAPI();
-const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
+const { data } = await useFetch<GetProductsResponse>("/api/products", {
   query: { limit: 6, offset: 0 },
 });
 const { products, hasProducts } = useProducts();

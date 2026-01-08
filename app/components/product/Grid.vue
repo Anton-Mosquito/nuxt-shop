@@ -21,7 +21,7 @@ const { products, isLoading = false } = defineProps<Props>();
       <ProductCard
         v-for="product in products"
         :key="product.id"
-        v-bind="product"
+        :product="product"
       />
     </template>
   </div>

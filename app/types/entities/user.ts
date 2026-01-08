@@ -1,17 +1,9 @@
+import type { User as PrismaUser } from "../database";
+
 /**
  * User entity
  */
-export interface User {
-  id: number;
-  email: string;
-  password: string;
-  //name: string;
-  //phone: string;
-  //address: string;
-  //role?: UserRole;
-  //avatar?: string;
-  //createdAt?: string;
-}
+export type User = PrismaUser;
 
 /**
  * User role enum

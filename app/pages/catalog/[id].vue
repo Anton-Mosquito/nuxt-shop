@@ -8,11 +8,10 @@ interface Props {
 }
 
 const route = useRoute();
-const API_URL = useAPI();
 const { showLoader, hideLoader } = usePageLoader();
 
 const { data, error, status } = await useFetch<Props>(
-  () => `${API_URL}/products/${route.params.id}`,
+  () => `/api/products/${route.params.id}`,
   {
     lazy: true,
     watch: [() => route.params.id],
@@ -22,19 +21,15 @@ const { data, error, status } = await useFetch<Props>(
 useSeoMeta({
   title: () =>
     data.value
-      ? `${data.value.product.name} - Nuxt Shop`
+      ? `${data.value.product.title} - Nuxt Shop`
       : "Product - Nuxt Shop",
   description: () =>
     data.value
-      ? data.value.product.short_description
-      : "Browse our extensive catalog of products at Nuxt Shop.",
-  ogDescription: () =>
-    data.value
-      ? data.value.product.short_description
+      ? data.value.product.description
       : "Browse our extensive catalog of products at Nuxt Shop.",
   ogTitle: () =>
     data.value
-      ? `${data.value.product.name} - Nuxt Shop`
+      ? `${data.value.product.title} - Nuxt Shop`
       : "Product - Nuxt Shop",
 });
 
@@ -66,10 +61,7 @@ watch(error, (newError) => {
 function useData() {
   const reviewCount = computed(() => data.value?.reviews?.length || 0);
   const productDescription = computed(
-    () =>
-      data.value?.product.long_description ||
-      data.value?.product.short_description ||
-      "No description available."
+    () => data.value?.product.description || "No description available."
   );
 
   const productImages = computed(() => {
@@ -115,7 +107,7 @@ function useTabManager() {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
         <ProductImageGallery
           :images="productImages"
-          :alt="data.product.name"
+          :alt="data.product.title"
           solid
         />
         <ProductInfo

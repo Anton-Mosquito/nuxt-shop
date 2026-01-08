@@ -168,15 +168,17 @@ function useValidateFrom() {
         />
       </UiFormField>
 
-      <UiCheckbox v-model="saveData" label="Save data for future reviews" />
+      <div class="flex justify-between items-center">
+        <UiCheckbox v-model="saveData" label="Save data for future reviews" />
 
-      <UiButton
-        type="submit"
-        :disabled="isSubmitting"
-        class="mt-2 w-full md:w-auto"
-      >
-        {{ isSubmitting ? "Submitting..." : "Submit Review" }}
-      </UiButton>
+        <UiButton
+          type="submit"
+          :disabled="isSubmitting"
+          class="w-full md:w-auto"
+        >
+          {{ isSubmitting ? "Submitting..." : "Submit Review" }}
+        </UiButton>
+      </div>
     </UiForm>
   </div>
 </template>
