@@ -1,6 +1,5 @@
 export function useNavigation() {
   const router = useRouter();
-  const authStore = useAuthStore();
 
   // Navigation state
   const mobileMenuOpen = ref(false);
@@ -48,7 +47,6 @@ export function useNavigation() {
    */
   function handleLogout(event?: Event) {
     event?.preventDefault();
-    authStore.clearToken();
     router.push("/");
     closeMobileMenu();
   }
