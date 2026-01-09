@@ -48,9 +48,7 @@ const handleAppError = (error: Error) => {
       @error="handleAppError"
     >
       <NuxtLayout>
-        <main class="main">
-          <NuxtPage/>
-        </main>
+        <NuxtPage />
       </NuxtLayout>
     </ErrorBoundary>
 
@@ -67,12 +65,6 @@ const handleAppError = (error: Error) => {
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-}
-
-.main {
-  margin: 0 auto;
-  max-width: 1248px;
-  padding: 40px 16px;
 }
 
 /* Кастомні стилі для loading indicator */

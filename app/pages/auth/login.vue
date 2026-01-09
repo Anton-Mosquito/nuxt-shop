@@ -13,7 +13,6 @@ definePageMeta({
 });
 
 const { login } = useAuth();
-const favoriteStore = useFavoriteStore();
 
 const validationSchema = toTypedSchema(
   z.object({
@@ -39,7 +38,6 @@ const rememberMe = ref(false);
 const onLogin = handleSubmit(async (values) => {
   // TODO: Handle rememberMe
   await login(values.email, values.password);
-  await favoriteStore.restore(values.email);
 });
 </script>
 

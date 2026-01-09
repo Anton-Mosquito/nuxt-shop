@@ -49,7 +49,6 @@ const { value: terms, errorMessage: termsError } = useField<boolean>("terms");
 
 const onRegister = handleSubmit(async (values) => {
   await register(values.email, values.password);
-  await favoriteStore.restore(values.email);
 });
 </script>
 
