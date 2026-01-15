@@ -1,26 +1,16 @@
-import { z } from "zod";
+import {
+  productIdParamsSchema,
+  type ProductIdParamsInput,
+} from "~~/shared/schemas";
+import { getProductById } from "~~/server/services";
 
-const paramsSchema = z.object({
-  id: z.coerce.number().int().positive(),
-});
+export default defineEventHandler(
+  async (event): Promise<GetProductResponse> => {
+    const { id }: ProductIdParamsInput = await getValidatedRouterParams(
+      event,
+      productIdParamsSchema.parse
+    );
 
-export default defineEventHandler(async (event) => {
-  const { id } = await getValidatedRouterParams(event, paramsSchema.parse);
-
-  const product = await prisma.product.findUnique({
-    where: { id },
-  });
-
-  if (!product) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Product not found",
-    });
+    return await getProductById(id);
   }
-
-  const reviews = await prisma.review.findMany({
-    where: { productId: id },
-  });
-
-  return { product, reviews };
-});
+);

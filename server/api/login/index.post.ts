@@ -1,38 +1,16 @@
-import { z } from "zod";
-
-const invalidCredentialsError = createError({
-  statusCode: 401,
-  message: "Invalid credentials",
-});
+import {
+  emailPasswordSchema,
+  type EmailPasswordInput,
+} from "~~/shared/schemas";
+import { validateUserCredentials } from "~~/server/services/users";
 
 export default defineEventHandler(async (event) => {
-  const { email, password } = await readValidatedBody(
+  const { email, password } = await readValidatedBody<EmailPasswordInput>(
     event,
-    z.object({
-      email: z.string().email(),
-      password: z.string().min(8),
-    }).parse
+    emailPasswordSchema.parse
   );
 
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (!user) {
-    throw invalidCredentialsError;
-  }
-
-  if (!(await verifyPassword(user.password, password))) {
-    throw invalidCredentialsError;
-  }
-
-  if (passwordNeedsReHash(user.password)) {
-    const hashedPassword = await hashPassword(password);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { password: hashedPassword },
-    });
-  }
+  const user = await validateUserCredentials(email, password);
 
   await setUserSession(event, {
     user: {
