@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Review } from "~/types";
+import type { Review } from "~~/shared/types";
 
 interface Props {
   reviews: Review[];

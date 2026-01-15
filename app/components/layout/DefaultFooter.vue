@@ -1,36 +1,33 @@
 <script setup lang="ts">
-import * as z from "zod";
-import { useForm, useField } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import {
   FOOTER_NAV_LINKS,
   SOCIAL_LINKS,
-  VALIDATION_MESSAGES,
   FOOTER_STRINGS,
+  MESSAGES,
 } from "~/constants";
+import { VALIDATION_MESSAGES } from "~~/shared/constants";
+import { subscribeSchema, type SubscribeInput } from "~~/shared/schemas";
 
 const { success, error } = useToast();
 
-const validationSchema = toTypedSchema(
-  z.object({
-    email: z.string().email("Invalid email address").or(z.literal("")),
-  })
-);
+const validationSchema = toTypedSchema(subscribeSchema);
+const { handleSubmit, resetForm, errors, defineField, isSubmitting } =
+  useForm<SubscribeInput>({
+    validationSchema,
+  });
 
-const { handleSubmit, resetForm } = useForm({
-  validationSchema,
-});
+const [email, emailProps] = defineField("email");
 
-const { value: email, errorMessage: emailError } = useField<string>("email");
-
-const handleSubscribe = handleSubmit((values) => {
-  if (!values.email) {
+const handleSubscribe = handleSubmit(({ email }) => {
+  if (!email) {
     error({ message: VALIDATION_MESSAGES.EMAIL_REQUIRED });
     return;
   }
 
   success({
-    message: VALIDATION_MESSAGES.SUBSCRIBE_SUCCESS,
+    message: MESSAGES.SUBSCRIBE_SUCCESS,
   });
   resetForm();
 });
@@ -53,17 +50,18 @@ const handleSubscribe = handleSubmit((values) => {
       class="flex-1 flex items-stretch gap-3 min-w-3xs justify-end"
       @submit="handleSubscribe"
     >
-      <UiFormField class="min-w-3xs h-full" :error="emailError">
-        <template #default="{ id, error, errorClass }">
+      <UiFormField class="min-w-3xs h-full" :error="errors.email">
+        <template #default="{ id, errorClass }">
           <UiInput
             :id="id"
             v-model="email"
+            v-bind="emailProps"
             variant="form"
             :placeholder="VALIDATION_MESSAGES.INPUT_PLACEHOLDER"
             type="email"
-            :error="error"
-            :class="['h-full', error ? errorClass : '']"
-            :aria-invalid="error"
+            :error="!!errors.email"
+            :class="['h-full', errors.email ? errorClass : '']"
+            :aria-invalid="!!errors.email"
           />
         </template>
       </UiFormField>
@@ -73,8 +71,21 @@ const handleSubscribe = handleSubmit((values) => {
         variant="primary"
         class="h-auto p-[10px]"
         size="small"
+        :disabled="isSubmitting"
       >
-        <Icon name="ic:sharp-arrow-right-alt" size="25" />
+        <template v-if="isSubmitting">
+          <span class="inline-flex items-center gap-2">
+            <Icon
+              name="ic:baseline-autorenew"
+              size="16"
+              class="animate-spin"
+              aria-hidden="true"
+            />
+          </span>
+        </template>
+        <template v-else>
+          <Icon name="ic:sharp-arrow-right-alt" size="25" />
+        </template>
       </UiButton>
     </UiForm>
   </div>
