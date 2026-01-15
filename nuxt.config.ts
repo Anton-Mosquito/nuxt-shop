@@ -7,21 +7,24 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/image",
     "@nuxt/scripts",
-    "@nuxt/test-utils",
+    "@nuxt/test-utils/module",
     "@nuxt/icon",
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
+    "@nuxtjs/tailwindcss",
+    "@vee-validate/nuxt",
+    "nuxt-auth-utils",
   ],
+  image: {
+    format: ["avif", "webp"],
+    quality: 80,
+    domains: ["localhost:3000"],
+  },
   //css: ["~/assets/styles/main.css"],
-  components: [
-    "~/components",
-    {
-      path: "~/widgets",
-    },
-  ],
+  components: [{ path: "~/components", pathPrefix: true }],
   runtimeConfig: {
     // The private keys which are only available server-side
     token: "",
@@ -32,8 +35,13 @@ export default defineNuxtConfig({
       api_url: "",
       image_url: "",
     },
+    session: {
+      password: process.env.NUXT_SESSION_PASSWORD || "",
+    },
   },
   icon: {
+    mode: "css",
+    cssLayer: "base",
     customCollections: [
       {
         prefix: "icon",
@@ -44,6 +52,8 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
       "postcss-nested": {},
     },
   },
@@ -119,8 +129,7 @@ export default defineNuxtConfig({
       ],
       script: [],
     },
-    //pageTransition: { name: "page", mode: "out-in" },
-    layoutTransition: { name: "layout", mode: "out-in" },
+    pageTransition: { name: "page", mode: "out-in" },
   },
   sitemap: {
     sources: ["~/server/api/sitemap/url.ts"],
@@ -153,4 +162,9 @@ export default defineNuxtConfig({
       db: { driver: "fs-lite", base: "./db" },
     },
   },
+  experimental: {
+    componentIslands: true,
+    payloadExtraction: true,
+  },
+  sourcemap: { server: true, client: true },
 });

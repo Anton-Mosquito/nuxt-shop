@@ -1,0 +1,123 @@
+<script setup lang="ts">
+import {
+  SHARE_BUTTONS,
+  QUANTITY_INPUT_DEFAULTS,
+  BUTTON_VARIANT_OPTIONS,
+} from "~/constants";
+
+interface Props {
+  product: Product;
+  reviews: Review[];
+  reviewCount?: number;
+}
+
+const { product, reviews, reviewCount = 0 } = defineProps<Props>();
+const { addItem, loading } = useCart();
+const quantity = ref(1);
+
+const handleAddToCart = () => {
+  addItem(product.id, quantity.value);
+};
+
+const shareProduct = (platform: string) => {
+  console.log("Share on:", platform);
+};
+
+const reviewWord = computed(() => (reviewCount === 1 ? "review" : "reviews"));
+
+const averageRating = computed(() => {
+  if (reviews.length === 0) return 0;
+
+  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  return sum / reviews.length;
+});
+</script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <h1
+      class="text-2xl md:text-[26px] font-normal text-[var(--color-black)] m-0"
+    >
+      {{ product.title }}
+    </h1>
+
+    <div class="text-lg font-semibold text-[var(--color-accent)]">
+      $ {{ product.price }}
+    </div>
+
+    <div class="flex items-center gap-3">
+      <UiStarRating :rating="averageRating" />
+      <span class="text-sm text-[var(--color-dark-gray)]"
+        >{{ reviewCount }} {{ reviewWord }}</span
+      >
+    </div>
+
+    <p class="text-sm leading-6 text-[var(--color-dark-gray)] my-2">
+      {{ product.description }}
+    </p>
+
+    <div class="flex flex-col gap-4 md:flex-row md:items-center mt-2">
+      <UiQuantityInput
+        v-model="quantity"
+        :min="QUANTITY_INPUT_DEFAULTS.MIN"
+        :max="QUANTITY_INPUT_DEFAULTS.MAX"
+      />
+
+      <UiButton
+        class="flex-1 h-12 px-6 inline-flex items-center justify-center rounded-lg font-bold"
+        :variant="BUTTON_VARIANT_OPTIONS.OUTLINE"
+        :disabled="loading"
+        @click="handleAddToCart"
+      >
+        <template v-if="loading">
+          <span class="inline-flex items-center gap-2">
+            <Icon
+              name="ic:baseline-autorenew"
+              size="16"
+              class="animate-spin"
+              aria-hidden="true"
+            />
+            <span>Adding...</span>
+          </span>
+        </template>
+        <template v-else> Add to Cart </template>
+      </UiButton>
+    </div>
+
+    <div class="flex items-center gap-4 mt-2">
+      <UiAddFavorite :id="product.id" variant="inline" is-shown />
+      <div class="w-px h-6 bg-[var(--color-gray)] mx-1" />
+
+      <div class="flex items-center gap-2">
+        <button
+          v-for="{ platform, icon, label } in SHARE_BUTTONS"
+          :key="platform"
+          class="w-10 h-10 inline-flex items-center justify-center bg-transparent border-0 text-[var(--color-dark-gray)] hover:text-[var(--color-accent)]"
+          :aria-label="`Share on ${label}`"
+          @click="shareProduct(platform)"
+        >
+          <Icon :name="icon" size="20" />
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-col gap-2 py-4 border-t border-b border-[var(--color-gray)]"
+    >
+      <div class="flex gap-2 text-sm">
+        <span class="text-[var(--color-dark-gray)]">SKU:</span>
+        <span class="text-[var(--color-black)]">{{ product.sku }}</span>
+      </div>
+      <div class="flex gap-2 text-sm">
+        <span class="text-[var(--color-dark-gray)]">Tags:</span>
+        <UiTag
+          v-for="tag in product.tags"
+          :key="tag"
+          :label="tag"
+          size="sm"
+          variant="accent"
+        />
+      </div>
+    </div>
+  </div>
+</template>

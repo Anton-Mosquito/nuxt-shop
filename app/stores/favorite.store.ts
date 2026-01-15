@@ -1,19 +1,85 @@
-import { defineStore } from "pinia";
+//import { defineStore } from "pinia";
+import type {
+  ProductFavoriteInput,
+  SyncFavoritesInput,
+} from "~~/shared/schemas/favorites.schema";
+import { API_ENDPOINTS } from "~/constants";
 
 export const useFavoriteStore = defineStore(
   "favorite",
   () => {
-    const authStore = useAuthStore();
+    const { start, finish, clear } = useLoadingIndicator({
+      throttle: 100,
+    });
+    const { loggedIn } = useUserSession();
     const favoriteIds = ref<number[]>([]);
 
-    function addToFavorite(id: number) {
-      if (!favoriteIds.value.includes(id)) {
-        favoriteIds.value.push(id);
+    async function syncWithServer() {
+      if (!loggedIn.value) return;
+
+      try {
+        start();
+        const payload: SyncFavoritesInput = { ids: favoriteIds.value };
+        const serverIds = await $fetch<number[]>(
+          `${API_ENDPOINTS.FAVORITES}/sync`,
+          {
+            method: "POST",
+            body: payload,
+          }
+        );
+        favoriteIds.value = serverIds;
+        finish();
+      } catch (e) {
+        console.error("Sync favorites error", e);
+      } finally {
+        clear();
       }
     }
 
-    function removeFromFavorite(id: number) {
+    async function fetchFavorites() {
+      if (!loggedIn.value) return;
+
+      try {
+        const serverIds = await $fetch<number[]>(`${API_ENDPOINTS.FAVORITES}`);
+        favoriteIds.value = serverIds;
+      } catch (e) {
+        console.error("Fetch favorites error", e);
+      }
+    }
+
+    async function addToFavorite(id: number) {
+      if (!favoriteIds.value.includes(id)) {
+        favoriteIds.value.push(id);
+      }
+
+      if (!loggedIn.value) return;
+
+      try {
+        const payload: ProductFavoriteInput = { productId: id };
+
+        await $fetch(`${API_ENDPOINTS.FAVORITES}`, {
+          method: "POST",
+          body: payload,
+        });
+      } catch (e) {
+        console.error("Add to favorite error", e);
+      }
+    }
+
+    async function removeFromFavorite(id: number) {
       favoriteIds.value = favoriteIds.value.filter((favId) => favId !== id);
+
+      if (!loggedIn.value) return;
+
+      try {
+        const payload: ProductFavoriteInput = { productId: id };
+        await $fetch(`${API_ENDPOINTS.FAVORITES}`, {
+          method: "DELETE",
+          body: payload,
+        });
+      } catch (e) {
+        console.error("Remove from favorite error", e);
+      }
     }
 
     function toggleFavorite(id: number) {
@@ -21,8 +87,6 @@ export const useFavoriteStore = defineStore(
         removeFromFavorite(id);
       } else {
         addToFavorite(id);
-        if (!authStore.email) return;
-        save();
       }
     }
 
@@ -30,38 +94,16 @@ export const useFavoriteStore = defineStore(
       return favoriteIds.value.includes(id);
     }
 
-    async function save() {
-      const data = await $fetch<{ success: boolean }>("/api/favorites", {
-        method: "POST",
-        body: {
-          email: authStore.email,
-          ids: favoriteIds.value,
+    if (import.meta.client) {
+      watch(
+        loggedIn,
+        (isLoggedIn) => {
+          if (!isLoggedIn) return;
+          syncWithServer();
         },
-      });
-      console.log("🚀 ~ save ~ data:", data);
+        { immediate: true }
+      );
     }
-
-    async function restore(email: string) {
-      const data = await $fetch<number[]>("/api/favorites", {
-        method: "GET",
-        query: {
-          email,
-        },
-      });
-      console.log("🚀 ~ restore ~ data:", data);
-      favoriteIds.value = data || [];
-    }
-
-    // async function fetchFavorites() {
-    //   const baseURL = import.meta.server
-    //     ? "http://127.0.0.1:3000/api/"
-    //     : "http://localhost:3000/api/";
-    //   const data = await $fetch<IGetCategoriesResponse>(`categories`, {
-    //     baseURL,
-    //   });
-    //   console.log("🚀 ~ fetchFavorites ~ data:", data);
-    //   favoriteIds.value = data.categories.map((category) => category.id);
-    // }
 
     return {
       favoriteIds,
@@ -69,11 +111,14 @@ export const useFavoriteStore = defineStore(
       removeFromFavorite,
       toggleFavorite,
       isFavorite,
-      restore,
-      //fetchFavorites,
+      fetchFavorites,
+      syncWithServer,
     };
   },
   {
-    persist: true,
+    persist: {
+      storage: piniaPluginPersistedstate.cookies(),
+      pick: ["favoriteIds"],
+    },
   }
 );

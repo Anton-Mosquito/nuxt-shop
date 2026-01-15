@@ -1,160 +1,241 @@
 <script setup lang="ts">
-import SelectField from "~/components/SelectField.vue";
-import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
-import type { IGetProductsResponse } from "~/interfaces/product.interface";
+import {
+  LIMIT,
+  DEBOUNCE_DELAY,
+  MIN_PRICE,
+  MAX_PRICE,
+  DEFAULT_PAGE,
+  API_ENDPOINTS,
+} from "~/constants";
 
 useSeoMeta({
   title: "Catalog - Nuxt Shop",
   description: "Browse our extensive catalog of products at Nuxt Shop.",
   ogDescription: "Browse our extensive catalog of products at Nuxt Shop.",
 });
-// useHead({
-//   title: "Catalog - Nuxt Shop",
-//   meta: [
-//     {
-//       name: "description",
-//       content: "Browse our extensive catalog of products at Nuxt Shop.",
-//     },
-//   ],
-// });
 
-const API_URL = useAPI(); // useRuntimeConfig().public.api_url;
+const nuxtApp = useNuxtApp();
 const route = useRoute();
 const router = useRouter();
-const category_id = ref(route.query.category_id?.toString() ?? "");
-const search = ref(route.query.search?.toString() ?? "");
 
-watch([category_id, search], () => {
-  changeRoute(category_id, search);
-});
+const { search } = useSearch();
+const { category, categoriesSelect } = useCategory();
+const { priceFrom, priceTo } = usePrice();
+const { hasDiscount } = useDiscount();
+const { currentPage, apiQuery } = loadQueryParameters();
 
-const changeRoute = useDebounceFn((category_id, search) => {
-  router.replace({
-    query: {
-      ...route.query,
-      category_id: category_id.value,
-      search: search.value,
-    },
-  });
-}, 300);
+watch(
+  () => route.query,
+  (query) => {
+    const normalized = {
+      search: query.search?.toString() ?? "",
+      category: query.category?.toString() ?? "",
+      price_from: Number(query.price_from) || MIN_PRICE,
+      price_to: Number(query.price_to) || MAX_PRICE,
+      has_discount: query.has_discount === "true",
+    };
 
-const query = computed(() => ({
-  limit: route.query.limit ?? 20,
-  offset: route.query.offset ?? 0,
-  category_id: route.query.category_id || undefined,
-  search: route.query.search || undefined,
-}));
-
-const { data } = await useFetch<IGetCategoriesResponse>(
-  `${API_URL}/categories`
-);
-
-const selectDefault = {
-  value: "",
-  label: "Select a category",
-};
-
-const categoriesSelect = computed(
-  () =>
-    data.value?.categories
-      .map(({ id, name }) => ({
-        value: `${id}`,
-        label: name,
-      }))
-      .concat([selectDefault]) ?? [selectDefault]
-);
-
-const { data: productsData } = await useFetch<IGetProductsResponse>(
-  `${API_URL}/products`,
-  {
-    key: "get-products",
-    query,
+    if (search.value !== normalized.search) search.value = normalized.search;
+    if (category.value !== normalized.category)
+      category.value = normalized.category;
+    if (priceFrom.value !== normalized.price_from)
+      priceFrom.value = normalized.price_from;
+    if (priceTo.value !== normalized.price_to)
+      priceTo.value = normalized.price_to;
+    if (hasDiscount.value !== normalized.has_discount)
+      hasDiscount.value = normalized.has_discount;
   }
 );
 
-// const { data, error, refresh } = await useAsyncData(
-//   "categories",
-//   () =>
-//     $fetch<IGetCategoriesResponse>(`${config.public.api_url}/categories`, {
-//       method: "GET",
-//     }),
-//   {
-//     watch: [input],
-//   }
-// );
+const { data: productsData, status } = await useFetch<ProductsQueryResponse>(
+  API_ENDPOINTS.PRODUCTS,
+  {
+    key: "get-products",
+    query: apiQuery,
+  }
+);
 
-// async function sendRequest() {
-//   await refresh();
-// }
+const totalPages = computed(() => {
+  const total = Number(productsData.value?.total ?? 0);
+  return Math.max(DEFAULT_PAGE, Math.ceil(total / LIMIT));
+});
 
-//$fetch - no ssr friendly
-// useFetch - ssr friendly use only in setup
-// useAsyncData - ssr friendly use in setup and outside setup, complex variants
+const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
+  API_ENDPOINTS.CATEGORIES,
+  {
+    transform(input) {
+      return {
+        ...input,
+        fetchedAt: new Date().toISOString(),
+      };
+    },
+    getCachedData(key) {
+      const cached = nuxtApp.isHydrating
+        ? nuxtApp.payload.data[key]
+        : nuxtApp.static.data[key];
 
-// try {
-//   const data = await $fetch<IGetCategoriesResponse>(
-//     `${config.public.api_url}/categories`
-//   );
-//   console.log("🚀 ~ data:", data);
-// } catch (error) {
-//   console.error("Error fetching categories:", error);
-// }
+      if (!cached) return undefined;
+
+      const fetchedAtRaw = cached.fetchedAt;
+      if (!fetchedAtRaw) return undefined;
+
+      const fetchedAt = new Date(fetchedAtRaw);
+      const CACHE_TTL = 60_000_000;
+      if (isNaN(fetchedAt.getTime())) return undefined;
+      if (fetchedAt.getTime() + CACHE_TTL < Date.now()) return undefined;
+
+      try {
+        return typeof structuredClone === "function"
+          ? structuredClone(cached)
+          : JSON.parse(JSON.stringify(cached));
+      } catch (e) {
+        console.warn(
+          "getCachedData cache clone failed, falling back to JSON clone:",
+          e
+        );
+        return JSON.parse(JSON.stringify(cached));
+      }
+    },
+  }
+);
+
+export type QueryUpdates = Partial<
+  Record<string, string | number | boolean>
+> & {
+  offset?: string | number;
+};
+
+const updateRoute = (queryUpdates: QueryUpdates) => {
+  router.push({
+    query: {
+      ...route.query,
+      ...queryUpdates,
+      offset: String(queryUpdates.offset ?? DEFAULT_PAGE),
+    },
+  });
+};
+
+function useSearch() {
+  const search = ref(route.query.search?.toString() ?? "");
+
+  const debouncedSearchUpdate = useDebounceFn(() => {
+    updateRoute({
+      search: search.value || undefined,
+    });
+  }, DEBOUNCE_DELAY);
+
+  watch(search, () => debouncedSearchUpdate());
+
+  return { search };
+}
+
+function useCategory() {
+  const category = ref(route.query.category?.toString() ?? "");
+
+  watch(category, (newVal) => {
+    updateRoute({ category: newVal || undefined });
+  });
+
+  const selectDefault = {
+    value: "",
+    label: "Select a category",
+  };
+
+  const categoriesSelect = computed(() =>
+    [selectDefault].concat(
+      categoriesData.value?.categories.map((category) => ({
+        value: `${category.slug}`,
+        label: category.name,
+      })) ?? []
+    )
+  );
+
+  return { category, categoriesSelect };
+}
+
+function usePrice() {
+  const priceFrom = ref(Number(route.query.price_from) || MIN_PRICE);
+  const priceTo = ref(Number(route.query.price_to) || MAX_PRICE);
+
+  const debouncedPriceUpdate = useDebounceFn(() => {
+    updateRoute({
+      price_from: priceFrom.value > MIN_PRICE ? priceFrom.value : undefined,
+      price_to: priceTo.value < MAX_PRICE ? priceTo.value : undefined,
+    });
+  }, DEBOUNCE_DELAY);
+
+  watch([priceFrom, priceTo], () => debouncedPriceUpdate());
+
+  return { priceFrom, priceTo };
+}
+
+function useDiscount() {
+  const hasDiscount = ref(route.query.has_discount === "true");
+
+  watch(hasDiscount, (newVal) => {
+    updateRoute({ has_discount: newVal ? "true" : undefined });
+  });
+
+  return { hasDiscount };
+}
+
+function loadQueryParameters() {
+  const currentPage = computed(
+    () => Number(route.query.offset) || DEFAULT_PAGE
+  );
+
+  const apiQuery = computed(() => ({
+    limit: LIMIT,
+    offset: (currentPage.value - 1) * LIMIT,
+    category: route.query.category || undefined,
+    search: route.query.search || undefined,
+    price_from: route.query.price_from || undefined,
+    price_to: route.query.price_to || undefined,
+    has_discount: route.query.has_discount || undefined,
+  }));
+
+  return { currentPage, apiQuery };
+}
 </script>
 
 <template>
-  <div>
-    <h1 class="left">Catalog goods</h1>
-    <div class="catalog">
-      <div class="catalog__filter">
-        <div class="catalog__search">
-          <InputField v-model="search" variant="gray" placeholder="Search..." />
-          <Icon name="icon:bar-outline" size="24" />
+  <section class="catalog-page">
+    <h1 class="text-3xl font-normal mb-12 text-left">Product catalog</h1>
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-9">
+      <div class="w-full lg:w-[260px] flex flex-col gap-6">
+        <div class="relative">
+          <UiInput
+            v-model="search"
+            variant="default"
+            placeholder="Search..."
+            icon="mdi:magnify"
+          />
         </div>
-        <SelectField v-model="category_id" :options="categoriesSelect" />
+        <UiSelect v-model="category" :options="categoriesSelect" />
+        <UiRangeSlider
+          v-model:min-value="priceFrom"
+          v-model:max-value="priceTo"
+          :min="MIN_PRICE"
+          :max="MAX_PRICE"
+          locale="en-US"
+          currency="USD"
+          spacing="medium"
+          bold
+        />
+        <UiToggle v-model="hasDiscount" />
       </div>
-      <div class="catalog__grid">
-        <CatalogCard
-          v-for="product in productsData?.products"
-          :key="product.id"
-          v-bind="product"
+      <div class="flex-1">
+        <ProductGrid
+          :products="productsData?.products ?? []"
+          :is-loading="status === 'pending'"
+        />
+        <UiPagination
+          v-if="totalPages > DEFAULT_PAGE"
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          base-url="/catalog"
         />
       </div>
     </div>
-  </div>
+  </section>
 </template>
-
-<style scoped>
-.left {
-  text-align: left;
-}
-
-.catalog {
-  display: flex;
-  gap: 36px;
-
-  & .catalog__filter {
-    width: 260px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-
-    & .catalog__search {
-      position: relative;
-
-      & span[class*="icon:bar-outline"] {
-        position: absolute;
-        top: 50%;
-        right: 0;
-        transform: translateY(-50%);
-      }
-    }
-  }
-
-  & .catalog__grid {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 64px 12px;
-  }
-}
-</style>
