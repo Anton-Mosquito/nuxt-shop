@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ROUTES } from "~/constants";
 const {
   mobileMenuOpen,
   openDropdowns,
@@ -20,7 +21,7 @@ const { iconNavigationWithBadges } = useNavigationBadges();
     <div class="max-w-screen-xl mx-auto px-4">
       <div class="flex items-center justify-between h-16">
         <NuxtLink
-          to="/"
+          :to="ROUTES.HOME"
           class="flex items-center transition-colors text-[var(--color-accent)] hover:text-[var(--color-black-hover)]"
           aria-label="Nuxt Shop - return to home"
           :prefetch="false"

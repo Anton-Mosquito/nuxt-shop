@@ -1,91 +1,49 @@
 <script setup lang="ts">
 import type { ReviewFormEmits } from "~/types";
-import * as z from "zod";
-import { useForm, useField } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
+import { reviewSchema, type ReviewInput } from "~~/shared/schemas";
 
 const emit = defineEmits<ReviewFormEmits>();
 const {
   name,
-  nameError,
-  nameBlur,
+  nameProps,
   email,
-  emailError,
-  emailBlur,
+  emailProps,
   rating,
-  ratingError,
+  ratingProps,
   comment,
-  commentError,
-  commentBlur,
+  commentProps,
   saveData,
+  saveDataProps,
+  errors,
   isSubmitting,
   onSubmit,
 } = useValidateFrom();
 
 function useValidateFrom() {
-  const validationSchema = toTypedSchema(
-    z.object({
-      name: z
-        .string({ required_error: "Name is required" })
-        .min(2, "Name must be at least 2 characters long"),
-      email: z
-        .string({ required_error: "Email is required" })
-        .email("Invalid email address"),
-      rating: z
-        .number({ required_error: "Please provide a rating" })
-        .min(1, "Please provide a rating"),
-      comment: z
-        .string({ required_error: "Feedback is required" })
-        .min(10, "Feedback must be at least 10 characters long")
-        .max(1000, "Feedback must not exceed 1000 characters"),
-      saveData: z.boolean().default(false),
-    })
-  );
+  const validationSchema = toTypedSchema(reviewSchema);
 
-  const { handleSubmit, isSubmitting, resetForm } = useForm({
-    validationSchema,
-    initialValues: {
-      name: "",
-      email: "",
-      rating: 0,
-      comment: "",
-      saveData: false,
-    },
-  });
-
-  const {
-    value: name,
-    errorMessage: nameError,
-    handleBlur: nameBlur,
-  } = useField<string>("name");
-
-  const {
-    value: email,
-    errorMessage: emailError,
-    handleBlur: emailBlur,
-  } = useField<string>("email");
-
-  const { value: rating, errorMessage: ratingError } =
-    useField<number>("rating");
-
-  const {
-    value: comment,
-    errorMessage: commentError,
-    handleBlur: commentBlur,
-  } = useField<string>("comment");
-
-  const { value: saveData } = useField<boolean>("saveData");
+  const { handleSubmit, isSubmitting, resetForm, errors, defineField } =
+    useForm<ReviewInput>({
+      validationSchema,
+      initialValues: {
+        name: "",
+        email: "",
+        rating: 0,
+        comment: "",
+        saveData: false,
+      },
+    });
+  const [name, nameProps] = defineField("name");
+  const [email, emailProps] = defineField("email");
+  const [rating, ratingProps] = defineField("rating");
+  const [comment, commentProps] = defineField("comment");
+  const [saveData, saveDataProps] = defineField("saveData");
 
   const onSubmit = handleSubmit((values) => {
     try {
-      emit("submit", {
-        name: values.name,
-        email: values.email,
-        rating: values.rating,
-        comment: values.comment,
-        saveData: values.saveData,
-      });
-
+      emit("submit", values);
       // $fetch("/api/submit-review", {
       //   method: "POST",
       //   body: values,
@@ -99,17 +57,16 @@ function useValidateFrom() {
 
   return {
     name,
-    nameError,
-    nameBlur,
+    nameProps,
     email,
-    emailError,
-    emailBlur,
+    emailProps,
     rating,
-    ratingError,
+    ratingProps,
     comment,
-    commentError,
-    commentBlur,
+    commentProps,
     saveData,
+    saveDataProps,
+    errors,
     isSubmitting,
     onSubmit,
   };
@@ -126,29 +83,34 @@ function useValidateFrom() {
     </p>
 
     <UiForm :loading="isSubmitting" @submit="onSubmit">
-      <UiFormField label="Your Rating" required :error="ratingError">
-        <UiStarRating v-model="rating" interactive size="32px" />
+      <UiFormField label="Your Rating" required :error="errors.rating">
+        <UiStarRating
+          v-model="rating"
+          v-bind="ratingProps"
+          interactive
+          size="32px"
+        />
       </UiFormField>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <UiFormField label="Your Name" required :error="nameError">
+        <UiFormField label="Your Name" required :error="errors.name">
           <UiInput
             v-model="name"
+            v-bind="nameProps"
             variant="form"
             placeholder="Enter your name"
             autocomplete="name"
-            @blur="nameBlur"
           />
         </UiFormField>
 
-        <UiFormField label="Your Email" required :error="emailError">
+        <UiFormField label="Your Email" required :error="errors.email">
           <UiInput
             v-model="email"
+            v-bind="emailProps"
             variant="form"
             type="email"
             placeholder="example@mail.com"
             autocomplete="email"
-            @blur="emailBlur"
           />
         </UiFormField>
       </div>
@@ -156,27 +118,44 @@ function useValidateFrom() {
       <UiFormField
         label="Your feedback"
         required
-        :error="commentError"
+        :error="errors.comment"
         hint="Minimum 10 characters"
       >
         <UiFormTextarea
           v-model="comment"
+          v-bind="commentProps"
           :rows="5"
           :maxlength="1000"
           placeholder="Share your thoughts about the product..."
-          @blur="commentBlur"
         />
       </UiFormField>
 
-      <UiCheckbox v-model="saveData" label="Save data for future reviews" />
+      <div class="flex justify-between items-center">
+        <UiCheckbox
+          v-model="saveData"
+          v-bind="saveDataProps"
+          label="Save data for future reviews"
+        />
 
-      <UiButton
-        type="submit"
-        :disabled="isSubmitting"
-        class="mt-2 w-full md:w-auto"
-      >
-        {{ isSubmitting ? "Submitting..." : "Submit Review" }}
-      </UiButton>
+        <UiButton
+          type="submit"
+          :disabled="isSubmitting"
+          class="w-full md:w-auto"
+        >
+          <template v-if="isSubmitting">
+            <span class="inline-flex items-center gap-2">
+              <Icon
+                name="ic:baseline-autorenew"
+                size="16"
+                class="animate-spin"
+                aria-hidden="true"
+              />
+              <span>Submitting...</span>
+            </span>
+          </template>
+          <template v-else>Submit Review</template>
+        </UiButton>
+      </div>
     </UiForm>
   </div>
 </template>

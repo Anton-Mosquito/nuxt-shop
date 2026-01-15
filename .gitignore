@@ -104,3 +104,8 @@ docker-compose.override.yml
 #vscode instructions
 .github/*.instructions.md
 .github/instructions
+
+
+# Database generated files
+prisma/generated
+/db

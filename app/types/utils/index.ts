@@ -1,20 +1,3 @@
-import type { Ref } from "vue";
-
-/**
- * Utility: Nullable type
- */
-export type Nullable<T> = T | null;
-
-/**
- * Utility: Optional type
- */
-export type Optional<T> = T | undefined;
-
-/**
- * Utility: Maybe type (null or undefined)
- */
-export type Maybe<T> = T | null | undefined;
-
 /**
  * Utility: Deep partial
  */
@@ -40,16 +23,6 @@ export type RequiredKeys<T, K extends keyof T> = Omit<T, K> &
  */
 export type OptionalKeys<T, K extends keyof T> = Omit<T, K> &
   Partial<Pick<T, K>>;
-
-/**
- * Utility: MaybeRef for composables
- */
-export type MaybeRef<T> = T | Ref<T>;
-
-/**
- * Utility: MaybeRefOrGetter
- */
-export type MaybeRefOrGetter<T> = T | Ref<T> | (() => T);
 
 /**
  * Type guard: is string

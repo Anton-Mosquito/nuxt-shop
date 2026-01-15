@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import type { SelectProps } from "~/types";
 
-const model = defineModel<string>();
+const model = defineModel<string>({ default: "" });
 
 const { options } = defineProps<SelectProps>();
 </script>
 
 <template>
   <div class="relative inline-block w-full">
-    <select v-model="model" class="w-full py-4 pl-9 pr-3 border border-[var(--color-gray)] rounded-md m-0 appearance-none bg-[var(--color-white)] text-[var(--color-dark)] text-sm font-normal leading-5 focus:outline-none focus:border-[var(--color-primary)] focus:box-shadow-[0_0_0_2px_var(--color-primary-light)]">
+    <select
+      v-model="model"
+      class="w-full py-4 pl-9 pr-3 border border-[var(--color-gray)] rounded-md m-0 appearance-none bg-[var(--color-white)] text-[var(--color-dark)] text-sm font-normal leading-5 focus:outline-none focus:border-[var(--color-primary)] focus:box-shadow-[0_0_0_2px_var(--color-primary-light)]"
+    >
       <option
         v-for="(option, index) in options"
         :key="index"

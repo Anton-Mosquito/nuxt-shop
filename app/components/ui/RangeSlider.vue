@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { RangeSliderProps } from "~/types";
-import { RANGE_SIZE_CLASSES } from "~/constants";
+import { RANGE_SIZE_CLASSES, RANGE_DEFAULTS } from "~/constants";
 
 const {
-  min = 0,
-  max = 1000,
-  step = 10,
-  locale = "en-US",
-  currency = "USD",
-  bold = false,
-  spacing = "medium",
-  fractionDigits = 0,
-  label = "",
+  min = RANGE_DEFAULTS.MIN,
+  max = RANGE_DEFAULTS.MAX,
+  step = RANGE_DEFAULTS.STEP,
+  locale = RANGE_DEFAULTS.LOCALE,
+  currency = RANGE_DEFAULTS.CURRENCY,
+  bold = RANGE_DEFAULTS.BOLD,
+  spacing = RANGE_DEFAULTS.SPACING,
+  fractionDigits = RANGE_DEFAULTS.FRACTION_DIGITS,
+  label = RANGE_DEFAULTS.LABEL,
 } = defineProps<RangeSliderProps>();
 
 const minValue = defineModel<number>("minValue", { required: true });

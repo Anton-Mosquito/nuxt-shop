@@ -24,14 +24,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-h1 {
-    text-align: center;
-    font-size: 33px;
-    font-weight: 500;
-    line-height: 43px;
-    color: var(--color-black);
-}
-
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -45,4 +37,15 @@ h1 {
 
 .animate-slideDown {
     animation: slideDown 0.2s ease-out;
+}
+/* Auth Page Transition */
+.auth-fade-enter-active,
+.auth-fade-leave-active {
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.auth-fade-enter-from,
+.auth-fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
 }

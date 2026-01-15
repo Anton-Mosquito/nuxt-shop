@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DiscountToggleProps } from "~/types/components/ui/discount-toggle";
+import type { ToggleProps } from "~/types";
 
 const { label = "with discount", disabled = false } =
-  defineProps<DiscountToggleProps>();
+  defineProps<ToggleProps>();
 
 const modelValue = defineModel<boolean>({ default: false });
 const toggleId = useId();

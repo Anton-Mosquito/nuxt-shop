@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from "~/types";
+import type { Product } from "~~/shared/types";
 
 interface Props {
   products: Product[];
@@ -13,11 +13,11 @@ function useSlider() {
   const currentSlide = ref(0);
   const sliderRef = ref<HTMLDivElement | null>(null);
 
-  const slides = computed<Pick<Product, "id" | "name" | "price" | "images">[]>(
+  const slides = computed<Pick<Product, "id" | "title" | "price" | "images">[]>(
     () =>
-      products.slice(0, 3).map(({ id, name, price, images }) => ({
+      products.slice(0, 3).map(({ id, title, price, images }) => ({
         id,
-        name,
+        title,
         price,
         images,
       }))
@@ -50,7 +50,7 @@ function useSlider() {
       class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
     >
       <div
-        v-for="{ id, name, price, images } in slides"
+        v-for="{ id, title, price, images } in slides"
         :key="id"
         class="flex-none w-full snap-start snap-always min-h-[400px] md:min-h-[500px] relative overflow-hidden bg-cover bg-center bg-no-repeat flex items-center justify-start py-10 px-6 md:p-20 rounded-lg"
       >
@@ -66,7 +66,7 @@ function useSlider() {
         />
         <div class="max-w-[500px] text-white text-left relative z-10">
           <h2 class="text-[32px] md:text-5xl font-normal mb-4 leading-tight">
-            {{ name }}
+            {{ title }}
           </h2>
           <p class="text-2xl md:text-[32px] mb-8">$ {{ price }}</p>
           <UiButton variant="outline" size="medium" @click="goToProduct(id)">

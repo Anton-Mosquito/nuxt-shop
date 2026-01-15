@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import type { Product, Review } from "~/types/entities";
-import { SHARE_BUTTONS } from "~/constants";
+import {
+  SHARE_BUTTONS,
+  QUANTITY_INPUT_DEFAULTS,
+  BUTTON_VARIANT_OPTIONS,
+} from "~/constants";
 
 interface Props {
   product: Product;
@@ -9,10 +12,11 @@ interface Props {
 }
 
 const { product, reviews, reviewCount = 0 } = defineProps<Props>();
+const { addItem, loading } = useCart();
 const quantity = ref(1);
 
-const addToCart = () => {
-  console.log("Add to cart:", product.id, quantity.value);
+const handleAddToCart = () => {
+  addItem(product.id, quantity.value);
 };
 
 const shareProduct = (platform: string) => {
@@ -34,7 +38,7 @@ const averageRating = computed(() => {
     <h1
       class="text-2xl md:text-[26px] font-normal text-[var(--color-black)] m-0"
     >
-      {{ product.name }}
+      {{ product.title }}
     </h1>
 
     <div class="text-lg font-semibold text-[var(--color-accent)]">
@@ -49,23 +53,39 @@ const averageRating = computed(() => {
     </div>
 
     <p class="text-sm leading-6 text-[var(--color-dark-gray)] my-2">
-      {{ product.short_description }}
+      {{ product.description }}
     </p>
 
     <div class="flex flex-col gap-4 md:flex-row md:items-center mt-2">
-      <UiQuantityInput v-model="quantity" :min="1" :max="99" />
+      <UiQuantityInput
+        v-model="quantity"
+        :min="QUANTITY_INPUT_DEFAULTS.MIN"
+        :max="QUANTITY_INPUT_DEFAULTS.MAX"
+      />
 
       <UiButton
         class="flex-1 h-12 px-6 inline-flex items-center justify-center rounded-lg font-bold"
-        variant="outline"
-        @click="addToCart"
+        :variant="BUTTON_VARIANT_OPTIONS.OUTLINE"
+        :disabled="loading"
+        @click="handleAddToCart"
       >
-        Add to Cart
+        <template v-if="loading">
+          <span class="inline-flex items-center gap-2">
+            <Icon
+              name="ic:baseline-autorenew"
+              size="16"
+              class="animate-spin"
+              aria-hidden="true"
+            />
+            <span>Adding...</span>
+          </span>
+        </template>
+        <template v-else> Add to Cart </template>
       </UiButton>
     </div>
 
     <div class="flex items-center gap-4 mt-2">
-      <ProductAddFavorite :id="product.id" variant="inline" is-shown />
+      <UiAddFavorite :id="product.id" variant="inline" is-shown />
       <div class="w-px h-6 bg-[var(--color-gray)] mx-1" />
 
       <div class="flex items-center gap-2">
@@ -89,10 +109,14 @@ const averageRating = computed(() => {
         <span class="text-[var(--color-black)]">{{ product.sku }}</span>
       </div>
       <div class="flex gap-2 text-sm">
-        <span class="text-[var(--color-dark-gray)]">Category:</span>
-        <span class="text-[var(--color-black)]">{{
-          product.category.name
-        }}</span>
+        <span class="text-[var(--color-dark-gray)]">Tags:</span>
+        <UiTag
+          v-for="tag in product.tags"
+          :key="tag"
+          :label="tag"
+          size="sm"
+          variant="accent"
+        />
       </div>
     </div>
   </div>

@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import type { Product, Review, Tab } from "~/types";
-import { ERROR_MESSAGES, PRODUCT_TABS } from "~/constants";
-
-interface Props {
-  product: Product;
-  reviews: Review[];
-}
+import type { Tab } from "~/types";
+import {
+  PRODUCT_TABS,
+  MESSAGES,
+  ERROR_MESSAGES,
+  API_ENDPOINTS,
+} from "~/constants";
 
 const route = useRoute();
-const API_URL = useAPI();
 const { showLoader, hideLoader } = usePageLoader();
 
-const { data, error, status } = await useFetch<Props>(
-  () => `${API_URL}/products/${route.params.id}`,
+const { data, error, status } = await useFetch<GetProductResponse>(
+  () => `${API_ENDPOINTS.PRODUCTS}/${route.params.id}`,
   {
     lazy: true,
     watch: [() => route.params.id],
@@ -22,19 +21,15 @@ const { data, error, status } = await useFetch<Props>(
 useSeoMeta({
   title: () =>
     data.value
-      ? `${data.value.product.name} - Nuxt Shop`
+      ? `${data.value.product.title} - Nuxt Shop`
       : "Product - Nuxt Shop",
   description: () =>
     data.value
-      ? data.value.product.short_description
-      : "Browse our extensive catalog of products at Nuxt Shop.",
-  ogDescription: () =>
-    data.value
-      ? data.value.product.short_description
+      ? data.value.product.description
       : "Browse our extensive catalog of products at Nuxt Shop.",
   ogTitle: () =>
     data.value
-      ? `${data.value.product.name} - Nuxt Shop`
+      ? `${data.value.product.title} - Nuxt Shop`
       : "Product - Nuxt Shop",
 });
 
@@ -45,7 +40,7 @@ watch(
   status,
   (newStatus) => {
     if (newStatus === "pending") {
-      showLoader("Loading product details...");
+      showLoader(MESSAGES.LOADING_PRODUCT_DETAILS);
     } else {
       hideLoader();
     }
@@ -66,10 +61,7 @@ watch(error, (newError) => {
 function useData() {
   const reviewCount = computed(() => data.value?.reviews?.length || 0);
   const productDescription = computed(
-    () =>
-      data.value?.product.long_description ||
-      data.value?.product.short_description ||
-      "No description available."
+    () => data.value?.product.description || MESSAGES.NO_DESCRIPTION
   );
 
   const productImages = computed(() => {
@@ -115,7 +107,7 @@ function useTabManager() {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-10">
         <ProductImageGallery
           :images="productImages"
-          :alt="data.product.name"
+          :alt="data.product.title"
           solid
         />
         <ProductInfo

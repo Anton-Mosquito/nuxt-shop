@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { DesktopNavigationProps, NavigationActionEmits } from "~/types";
+import { ROUTES, type RoutePath } from "~/constants";
 
 const { iconNavigation, openDropdowns } = defineProps<DesktopNavigationProps>();
 const emit = defineEmits<NavigationActionEmits>();
 
-const { isAuthenticated, isDropdownOpen, isParentActive } =
-  useNavigationHelpers(openDropdowns);
+const { isDropdownOpen, isParentActive } = useNavigationHelpers(openDropdowns);
+const { loggedIn } = useAuth();
 const dropdownRefs = ref<Record<string, HTMLElement | null>>({});
+const PREFETCH_ROUTES: RoutePath[] = [ROUTES.CART, ROUTES.FAVORITES];
 
 useDropdownClickOutside(
   iconNavigation,
@@ -15,7 +17,6 @@ useDropdownClickOutside(
   (label: string) => emit("toggle-dropdown", label)
 );
 
-// Handle keyboard navigation inline
 const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
@@ -41,15 +42,23 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         class="flex items-center justify-center transition-colors relative text-[#666] hover:text-black"
         active-class="text-black"
         role="menuitem"
-        :prefetch="['/cart', '/favorites'].includes(item.to)"
+        :prefetch="PREFETCH_ROUTES.includes(item.to)"
       >
         <Icon :name="item.icon || ''" size="21" aria-hidden="true" />
         <span
-          v-if="item.badge && typeof item.badge === 'number' && item.badge > 0"
+          v-show="
+            item.badge && typeof item.badge === 'number' && item.badge > 0
+          "
           class="absolute -top-2 -right-2 px-1.5 py-0.5 bg-red-500 text-white text-[0.625rem] leading-none rounded-full min-w-[1.25rem] text-center"
-          :aria-label="`${item.badge} items`"
+          :aria-label="
+            typeof item.badge === 'number' && item.badge > 0
+              ? `${item.badge} items`
+              : undefined
+          "
         >
-          {{ item.badge }}
+          <ClientOnly>
+            <span>{{ item.badge }}</span>
+          </ClientOnly>
         </span>
       </NuxtLink>
 
@@ -59,7 +68,7 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         class="relative"
       >
         <button
-          v-if="isAuthenticated"
+          v-if="loggedIn"
           type="button"
           :aria-label="item.ariaLabel"
           :aria-expanded="isDropdownOpen(item.label)"
@@ -75,7 +84,7 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         </button>
         <NuxtLink
           v-else
-          to="/auth/login"
+          :to="ROUTES.AUTH.LOGIN"
           :aria-label="item.ariaLabel"
           class="flex items-center justify-center transition-colors relative text-[#666] hover:text-black"
           role="menuitem"
@@ -84,7 +93,7 @@ const handleKeydown = (event: KeyboardEvent, itemLabel: string) => {
         </NuxtLink>
 
         <NavigationDropdown
-          v-if="isAuthenticated"
+          v-if="loggedIn"
           :item="item"
           :is-open="isDropdownOpen(item.label)"
           :filter-labels="['Logout']"

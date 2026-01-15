@@ -32,7 +32,7 @@ useBodyScrollLock(isLoading);
 
             <div>
               <p class="font-semibold text-gray-900">
-                {{ loadingMessage || "Loading..." }}
+                {{ loadingMessage }}
               </p>
               <p class="text-sm text-gray-500">Please wait...</p>
             </div>
