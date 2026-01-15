@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { useFocusTrap } from "@vueuse/integrations/useFocusTrap";
 import type { ModalProps, ModalEmits } from "~/types";
-import { MODAL_SIZE_CLASSES } from "~/constants";
+import { MODAL_SIZE_CLASSES, MODAL_DEFAULT_CLASSES } from "~/constants";
 
-const { persistent = false, size = "md" } = defineProps<ModalProps>();
+const {
+  persistent = MODAL_DEFAULT_CLASSES.PERSISTENT,
+  size = MODAL_DEFAULT_CLASSES.MD,
+} = defineProps<ModalProps>();
 
 const modelValue = defineModel<boolean>({ default: false });
 const emit = defineEmits<ModalEmits>();
-
 const titleId = useId();
 
 useBodyScrollLock(modelValue);
-
 
 const modalRef = useTemplateRef("modalRef");
 const { activate, deactivate } = useFocusTrap(modalRef);
