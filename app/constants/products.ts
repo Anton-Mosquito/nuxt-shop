@@ -30,3 +30,26 @@ export const PRICE_RANGES = [
   { min: 100, max: 200, label: "$100 - $200" },
   { min: 200, max: null, label: "Від $200" },
 ] as const;
+
+/**
+ * Product detail tabs
+ * Used in product detail page
+ */
+export const PRODUCT_TABS = [
+  {
+    id: "description",
+    label: "Description",
+    icon: "ic:baseline-description",
+  },
+  {
+    id: "reviews",
+    label: "Reviews",
+    icon: "ic:baseline-star-border",
+  },
+  {
+    id: "specifications",
+    label: "Specifications",
+    icon: "ic:baseline-format-list-bulleted",
+    disabled: true,
+  },
+] as const;

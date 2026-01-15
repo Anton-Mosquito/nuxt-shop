@@ -1,12 +1,5 @@
 <script setup lang="ts">
-interface Props {
-  placeholder?: string;
-  disabled?: boolean;
-  required?: boolean;
-  rows?: number;
-  maxlength?: number;
-  resize?: "none" | "both" | "horizontal" | "vertical";
-}
+import type { FormTextareaProps } from "~/types";
 
 const {
   rows = 4,
@@ -15,7 +8,7 @@ const {
   disabled = false,
   required = false,
   maxlength = undefined,
-} = defineProps<Props>();
+} = defineProps<FormTextareaProps>();
 
 const modelValue = defineModel<string>({ default: "" });
 
@@ -30,7 +23,7 @@ const remainingChars = computed(() =>
 </script>
 
 <template>
-  <div class="form-textarea-wrapper">
+  <div class="relative">
     <textarea
       v-model="modelValue"
       :placeholder="placeholder"
@@ -39,62 +32,10 @@ const remainingChars = computed(() =>
       :rows="rows"
       :maxlength="maxlength"
       :style="{ resize }"
-      class="form-textarea"
+      class="w-full p-3 border border-[var(--color-gray)] rounded-md text-[14px] leading-6 color-[var(--color-black)] bg-white outline-none transition-border transition-shadow duration-200 hover:border-[var(--color-dark-gray)] focus:border-[var(--color-accent)] focus:shadow-[0_0_0_3px_rgba(0,0,0,0.05)] disabled:bg-[var(--color-light-gray)] disabled:cursor-not-allowed disabled:opacity-60 placeholder:color-[var(--color-dark-gray)] placeholder:opacity-60"
     />
-    <div v-if="hasMaxLength" class="form-textarea__counter">
+    <div v-if="hasMaxLength" class="absolute bottom-2 right-3 text-[11px] color-[var(--color-dark-gray)] pointer-events-none bg-white/90 px-1 py-[2px] rounded-sm">
       {{ remainingChars }} characters remaining
     </div>
   </div>
 </template>
-
-<style scoped>
-.form-textarea-wrapper {
-  position: relative;
-}
-
-.form-textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--color-gray);
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
-  line-height: 1.5;
-  color: var(--color-black);
-  background-color: #fff;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-textarea:hover:not(:disabled) {
-  border-color: var(--color-dark-gray);
-}
-
-.form-textarea:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-}
-
-.form-textarea:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.form-textarea::placeholder {
-  color: var(--color-dark-gray);
-  opacity: 0.6;
-}
-
-.form-textarea__counter {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 11px;
-  color: var(--color-dark-gray);
-  pointer-events: none;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 2px 4px;
-  border-radius: 2px;
-}
-</style>
