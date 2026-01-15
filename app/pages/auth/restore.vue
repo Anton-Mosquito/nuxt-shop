@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import * as z from "zod";
-import { useForm, useField } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-import { VALIDATION_MESSAGES } from "~/constants";
+import { restoreSchema, type RestoreInput } from "~~/shared/schemas";
+import { MESSAGES, INPUT_VARIANT_OPTIONS } from "~/constants";
 
 definePageMeta({
   layout: "auth",
@@ -14,30 +14,22 @@ definePageMeta({
 
 const { success } = useToast();
 
-const validationSchema = toTypedSchema(
-  z.object({
-    email: z
-      .string()
-      .min(1, { message: VALIDATION_MESSAGES.REQUIRED_FIELD })
-      .email({ message: VALIDATION_MESSAGES.INVALID_EMAIL }),
-  })
-);
+const validationSchema = toTypedSchema(restoreSchema);
 
-const { handleSubmit } = useForm({
-  validationSchema,
-});
+const { handleSubmit, errors, defineField, isSubmitting } =
+  useForm<RestoreInput>({
+    validationSchema,
+  });
 
-const { value: email, errorMessage: emailError } = useField<string>("email");
+const [email, emailProps] = defineField("email");
 
-const onRestore = handleSubmit(async (values) => {
+const onRestore = handleSubmit(async ({ email }) => {
   // TODO: Implement restore password API call
-  console.log("Restore password for:", values.email);
-  
-  // Simulate API call
+  console.log("Restore password for:", email);
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  
+
   success({
-    message: "If an account exists with this email, you will receive a password reset link.",
+    message: MESSAGES.PASSWORD_RESET_LINK,
   });
 });
 </script>
@@ -45,9 +37,10 @@ const onRestore = handleSubmit(async (values) => {
 <template>
   <div>
     <h1 class="text-center text-[28px] font-medium mb-4">Forgot password?</h1>
-    
+
     <p class="text-center text-sm text-[var(--color-dark-gray)] mb-8 px-4">
-      If you forgot your password, enter your email and we will send you a reset link
+      If you forgot your password, enter your email and we will send you a reset
+      link
     </p>
 
     <UiForm
@@ -55,14 +48,15 @@ const onRestore = handleSubmit(async (values) => {
       @submit="onRestore"
     >
       <div class="flex flex-col gap-6">
-        <UiFormField label="Email" :error="emailError">
-          <template #default="{ id, error }">
+        <UiFormField label="Email" :error="errors.email">
+          <template #default="{ id }">
             <UiInput
               :id="id"
               v-model="email"
-              variant="default"
+              v-bind="emailProps"
+              :variant="INPUT_VARIANT_OPTIONS.DEFAULT"
               type="text"
-              :error="!!error"
+              :error="!!errors.email"
             />
           </template>
         </UiFormField>
@@ -72,8 +66,20 @@ const onRestore = handleSubmit(async (values) => {
         <UiButton
           type="submit"
           class="w-full bg-black text-white hover:bg-gray-800 rounded-md py-3 text-base font-medium"
+          :disabled="isSubmitting"
         >
-          Reset password
+          <template v-if="isSubmitting">
+            <span class="inline-flex items-center justify-center gap-2">
+              <Icon
+                name="ic:baseline-autorenew"
+                size="16"
+                class="animate-spin"
+                aria-hidden="true"
+              />
+              <span>Processing...</span>
+            </span>
+          </template>
+          <template v-else>Reset password</template>
         </UiButton>
       </div>
     </UiForm>

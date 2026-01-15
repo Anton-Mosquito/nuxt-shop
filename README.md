@@ -96,3 +96,5 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 
 - [] color scheme for tailwind.config.ts not working properly
+- [] - todo restore email
+- [] - todo Handle rememberMe

@@ -1,12 +1,13 @@
+import { ROUTES } from "~/constants";
+
 export default defineNuxtRouteMiddleware((to) => {
   const { loggedIn } = useUserSession();
 
-  // redirect the user to the login screen if they're not authenticated
   if (
     !loggedIn.value &&
-    !to.path.startsWith("/login") &&
-    !to.path.startsWith("/register")
+    !to.path.startsWith(ROUTES.AUTH.LOGIN) &&
+    !to.path.startsWith(ROUTES.AUTH.REGISTER)
   ) {
-    return navigateTo("/login");
+    return navigateTo(ROUTES.AUTH.LOGIN);
   }
 });

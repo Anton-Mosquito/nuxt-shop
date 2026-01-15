@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type {
-  GetCategoriesResponse,
-  GetProductsResponse,
-  QueryUpdates,
-} from "~/types";
 import {
   LIMIT,
   DEBOUNCE_DELAY,
   MIN_PRICE,
   MAX_PRICE,
   DEFAULT_PAGE,
+  API_ENDPOINTS,
 } from "~/constants";
 
 useSeoMeta({
@@ -51,8 +47,8 @@ watch(
   }
 );
 
-const { data: productsData, status } = await useFetch<GetProductsResponse>(
-  "/api/products",
+const { data: productsData, status } = await useFetch<ProductsQueryResponse>(
+  API_ENDPOINTS.PRODUCTS,
   {
     key: "get-products",
     query: apiQuery,
@@ -65,7 +61,7 @@ const totalPages = computed(() => {
 });
 
 const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
-  "/api/categories",
+  API_ENDPOINTS.CATEGORIES,
   {
     transform(input) {
       return {
@@ -102,6 +98,12 @@ const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
     },
   }
 );
+
+export type QueryUpdates = Partial<
+  Record<string, string | number | boolean>
+> & {
+  offset?: string | number;
+};
 
 const updateRoute = (queryUpdates: QueryUpdates) => {
   router.push({

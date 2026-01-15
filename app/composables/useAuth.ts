@@ -1,3 +1,5 @@
+import type { EmailPasswordInput } from "~~/shared/schemas";
+
 export const useAuth = () => {
   const {
     loggedIn,
@@ -7,7 +9,10 @@ export const useAuth = () => {
   } = useUserSession();
   const { success, error } = useToast();
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: EmailPasswordInput["email"],
+    password: EmailPasswordInput["password"]
+  ) => {
     try {
       await $fetch("/api/login", { method: "POST", body: { email, password } });
       await refreshSession();
@@ -19,7 +24,10 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (email: string, password: string) => {
+  const register = async (
+    email: EmailPasswordInput["email"],
+    password: EmailPasswordInput["password"]
+  ) => {
     try {
       await $fetch("/api/register", {
         method: "POST",

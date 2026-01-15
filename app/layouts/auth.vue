@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { APP_NAME } from "~/constants";
+import { APP_NAME, ROUTES } from "~/constants";
 </script>
 
 <template>
@@ -7,15 +7,13 @@ import { APP_NAME } from "~/constants";
     <div class="w-full max-w-md">
       <div class="text-center mb-6">
         <NuxtLink
-          to="/"
+          :to="ROUTES.HOME"
           class="inline-block transition-colors text-[var(--color-accent)] hover:text-[var(--color-black-hover)]"
           aria-label="Nuxt Shop - return to home"
           :prefetch="false"
         >
           <Icon name="icon:shop-outline" size="40" aria-hidden="true" />
-          <h1
-            class="text-3xl font-bold mt-1 text-[var(--color-accent)]"
-          >
+          <h1 class="text-3xl font-bold mt-1 text-[var(--color-accent)]">
             {{ APP_NAME }}
           </h1>
         </NuxtLink>
@@ -26,7 +24,7 @@ import { APP_NAME } from "~/constants";
       </div>
 
       <p class="text-center text-black text-sm mt-6">
-        © 2024 MyApp. All rights reserved.
+        © 2024 {{ APP_NAME }}. All rights reserved.
       </p>
     </div>
   </div>

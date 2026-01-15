@@ -4,7 +4,6 @@
       <LayoutDefaultHeader />
     </header>
 
-    <!-- Main content constrained and grows to push footer down -->
     <main class="flex-1 w-full max-w-7xl mx-auto px-4 py-10">
       <slot />
     </main>

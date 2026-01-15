@@ -1,4 +1,4 @@
-import type { NavItem } from "~/types/ui/navigation";
+import type { NavItem } from "~/types";
 
 export function useNavigationHelpers(openDropdowns: ReadonlySet<string>) {
   const route = useRoute();

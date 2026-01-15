@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { Product, Review, Tab } from "~/types";
-import { ERROR_MESSAGES, PRODUCT_TABS } from "~/constants";
-
-interface Props {
-  product: Product;
-  reviews: Review[];
-}
+import type { Tab } from "~/types";
+import {
+  PRODUCT_TABS,
+  MESSAGES,
+  ERROR_MESSAGES,
+  API_ENDPOINTS,
+} from "~/constants";
 
 const route = useRoute();
 const { showLoader, hideLoader } = usePageLoader();
 
-const { data, error, status } = await useFetch<Props>(
-  () => `/api/products/${route.params.id}`,
+const { data, error, status } = await useFetch<GetProductResponse>(
+  () => `${API_ENDPOINTS.PRODUCTS}/${route.params.id}`,
   {
     lazy: true,
     watch: [() => route.params.id],
@@ -40,7 +40,7 @@ watch(
   status,
   (newStatus) => {
     if (newStatus === "pending") {
-      showLoader("Loading product details...");
+      showLoader(MESSAGES.LOADING_PRODUCT_DETAILS);
     } else {
       hideLoader();
     }
@@ -61,7 +61,7 @@ watch(error, (newError) => {
 function useData() {
   const reviewCount = computed(() => data.value?.reviews?.length || 0);
   const productDescription = computed(
-    () => data.value?.product.description || "No description available."
+    () => data.value?.product.description || MESSAGES.NO_DESCRIPTION
   );
 
   const productImages = computed(() => {
