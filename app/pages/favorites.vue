@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import type { IProduct } from "~/interfaces/product.interface";
 
-useSeoMeta({
-  title: "Favorites - Nuxt Shop",
-  description: "Browse your favorite products at Nuxt Shop.",
-  ogDescription: "Browse your favorite products at Nuxt Shop.",
-});
-
 const API_URL = useAPI();
 const favoriteStore = useFavoriteStore();
 const products = ref<IProduct[]>([]);
