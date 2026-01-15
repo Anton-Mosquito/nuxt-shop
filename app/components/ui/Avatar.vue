@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import type { AvatarProps } from "~/types";
-import {
-  AVATAR_SIZE_CLASSES,
-  AVATAR_SIZE_PIXELS,
-  AVATAR_TEXT_SIZE,
-  AVATAR_DEFAULTS,
-} from "~/constants";
+import { AVATAR_SIZE_CLASSES, AVATAR_SIZE_PIXELS, AVATAR_TEXT_SIZE } from "~/constants";
 
-const {
-  src = AVATAR_DEFAULTS.SRC,
-  alt,
-  size = AVATAR_DEFAULTS.SIZE,
-} = defineProps<AvatarProps>();
+const { src = null, alt, size = "md" } = defineProps<AvatarProps>();
 
 const imageError = ref(false);
 

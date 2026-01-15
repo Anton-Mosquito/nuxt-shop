@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product } from "~~/shared/types";
+import type { Product } from "~/types";
 
 interface Props {
   products: Product[];
@@ -21,7 +21,7 @@ const { products, isLoading = false } = defineProps<Props>();
       <ProductCard
         v-for="product in products"
         :key="product.id"
-        :product="product"
+        v-bind="product"
       />
     </template>
   </div>

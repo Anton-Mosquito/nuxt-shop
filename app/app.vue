@@ -1,6 +1,25 @@
 <script setup lang="ts">
+//import type { LayoutKey } from "#build/types/layouts";
 import "~/assets/styles/main.css";
-import { ERROR_MESSAGES } from "~/constants";
+
+// Можна контролювати програмно
+// const { start, finish, clear } = useLoadingIndicator({
+//   duration: 2000,
+//   throttle: 200,
+// });
+
+// // Приклад: показати при довгій операції
+// async function longOperation() {
+//   start();
+//   try {
+//     await someAsyncOperation();
+//     finish();
+//   } catch (error) {
+//     clear();
+//   }
+// }
+
+//const name = ref<LayoutKey>("auth");
 
 const { handleGlobalError } = useGlobalErrorHandler();
 
@@ -21,17 +40,19 @@ const handleAppError = (error: Error) => {
       :duration="3000"
     />
 
-    <UiErrorBoundary
+    <ErrorBoundary
       title="Oops! Something went wrong."
-      :message="ERROR_MESSAGES.GENERIC_ERROR"
+      message="We apologize for the inconvenience. We are already working on a solution."
       show-details
       retryable
       @error="handleAppError"
     >
       <NuxtLayout>
-        <NuxtPage />
+        <main class="main">
+          <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
+        </main>
       </NuxtLayout>
-    </UiErrorBoundary>
+    </ErrorBoundary>
 
     <UiToast />
     <UiPageLoader />
@@ -48,6 +69,13 @@ const handleAppError = (error: Error) => {
   opacity: 0;
 }
 
+.main {
+  margin: 0 auto;
+  max-width: 1248px;
+  padding: 40px 16px;
+}
+
+/* Кастомні стилі для loading indicator */
 .nuxt-loading-indicator {
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }

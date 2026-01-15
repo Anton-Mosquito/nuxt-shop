@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import type { GetCategoriesResponse, GetProductsResponse, QueryUpdates } from "~/types";
 import {
   LIMIT,
   DEBOUNCE_DELAY,
   MIN_PRICE,
   MAX_PRICE,
   DEFAULT_PAGE,
-  API_ENDPOINTS,
 } from "~/constants";
 
 useSeoMeta({
@@ -15,11 +15,12 @@ useSeoMeta({
 });
 
 const nuxtApp = useNuxtApp();
+const API_URL = useAPI();
 const route = useRoute();
 const router = useRouter();
 
 const { search } = useSearch();
-const { category, categoriesSelect } = useCategory();
+const { categoryId, categoriesSelect } = useCategory();
 const { priceFrom, priceTo } = usePrice();
 const { hasDiscount } = useDiscount();
 const { currentPage, apiQuery } = loadQueryParameters();
@@ -29,15 +30,15 @@ watch(
   (query) => {
     const normalized = {
       search: query.search?.toString() ?? "",
-      category: query.category?.toString() ?? "",
+      category_id: query.category_id?.toString() ?? "",
       price_from: Number(query.price_from) || MIN_PRICE,
       price_to: Number(query.price_to) || MAX_PRICE,
       has_discount: query.has_discount === "true",
     };
 
     if (search.value !== normalized.search) search.value = normalized.search;
-    if (category.value !== normalized.category)
-      category.value = normalized.category;
+    if (categoryId.value !== normalized.category_id)
+      categoryId.value = normalized.category_id;
     if (priceFrom.value !== normalized.price_from)
       priceFrom.value = normalized.price_from;
     if (priceTo.value !== normalized.price_to)
@@ -47,8 +48,8 @@ watch(
   }
 );
 
-const { data: productsData, status } = await useFetch<ProductsQueryResponse>(
-  API_ENDPOINTS.PRODUCTS,
+const { data: productsData, status } = await useFetch<GetProductsResponse>(
+  `${API_URL}/products`,
   {
     key: "get-products",
     query: apiQuery,
@@ -61,7 +62,7 @@ const totalPages = computed(() => {
 });
 
 const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
-  API_ENDPOINTS.CATEGORIES,
+  `${API_URL}/categories`,
   {
     transform(input) {
       return {
@@ -99,12 +100,6 @@ const { data: categoriesData } = await useFetch<GetCategoriesResponse>(
   }
 );
 
-export type QueryUpdates = Partial<
-  Record<string, string | number | boolean>
-> & {
-  offset?: string | number;
-};
-
 const updateRoute = (queryUpdates: QueryUpdates) => {
   router.push({
     query: {
@@ -130,10 +125,10 @@ function useSearch() {
 }
 
 function useCategory() {
-  const category = ref(route.query.category?.toString() ?? "");
+  const categoryId = ref(route.query.category_id?.toString() ?? "");
 
-  watch(category, (newVal) => {
-    updateRoute({ category: newVal || undefined });
+  watch(categoryId, (newVal) => {
+    updateRoute({ category_id: newVal || undefined });
   });
 
   const selectDefault = {
@@ -144,13 +139,13 @@ function useCategory() {
   const categoriesSelect = computed(() =>
     [selectDefault].concat(
       categoriesData.value?.categories.map((category) => ({
-        value: `${category.slug}`,
+        value: `${category.id}`,
         label: category.name,
       })) ?? []
     )
   );
 
-  return { category, categoriesSelect };
+  return { categoryId, categoriesSelect };
 }
 
 function usePrice() {
@@ -187,7 +182,7 @@ function loadQueryParameters() {
   const apiQuery = computed(() => ({
     limit: LIMIT,
     offset: (currentPage.value - 1) * LIMIT,
-    category: route.query.category || undefined,
+    category_id: route.query.category_id || undefined,
     search: route.query.search || undefined,
     price_from: route.query.price_from || undefined,
     price_to: route.query.price_to || undefined,
@@ -211,7 +206,7 @@ function loadQueryParameters() {
             icon="mdi:magnify"
           />
         </div>
-        <UiSelect v-model="category" :options="categoriesSelect" />
+        <UiSelect v-model="categoryId" :options="categoriesSelect" />
         <UiRangeSlider
           v-model:min-value="priceFrom"
           v-model:max-value="priceTo"

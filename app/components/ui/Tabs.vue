@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { TabId, TabsProps, TabDirection } from "~/types";
+import type { TabId, TabsProps } from "~/types";
 
 const { tabs, defaultTab = undefined, lazy = false } = defineProps<TabsProps>();
 
@@ -30,7 +30,7 @@ const renderedTabs = computed(() => {
 
 const tabButtonRefs = ref<Map<number, HTMLButtonElement>>(new Map());
 
-const getNextIndex = (current: number, direction: TabDirection): number => {
+const getNextIndex = (current: number, direction: 1 | -1): number => {
   let next = current + direction;
   const len = tabs.length;
 

@@ -2,7 +2,7 @@
 interface Props {
   images: string[];
   alt: string;
-  solid?: boolean;
+  solid?: boolean; // when true, indicator is a continuous line without gaps
 }
 
 const { images, alt, solid = false } = defineProps<Props>();

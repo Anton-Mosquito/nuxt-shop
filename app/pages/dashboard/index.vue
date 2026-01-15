@@ -1,13 +1,15 @@
 <!-- pages/dashboard.vue -->
 <script setup lang="ts">
+import type { GetCategoriesResponse } from "~/types";
 
 definePageMeta({
   layout: "dashboard",
   title: "Головна панель",
-  middleware: ["authenticated"],
+  //middleware: "auth", // захист сторінки
 });
 
-const { data } = await useFetch<GetCategoriesResponse>("/api/categories");
+const API_URL = useAPI();
+const { data } = await useFetch<GetCategoriesResponse>(`${API_URL}/categories`);
 
 const widgets = [
   { id: 1, component: "RiskyComponent", props: { data: [1, 2, 3] } },
@@ -21,17 +23,6 @@ function handleWidgetError(widgetId: number, error: Error) {
   console.error(`Widget ${widgetId} failed:`, error);
   failedWidgets.value.push(widgetId);
 }
-
-const chartData = [65, 59, 80, 81, 56, 55, 40];
-const chartLabels = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-];
 </script>
 
 <template>

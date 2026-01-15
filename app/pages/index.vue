@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { API_ENDPOINTS, ROUTES } from "~/constants";
+import type { GetProductsResponse } from "~/types";
 
 useSeoMeta({
   title: "Home - Nuxt Shop",
@@ -7,12 +7,10 @@ useSeoMeta({
   ogDescription: "Welcome to Nuxt Shop - your destination for quality jewelry.",
 });
 
-const { data } = await useFetch<ProductsQueryResponse>(
-  `${API_ENDPOINTS.PRODUCTS}`,
-  {
-    query: { limit: 6, offset: 0 },
-  }
-);
+const API_URL = useAPI();
+const { data } = await useFetch<GetProductsResponse>(`${API_URL}/products`, {
+  query: { limit: 6, offset: 0 },
+});
 const { products, hasProducts } = useProducts();
 
 function useProducts() {
@@ -36,7 +34,7 @@ function useProducts() {
           Recent Arrivals
         </h2>
         <NuxtLink
-          :to="ROUTES.CATALOG"
+          to="/catalog"
           class="text-[var(--color-accent)] no-underline text-sm transition-colors hover:text-[var(--color-accent-dark)]"
           prefetch
           >All products</NuxtLink

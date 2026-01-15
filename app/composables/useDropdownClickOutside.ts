@@ -1,4 +1,4 @@
-import type { NavItem } from "~/types";
+import type { NavItem } from "~/types/ui/navigation";
 
 /**
  * Setup click outside handlers for dropdowns

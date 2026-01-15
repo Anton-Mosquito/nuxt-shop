@@ -48,7 +48,7 @@ const fieldId = useId();
     >
       <div
         v-if="error"
-        class="text-sm text-red-600 mt-1 font-medium absolute"
+        class="text-sm text-red-600 mt-1 font-medium"
         role="alert"
       >
         {{ error }}

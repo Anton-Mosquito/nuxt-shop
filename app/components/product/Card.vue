@@ -1,20 +1,14 @@
 <script setup lang="ts">
-import type { Product } from "~~/shared/types";
-import { ROUTES } from "~/constants";
+import type { Product } from "~/types";
 
-interface Props {
-  product: Product;
-}
-
-const props = defineProps<Props>();
+const { id, discount, images, name, price } = defineProps<Product>();
 const isHovered = ref(false);
-const discount = computed(() => props.product.discountPercentage ?? 0);
 </script>
 
 <template>
   <NuxtLink
     class="relative flex flex-col gap-6 w-full no-underline"
-    :to="`${ROUTES.CATALOG}/${props.product.id}`"
+    :to="`/catalog/${id}`"
     prefetch-on="interaction"
     @mouseover="isHovered = true"
     @mouseleave="isHovered = false"
@@ -23,8 +17,8 @@ const discount = computed(() => props.product.discountPercentage ?? 0);
       class="relative aspect-square rounded-lg w-full max-w-full overflow-hidden flex justify-between items-start p4"
     >
       <NuxtImg
-        :src="useImageUrl(props.product.images?.[0])"
-        :alt="props.product.title"
+        :src="useImageUrl(images?.[0])"
+        :alt="name"
         provider="ipx"
         format="webp"
         quality="80"
@@ -39,14 +33,14 @@ const discount = computed(() => props.product.discountPercentage ?? 0);
         class="absolute top-3 left-3 py-1 px-2.5 rounded-md text-xs bg-[var(--color-accent)] text-[var(--color-white-light)] z-20 transition-[opacity,transform] duration-100"
         >- {{ discount }}%</span
       >
-      <UiAddFavorite :id="props.product.id" :is-shown="isHovered" />
+      <ProductAddFavorite :id="id" :is-shown="isHovered" />
     </div>
     <div class="flex flex-col gap-4">
       <div class="text-xl font-semibold text-[var(--color-accent)]">
-        {{ props.product.title }}
+        {{ name }}
       </div>
       <div class="text-xl font-medium capitalize text-[var(--color-accent)]">
-        {{ props.product.price }} $
+        {{ price }} $
       </div>
     </div>
   </NuxtLink>

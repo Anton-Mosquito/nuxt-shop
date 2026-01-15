@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { QUANTITY_INPUT_DEFAULTS, type QuantityAction } from "~/constants";
 import type { QuantityInputProps } from "~/types";
 
 const {
-  min = QUANTITY_INPUT_DEFAULTS.MIN,
-  max = QUANTITY_INPUT_DEFAULTS.MAX,
-  disabled = QUANTITY_INPUT_DEFAULTS.DISABLED,
-  readonly = QUANTITY_INPUT_DEFAULTS.READONLY,
-  repeatDelay = QUANTITY_INPUT_DEFAULTS.REPEAT_DELAY,
-  repeatInterval = QUANTITY_INPUT_DEFAULTS.REPEAT_INTERVAL,
+  min = 1,
+  max = 999,
+  disabled = false,
+  readonly = false,
+  repeatDelay = 400,
+  repeatInterval = 120,
 } = defineProps<QuantityInputProps>();
 
 const modelValue = defineModel<number>({ default: 1 });
@@ -52,12 +51,12 @@ const { start: startRepeat, stop: stopRepeat } = useRepeatable({
 });
 
 function useRepeatable(options: {
-  onAction: (action: QuantityAction) => void;
+  onAction: (action: "increase" | "decrease") => void;
   delay: number;
   interval: number;
   disabled: () => boolean;
 }) {
-  const currentAction = ref<QuantityAction | null>(null);
+  const currentAction = ref<"increase" | "decrease" | null>(null);
 
   const { pause: pauseInterval, resume: resumeInterval } = useIntervalFn(
     () => {
@@ -75,7 +74,7 @@ function useRepeatable(options: {
     { immediate: false }
   );
 
-  const start = (action: QuantityAction) => {
+  const start = (action: "increase" | "decrease") => {
     if (options.disabled()) return;
     currentAction.value = action;
     startTimeout();

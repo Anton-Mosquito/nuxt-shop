@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Review } from "~~/shared/types";
+import type { Review } from "~/types";
 
 interface Props {
   reviews: Review[];
@@ -23,14 +23,14 @@ const { reviews } = defineProps<Props>();
         <div class="flex gap-3">
           <UiAvatar
             :src="review.avatar"
-            :alt="review.reviewerName"
+            :alt="review.name"
             size="sm"
             class="flex-shrink-0"
           />
           <div class="flex-1">
             <div class="flex justify-between items-center mb-2">
               <div class="font-medium text-[var(--color-black)]">
-                {{ review.reviewerName }}
+                {{ review.name }}
               </div>
               <NuxtTime
                 v-if="review.createdAt"
@@ -45,7 +45,7 @@ const { reviews } = defineProps<Props>();
             </div>
             <UiStarRating :rating="review.rating" size="20px" />
             <p class="text-sm leading-[1.6] mt-3 text-[var(--color-dark-gray)]">
-              {{ review.comment }}
+              {{ review.text }}
             </p>
           </div>
         </div>

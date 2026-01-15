@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { NuxtError } from "#app";
-import { ERROR_MESSAGES, ROUTES } from "~/constants";
+import { ERROR_MESSAGES } from "~/constants";
 
 const { error } = defineProps<{ error: NuxtError }>();
 
 function goHome() {
-  return navigateTo(ROUTES.HOME);
+  return navigateTo("/");
 }
 </script>
 

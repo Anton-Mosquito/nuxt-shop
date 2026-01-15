@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HEADER_NAVIGATION, ROUTES } from "~/constants";
+import { HEADER_NAVIGATION } from "~/constants";
 import type {
   MobileNavigationProps,
   MobileNavigationActionEmits,
@@ -10,8 +10,8 @@ const { isOpen, openDropdowns, iconNavigation } =
 const emit = defineEmits<MobileNavigationActionEmits>();
 
 const route = useRoute();
-const { isDropdownOpen, isParentActive } = useNavigationHelpers(openDropdowns);
-const { loggedIn } = useAuth();
+const { isAuthenticated, isDropdownOpen, isParentActive } =
+  useNavigationHelpers(openDropdowns);
 
 useBodyScrollLock(() => isOpen);
 </script>
@@ -104,26 +104,20 @@ useBodyScrollLock(() => isOpen);
             <span>{{ item.label }}</span>
           </span>
           <span
-            v-show="
+            v-if="
               item.badge && typeof item.badge === 'number' && item.badge > 0
             "
             class="px-1.5 py-0.5 bg-red-500 text-white text-[0.625rem] leading-none rounded-full min-w-[1.25rem] text-center"
-            :aria-label="
-              typeof item.badge === 'number' && item.badge > 0
-                ? `${item.badge} items`
-                : undefined
-            "
+            :aria-label="`${item.badge} items`"
           >
-            <ClientOnly>
-              <span>{{ item.badge }}</span>
-            </ClientOnly>
+            {{ item.badge }}
           </span>
         </NuxtLink>
 
         <div v-else>
           <NuxtLink
-            v-if="!loggedIn"
-            :to="ROUTES.AUTH.LOGIN"
+            v-if="!isAuthenticated"
+            to="/auth/login"
             :aria-label="item.ariaLabel"
             class="flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-colors text-[#666] hover:bg-gray-50 hover:text-black"
             role="menuitem"
