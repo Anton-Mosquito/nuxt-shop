@@ -7,7 +7,7 @@ import {
   shippingDetailsSchema,
   type OrderFormInput,
 } from "~~/shared/schemas";
-import { API_ENDPOINTS, MESSAGES, ERROR_MESSAGES } from "~/constants";
+import { API_ENDPOINTS, MESSAGES, ERROR_MESSAGES, ROUTES } from "~/constants";
 
 const { items, clear, finalPrice } = useCart();
 const { loggedIn, user } = useAuth();
@@ -77,7 +77,7 @@ function useValidate() {
 
       success({ message: MESSAGES.ORDER_CREATED(id) });
       clear();
-      await navigateTo(`${API_ENDPOINTS.CHECKOUT_SUCCESS}/${id}`);
+      await navigateTo(`${ROUTES.CHECKOUT_SUCCESS}/${id}`);
     } catch (e: unknown) {
       if (e instanceof Error) {
         error({ message: e.message || ERROR_MESSAGES.FAILED_TO_CREATE_ORDER });

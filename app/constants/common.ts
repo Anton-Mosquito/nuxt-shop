@@ -24,6 +24,7 @@ export const ROUTES = {
     RESTORE: "/auth/restore",
     LOGOUT: "/auth/logout",
   },
+  CHECKOUT_SUCCESS: "/checkout/success",
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;
