@@ -17,12 +17,10 @@ const prisma = new PrismaClient({ adapter })
 async function main() {
   console.log('Start seeding...')
 
-  // Delete existing data to start fresh (order matters due to relations)
   await prisma.review.deleteMany()
   await prisma.product.deleteMany()
   await prisma.category.deleteMany()
 
-  // 1. Read and seed Categories
   const categoryPath = path.join(__dirname, 'category.json')
   const categoriesData = JSON.parse(fs.readFileSync(categoryPath, 'utf-8'))
 
@@ -37,8 +35,6 @@ async function main() {
     })
   }
 
-  // 2. Read and seed Products
-  // Handle potential filename encoding issues (cyrillic 'с')
   const files = fs.readdirSync(__dirname)
   const productFileName = files.find(f => f.includes('produ') && f.endsWith('.json'))
   if (!productFileName) throw new Error('Cannot find products.json file')
