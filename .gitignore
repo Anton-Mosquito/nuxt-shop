@@ -72,6 +72,11 @@ $RECYCLE.BIN/
 !.env.example
 .envrc
 
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+
 # Database
 *.sqlite
 *.sqlite3
@@ -94,3 +99,13 @@ docker-compose.override.yml
 # Build tools
 .turbo
 .rush/
+
+
+#vscode instructions
+.github/*.instructions.md
+.github/instructions
+
+
+# Database generated files
+prisma/generated
+/db
