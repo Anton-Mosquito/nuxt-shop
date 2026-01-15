@@ -14,14 +14,10 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/sitemap",
     "@nuxtjs/robots",
+    "@nuxtjs/tailwindcss",
   ],
   //css: ["~/assets/styles/main.css"],
-  components: [
-    "~/components",
-    {
-      path: "~/widgets",
-    },
-  ],
+  components: [{ path: "~/components", pathPrefix: true }],
   runtimeConfig: {
     // The private keys which are only available server-side
     token: "",
@@ -34,6 +30,8 @@ export default defineNuxtConfig({
     },
   },
   icon: {
+    mode: "css",
+    cssLayer: "base",
     customCollections: [
       {
         prefix: "icon",
@@ -44,6 +42,8 @@ export default defineNuxtConfig({
   },
   postcss: {
     plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
       "postcss-nested": {},
     },
   },

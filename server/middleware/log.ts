@@ -1,5 +1,5 @@
 export default defineEventHandler((event) => {
-  console.log("🚀 ~ event:", event);
+  //console.log("🚀 ~ event:", event);
   const { req } = event.node;
 
   const method = req.method;

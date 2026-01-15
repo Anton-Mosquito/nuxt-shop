@@ -1,9 +1,9 @@
-import type { ICreateFavorite } from "~/interfaces/favorite.interface";
+import type { AddToFavoritesRequest } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
-  const { email, ids } = await readBody<ICreateFavorite>(event);
-  console.log("🚀 ~ body:", { email, ids });
-  await useStorage("db").setItem(email, ids);
+  const { email, productIds } = await readBody<AddToFavoritesRequest>(event);
+  console.log("🚀 ~ body:", { email, productIds });
+  await useStorage("db").setItem(email, productIds);
   setResponseStatus(event, 201);
   return { success: true };
 });

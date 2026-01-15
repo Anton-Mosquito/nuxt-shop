@@ -99,3 +99,8 @@ docker-compose.override.yml
 # Build tools
 .turbo
 .rush/
+
+
+#vscode instructions
+.github/*.instructions.md
+.github/instructions

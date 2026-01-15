@@ -1,36 +1,146 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
+import type { Product, Review } from "~/types/entities";
+import type { Tab } from "~/types/components/ui/tabs";
+
+interface Props {
+  product: Product;
+  reviews: Review[];
+}
 
 const route = useRoute();
 const API_URL = useAPI();
 const id = ref(route.params.id);
-const { data } = await useFetch<{ product: IProduct }>(
-  `${API_URL}/products/${id.value}`
+
+const { data } = await useFetch<Props>(`${API_URL}/products/${id.value}`);
+const activeTab = ref("description");
+const reviewCount = computed(() => data.value?.reviews?.length || 0);
+const productTabs = computed<Tab[]>(() => [
+  {
+    id: "description",
+    label: "Description",
+    icon: "mdi:text-box-outline",
+  },
+  {
+    id: "reviews",
+    label: "Reviews",
+    icon: "mdi:star-outline",
+    badge: reviewCount.value,
+  },
+  {
+    id: "specifications",
+    label: "Specifications",
+    icon: "mdi:format-list-bulleted",
+    disabled: true,
+  },
+]);
+
+useSeoMeta({
+  title: data.value
+    ? `${data.value.product.name} - Nuxt Shop`
+    : "Product - Nuxt Shop",
+  description: data.value
+    ? data.value.product.shortDescription
+    : "Browse our extensive catalog of products at Nuxt Shop.",
+  ogDescription: data.value
+    ? data.value.product.shortDescription
+    : "Browse our extensive catalog of products at Nuxt Shop.",
+});
+
+const productDescription = computed(
+  () =>
+    data.value?.product.longDescription ||
+    data.value?.product.shortDescription ||
+    "No description available."
 );
 
-// useSeoMeta({
-//   title: data.value
-//     ? `${data.value.product.name} - Nuxt Shop`
-//     : "Product - Nuxt Shop",
-//   description: data.value
-//     ? data.value.product.short_description
-//     : "Browse our extensive catalog of products at Nuxt Shop.",
-//   ogDescription: data.value
-//     ? data.value.product.short_description
-//     : "Browse our extensive catalog of products at Nuxt Shop.",
-// });
+const productImages = computed(() => {
+  if (!data.value?.product.images || data.value.product.images.length === 0) {
+    return ["/placeholder.jpg"];
+  }
+  return data.value.product.images;
+});
 </script>
 
 <template>
-  <div>
+  <div v-if="data?.product" class="product-page">
     <Head>
-      <Title>{{ data?.product.name }}</Title>
-      <Meta
-        name="description"
-        :content="`${data?.product.short_description}`"
-      />
+      <Title>{{ data.product.name }} - Nuxt Shop</Title>
+      <Meta name="description" :content="data.product.shortDescription" />
     </Head>
-    <h1>Dynamic path {{ id }}</h1>
-    <p>{{ data?.product.name }}</p>
+
+    <div class="product-container">
+      <ProductImageGallery
+        :images="productImages"
+        :alt="data.product.name"
+        solid
+      />
+      <ProductInfo
+        :product="data.product"
+        :reviews="data.reviews"
+        :review-count="reviewCount"
+      />
+    </div>
+
+    <UiTabs v-model="activeTab" :tabs="productTabs">
+      <template #description>
+        <div class="description-content">
+          <p>
+            {{ productDescription }}
+          </p>
+        </div>
+      </template>
+      <template #reviews>
+        <ProductReviews :reviews="data.reviews" />
+      </template>
+      <template #specifications>
+        <div class="specifications-content">
+          <p>Specifications will be added later...</p>
+        </div>
+      </template>
+    </UiTabs>
+  </div>
+
+  <div v-else class="loading">
+    <p>Загрузка товара...</p>
   </div>
 </template>
+
+<style scoped>
+.product-page {
+  padding: 0;
+}
+
+.product-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+}
+
+.description-content {
+  max-width: 800px;
+}
+
+.description-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-dark-gray);
+  margin-bottom: 16px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: var(--color-dark-gray);
+}
+
+@media (max-width: 1024px) {
+  .product-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+</style>

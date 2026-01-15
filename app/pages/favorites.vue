@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IProduct } from "~/interfaces/product.interface";
+import type { Product } from "~/types/entities";
 
 useSeoMeta({
   title: "Favorites - Nuxt Shop",
@@ -9,14 +9,14 @@ useSeoMeta({
 
 const API_URL = useAPI();
 const favoriteStore = useFavoriteStore();
-const products = ref<IProduct[]>([]);
+const products = ref<Product[]>([]);
 // await callOnce("fetchFavorites", () => favoriteStore.fetchFavorites(), {
 //   mode: "navigation",
 // });
 watchEffect(async () => {
   const data = await Promise.all(
     favoriteStore.favoriteIds.map((id) =>
-      $fetch<{ product: IProduct }>(`${API_URL}/products/${id}`)
+      $fetch<{ product: Product }>(`${API_URL}/products/${id}`)
     )
   );
 
