@@ -8,6 +8,13 @@
 //     },
 //   ],
 // });
+
+useSeoMeta({
+  title: "Catalog - Nuxt Shop",
+  description: "Browse our extensive catalog of products at Nuxt Shop.",
+  ogDescription: "Browse our extensive catalog of products at Nuxt Shop.",
+});
+
 function openAbout() {
   navigateTo("/about");
 }

@@ -3,6 +3,21 @@ import SelectField from "~/components/SelectField.vue";
 import type { IGetCategoriesResponse } from "~/interfaces/category.interface";
 import type { IGetProductsResponse } from "~/interfaces/product.interface";
 
+useSeoMeta({
+  title: "Catalog - Nuxt Shop",
+  description: "Browse our extensive catalog of products at Nuxt Shop.",
+  ogDescription: "Browse our extensive catalog of products at Nuxt Shop.",
+});
+// useHead({
+//   title: "Catalog - Nuxt Shop",
+//   meta: [
+//     {
+//       name: "description",
+//       content: "Browse our extensive catalog of products at Nuxt Shop.",
+//     },
+//   ],
+// });
+
 const API_URL = useAPI(); // useRuntimeConfig().public.api_url;
 const route = useRoute();
 const router = useRouter();
