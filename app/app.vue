@@ -4,6 +4,7 @@ import { ERROR_MESSAGES } from "~/constants";
 
 const { handleGlobalError } = useGlobalErrorHandler();
 
+
 const handleAppError = (error: Error) => {
   handleGlobalError(error, "App Boundary", {
     showToast: true,
