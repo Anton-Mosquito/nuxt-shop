@@ -1,22 +1,33 @@
 <script setup lang="ts">
-const hello = ref("Hello, Nuxt 4!");
-const appConfig = useAppConfig();
-const runtimeConfig = useRuntimeConfig();
-const theme = ref(appConfig.theme || "default");
-const token = ref(runtimeConfig.public.api_base);
+//import type { LayoutKey } from "#build/types/layouts";
+import "~/assets/styles/main.css";
 
-console.log(appConfig.theme);
+//const name = ref<LayoutKey>("auth");
 </script>
 
 <template>
   <div>
-    {{ hello }}
-    <div>theme: {{ theme }}</div>
-    <div>token: {{ token }}</div>
-    <SharedUsersTestComponent />
-    <WidgetComponent />
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
-    <NuxtPage />
+    <NuxtLayout name="default">
+      <main class="main">
+        <NuxtPage :transition="{ name: 'page', mode: 'out-in' }" />
+      </main>
+    </NuxtLayout>
   </div>
 </template>
+
+<style lang="css" scoped>
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+.main {
+  margin: 0 auto;
+  max-width: 1248px;
+  padding: 40px 16px;
+}
+</style>
