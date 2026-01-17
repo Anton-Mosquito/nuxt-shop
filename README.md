@@ -82,6 +82,7 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - [] implement nuxt auth [docs](https://auth.sidebase.io/) [example]()
 - [] implement testing with vitest [docs](https://nuxt.com/docs/4.x/getting-started/testing) [example](https://www.youtube.com/watch?v=yGzwk9xi9gU)
 - [] check Nuxt Instance Unavailable [docs](https://nuxt.com/docs/4.x/guide/concepts/auto-imports#vue-and-nuxt-composables) [example](https://www.youtube.com/watch?v=ofuKRZLtOdY)
+- [] redis [docs](https://unstorage.unjs.io/guide) [vercel](https://vercel.com/docs/redis)
 
 
 
@@ -98,3 +99,4 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - [] color scheme for tailwind.config.ts not working properly
 - [] - todo restore email
 - [] - todo Handle rememberMe
+- [] - defineSlot use
