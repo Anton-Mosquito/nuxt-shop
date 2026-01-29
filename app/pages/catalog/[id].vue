@@ -10,12 +10,11 @@ import {
 const route = useRoute();
 const { showLoader, hideLoader } = usePageLoader();
 
-const { data, error, status } = await useFetch<GetProductResponse>(
+const { data, error, status } = await useLazyFetch<GetProductResponse>(
   () => `${API_ENDPOINTS.PRODUCTS}/${route.params.id}`,
   {
-    lazy: true,
     watch: [() => route.params.id],
-  }
+  },
 );
 
 useSeoMeta({
@@ -45,7 +44,7 @@ watch(
       hideLoader();
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(error, (newError) => {
@@ -61,7 +60,7 @@ watch(error, (newError) => {
 function useData() {
   const reviewCount = computed(() => data.value?.reviews?.length || 0);
   const productDescription = computed(
-    () => data.value?.product.description || MESSAGES.NO_DESCRIPTION
+    () => data.value?.product.description || MESSAGES.NO_DESCRIPTION,
   );
 
   const productImages = computed(() => {
@@ -89,7 +88,7 @@ function useTabManager() {
         ...tab,
         badge: reviewCount.value,
       };
-    })
+    }),
   );
 
   return {
@@ -117,7 +116,12 @@ function useTabManager() {
         />
       </div>
 
-      <UiTabs v-model="activeTab" :tabs="productTabs" lazy>
+      <LazyUiTabs
+        v-model="activeTab"
+        :tabs="productTabs"
+        lazy
+        hydrate-on-visible
+      >
         <template #description>
           <div class="max-w-3xl text-sm leading-relaxed text-gray-600 mb-4">
             <p>
@@ -136,7 +140,7 @@ function useTabManager() {
             <p>Specifications will be added later...</p>
           </div>
         </template>
-      </UiTabs>
+      </LazyUiTabs>
     </div>
   </div>
 </template>

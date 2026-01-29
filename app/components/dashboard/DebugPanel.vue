@@ -31,7 +31,7 @@ const copyData = (data: unknown) => {
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport defer to="body">
     <div
       class="fixed bottom-4 right-4 z-[9999] font-mono text-xs transition-all duration-300"
       :class="[

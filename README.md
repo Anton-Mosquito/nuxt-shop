@@ -83,20 +83,14 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 - [] implement testing with vitest [docs](https://nuxt.com/docs/4.x/getting-started/testing) [example](https://www.youtube.com/watch?v=yGzwk9xi9gU)
 - [] check Nuxt Instance Unavailable [docs](https://nuxt.com/docs/4.x/guide/concepts/auto-imports#vue-and-nuxt-composables) [example](https://www.youtube.com/watch?v=ofuKRZLtOdY)
 - [] redis [docs](https://unstorage.unjs.io/guide) [vercel](https://vercel.com/docs/redis)
+- [] install nuext seo module [docs](https://nuxtseo.com/) 
 
 
 
 
 
-
-
-
-
-
-
-
-
-- [] color scheme for tailwind.config.ts not working properly
+- [] color scheme for tailwind.config.ts not working properly [docs](https://nuxt.com/docs/4.x/guide/concepts/color-scheme) [docs](https://color-mode.nuxtjs.org/getting-started)
 - [] - todo restore email
 - [] - todo Handle rememberMe
 - [] - defineSlot use
+- [] - nuxt font advanced use with tailwind 4.0 [docs](https://fonts.nuxt.com/get-started/usage#v4)
